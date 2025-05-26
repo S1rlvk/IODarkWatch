@@ -1,12 +1,9 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import React from 'react';
-import MaritimeDashboard from './components/MaritimeDashboard';
+const Intro = dynamic(() => import('./components/Intro'), {
+  ssr: false
+});
 
 export default function Home() {
-  return (
-    <main className="min-h-screen bg-background">
-      <MaritimeDashboard />
-    </main>
-  );
+  return <Intro />;
 } 
