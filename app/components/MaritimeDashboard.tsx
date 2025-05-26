@@ -13,7 +13,38 @@ import { AlertPanel } from './AlertPanel';
 // Dynamically import the map component with no SSR
 const MapComponent = dynamic(
   () => import('./MapComponent'),
-  { ssr: false }
+  { 
+    ssr: false,
+    loading: () => (
+      <div className={styles.mapContainer}>
+        <div style={{ 
+          height: '100%', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          background: '#f5f5f5',
+          borderRadius: '8px'
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1rem'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid #f3f3f3',
+              borderTop: '4px solid #3498db',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <span>Loading map...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
 );
 
 const MaritimeDashboard: React.FC = () => {
@@ -33,8 +64,19 @@ const MaritimeDashboard: React.FC = () => {
     end: timeRange[1].toISOString()
   });
 
-  if (vesselsLoading || alertsLoading) return <div>Loading...</div>;
-  if (vesselsError || alertsError) return <div>Error loading data</div>;
+  if (vesselsError || alertsError) {
+    return (
+      <div className={styles.dashboard}>
+        <div style={{ 
+          padding: '2rem', 
+          textAlign: 'center',
+          color: 'var(--danger-color)'
+        }}>
+          Error loading data. Please try again later.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.dashboard}>
@@ -67,6 +109,13 @@ const MaritimeDashboard: React.FC = () => {
           events={alerts}
         />
       </div>
+
+      <style jsx global>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
