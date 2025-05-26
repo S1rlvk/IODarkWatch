@@ -1,8 +1,30 @@
 # IODarkWatch
-Open-Source Maritime Domain-Awareness for the Indian Ocean
 
+Open-Source Maritime Domain Awareness for the Indian Ocean
 
-Real-time detection of “dark” vessels—ships whose satellite signatures have no matching AIS broadcast—in the Arabian Sea, Bay of Bengal, and wider Indian Ocean.  
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## About
+
+IODarkWatch is an open-source project focused on maritime domain awareness in the Indian Ocean region. It provides tools and solutions for tracking vessels and monitoring maritime activities using various data sources and AI-powered detection systems.
+
+## Features
+
+- Multi-source intelligence integration
+- AI-powered vessel detection
+- Real-time monitoring dashboard
+- Open access to data and tools
+- Community-driven development
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any queries or collaboration opportunities, please reach out to [ssattiger65@gmail.com](mailto:ssattiger65@gmail.com)
+
+Real-time detection of "dark" vessels—ships whose satellite signatures have no matching AIS broadcast—in the Arabian Sea, Bay of Bengal, and wider Indian Ocean.  
 The project fuses free AIS feeds, public Sentinel-2 imagery, and tip-and-cue SAR snapshots, then surfaces alerts via a live map, REST API, and weekly brief.
 
 ---
