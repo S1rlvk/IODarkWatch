@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Vessel } from '../types';
@@ -12,11 +12,33 @@ interface MapComponentProps {
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div style={{ 
+        height: '100%', 
+        width: '100%', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        background: '#f5f5f5'
+      }}>
+        Loading map...
+      </div>
+    );
+  }
+
   return (
     <MapContainer
       center={[15, 65]}
       zoom={4}
       style={{ height: '100%', width: '100%' }}
+      scrollWheelZoom={true}
     >
       <TileLayer
         url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=YOUR_MAPTILER_KEY"
