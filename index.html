@@ -4,12 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IODarkWatch - Open-Source Maritime Domain Awareness</title>
+    <meta name="description" content="Open-source maritime domain awareness platform for the Indian Ocean, helping detect dark vessels and illegal maritime activities.">
+    <meta name="keywords" content="maritime, domain awareness, dark vessels, Indian Ocean, open source, AIS, satellite imagery">
+    <meta property="og:title" content="IODarkWatch - Open-Source Maritime Domain Awareness">
+    <meta property="og:description" content="Open-source maritime domain awareness platform for the Indian Ocean, helping detect dark vessels and illegal maritime activities.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IODarkWatch - Open-Source Maritime Domain Awareness">
+    <meta name="twitter:description" content="Open-source maritime domain awareness platform for the Indian Ocean, helping detect dark vessels and illegal maritime activities.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loading-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         :root {
@@ -487,6 +528,11 @@
     </style>
 </head>
 <body data-theme="light">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
     <!-- Navigation -->
     <nav>
         <div class="container">
@@ -833,6 +879,15 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Loading overlay
+        window.addEventListener('load', () => {
+            const overlay = document.querySelector('.loading-overlay');
+            overlay.classList.add('fade-out');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500);
+        });
 
         // Theme toggle functionality
         function toggleTheme() {

@@ -1,0 +1,74 @@
+.alertPanel {
+  background: var(--card-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.alertPanel h3 {
+  margin: 0 0 1rem 0;
+  color: var(--primary-blue);
+}
+
+.alertList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.alertItem {
+  background: var(--bg-color);
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.alertItem:hover {
+  transform: translateY(-2px);
+}
+
+.alertHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.vesselName {
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.alertDetails p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.details {
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.loading {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.noAlerts {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  font-style: italic;
+} 

@@ -1,0 +1,99 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 1fr 200px;
+  gap: 1rem;
+  height: 100vh;
+  padding: 1rem;
+  background: var(--bg-color);
+}
+
+.mapContainer {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.timeline {
+  grid-column: 2;
+  grid-row: 2;
+  background: var(--card-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vesselDetails {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.vesselDetails h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary-blue);
+}
+
+.vesselDetails p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.darkVesselWarning {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #ff4444;
+  color: white;
+  border-radius: 0.25rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto auto;
+  }
+
+  .mapContainer {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .controls {
+    grid-column: 1;
+    grid-row: 2;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .timeline {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .vesselDetails {
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+  }
+} 

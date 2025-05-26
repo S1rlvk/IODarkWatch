@@ -1,0 +1,44 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  height: 100vh;
+}
+
+.mapContainer {
+  flex: 1;
+  min-height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.timeline {
+  margin-top: 20px;
+}
+
+.vesselDetails {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+}
+
+.darkVesselWarning {
+  margin-top: 10px;
+  padding: 8px;
+  background: #dc3545;
+  color: white;
+  border-radius: 4px;
+  text-align: center;
+} 
