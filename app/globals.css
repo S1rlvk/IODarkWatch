@@ -1,22 +1,26 @@
 :root {
-  /* Theme Colors */
-  --primary-color: #2D7FF9;
-  --primary-color-light: rgba(45, 127, 249, 0.15);
-  --secondary-color: #6B7280;
-  --success-color: #10B981;
-  --danger-color: #EF4444;
-  --warning-color: #F59E0B;
-  --info-color: #3B82F6;
-  --light-color: #F3F4F6;
-  --dark-color: #111827;
+  /* Palantir-inspired dark theme colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #242424;
+  --card-bg: #2a2a2a;
+  --item-bg: #333333;
+  
+  --text-primary: #e6e6e6;
+  --text-secondary: #a6a6a6;
+  
+  --primary-color: #3d8bfd;
+  --primary-hover: #4d9bff;
+  --secondary-color: #6c5ce7;
+  
+  --success-color: #00b894;
+  --warning-color: #fdcb6e;
+  --danger-color: #ff7675;
+  
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.3);
 
   /* Theme Variables */
-  --card-bg: #1F2937;
-  --item-bg: #374151;
   --input-bg: #374151;
-  --text-primary: #F9FAFB;
-  --text-secondary: #D1D5DB;
-  --border-color: #4B5563;
   --tag-bg: #374151;
   --tag-text: #F9FAFB;
   --severity-high: #EF4444;
@@ -35,7 +39,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: var(--bg-color);
+  background: var(--bg-primary);
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
@@ -52,16 +56,16 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--card-bg);
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--item-bg);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color);
+  background: var(--primary-color);
 }
 
 /* Smooth Transitions */
