@@ -105,21 +105,47 @@ const MaritimeDashboard: React.FC = () => {
   return (
     <div className={styles.dashboard} style={{
       opacity: isLoading ? 0 : 1,
-      transition: 'opacity 0.5s ease-in-out'
+      transition: 'opacity 0.5s ease-in-out',
+      background: 'var(--bg-primary)',
+      minHeight: '100vh',
+      padding: '2rem'
     }}>
       {showWelcome && (
         <div className={styles.welcomeOverlay}>
           <div className="card" style={{ 
-            padding: '2rem',
-            maxWidth: '600px',
-            textAlign: 'center'
+            padding: '3rem',
+            maxWidth: '800px',
+            textAlign: 'center',
+            background: 'var(--card-bg)',
+            border: '1px solid var(--border-color)'
           }}>
-            <h2>Welcome to IODarkWatch</h2>
-            <p>Your maritime domain awareness platform for the Indian Ocean</p>
-            <div className={styles.quickActions}>
+            <h2 style={{ 
+              fontSize: '2.5rem',
+              marginBottom: '1rem',
+              background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              Welcome to IODarkWatch
+            </h2>
+            <p style={{ 
+              fontSize: '1.2rem',
+              color: 'var(--text-secondary)',
+              marginBottom: '2rem'
+            }}>
+              Your maritime domain awareness platform for the Indian Ocean
+            </p>
+            <div className={styles.quickActions} style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center'
+            }}>
               <button 
                 className="button"
                 onClick={() => setShowTutorial(true)}
+                style={{
+                  background: 'var(--secondary-color)'
+                }}
               >
                 Start Tutorial
               </button>
@@ -138,21 +164,105 @@ const MaritimeDashboard: React.FC = () => {
         <div className={styles.tutorialOverlay}>
           <div className="card" style={{ 
             padding: '2rem',
-            maxWidth: '400px',
+            maxWidth: '500px',
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            zIndex: 1000
+            zIndex: 1000,
+            background: 'var(--card-bg)',
+            border: '1px solid var(--border-color)'
           }}>
-            <h3>Quick Tour</h3>
-            <p>1. Use the map to view vessel positions</p>
-            <p>2. Filter vessels by type and status</p>
-            <p>3. Check alerts for dark vessel detection</p>
-            <p>4. Use the timeline to track events</p>
+            <h3 style={{ 
+              fontSize: '1.5rem',
+              marginBottom: '1.5rem',
+              color: 'var(--text-primary)'
+            }}>Quick Tour</h3>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              marginBottom: '2rem'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--primary-color)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}>1</div>
+                <p style={{ color: 'var(--text-secondary)' }}>Use the map to view vessel positions</p>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--primary-color)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}>2</div>
+                <p style={{ color: 'var(--text-secondary)' }}>Filter vessels by type and status</p>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--primary-color)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}>3</div>
+                <p style={{ color: 'var(--text-secondary)' }}>Check alerts for dark vessel detection</p>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--primary-color)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}>4</div>
+                <p style={{ color: 'var(--text-secondary)' }}>Use the timeline to track events</p>
+              </div>
+            </div>
             <button 
               className="button"
               onClick={handleTutorialComplete}
+              style={{
+                width: '100%'
+              }}
             >
               Got it!
             </button>
@@ -160,32 +270,56 @@ const MaritimeDashboard: React.FC = () => {
         </div>
       )}
 
-      <div className={styles.mapContainer}>
+      <div className={styles.mapContainer} style={{
+        height: 'calc(100vh - 4rem)',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        border: '1px solid var(--border-color)',
+        background: 'var(--card-bg)'
+      }}>
         <MapComponent
           onVesselClick={setSelectedVessel}
         />
       </div>
 
-      <div className={styles.controls}>
-        <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
+      <div className={styles.controls} style={{
+        position: 'fixed',
+        right: '2rem',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        width: '320px',
+        zIndex: 100
+      }}>
+        <div className="card" style={{ 
+          padding: '1.5rem',
+          marginBottom: '1rem',
+          background: 'var(--card-bg)',
+          border: '1px solid var(--border-color)'
+        }}>
           <FilterControls
             timeRange={timeRange}
             onTimeRangeChange={setTimeRange}
           />
           <div style={{ 
-            marginTop: '1rem', 
-            padding: '1rem',
+            marginTop: '1.5rem', 
+            padding: '1.5rem',
             background: 'var(--item-bg)',
             borderRadius: '8px',
-            textAlign: 'center'
+            textAlign: 'center',
+            border: '1px solid var(--border-color)'
           }}>
-            <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+            <h3 style={{ 
+              marginBottom: '0.75rem',
+              color: 'var(--text-primary)',
+              fontSize: '1.2rem'
+            }}>
               Learn More About Dark Vessels
             </h3>
             <p style={{ 
-              marginBottom: '1rem', 
+              marginBottom: '1.5rem',
               color: 'var(--text-secondary)',
-              fontSize: '0.9rem'
+              fontSize: '0.95rem',
+              lineHeight: '1.5'
             }}>
               Discover the impact of dark vessels on maritime security
             </p>
@@ -194,12 +328,12 @@ const MaritimeDashboard: React.FC = () => {
               onClick={handleDarkVesselsClick}
               style={{ 
                 width: '100%',
-                padding: '0.8rem',
-                fontSize: '1rem',
+                padding: '1rem',
+                fontSize: '0.95rem',
                 background: 'var(--primary-color)',
                 color: 'white',
                 border: 'none',
-                borderRadius: '6px',
+                borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
               }}
@@ -209,7 +343,11 @@ const MaritimeDashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="card" style={{ flex: 1 }}>
+        <div className="card" style={{ 
+          flex: 1,
+          background: 'var(--card-bg)',
+          border: '1px solid var(--border-color)'
+        }}>
           <AlertPanel
             alerts={alerts}
             loading={alertsLoading}
@@ -220,8 +358,21 @@ const MaritimeDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.timeline}>
-        <div className="card" style={{ height: '100%' }}>
+      <div className={styles.timeline} style={{
+        position: 'fixed',
+        bottom: '2rem',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 4rem)',
+        maxWidth: '1200px',
+        height: '120px',
+        zIndex: 100
+      }}>
+        <div className="card" style={{ 
+          height: '100%',
+          background: 'var(--card-bg)',
+          border: '1px solid var(--border-color)'
+        }}>
           <TimelineView
             timeRange={timeRange}
             onTimeRangeChange={setTimeRange}
