@@ -47,6 +47,8 @@ const MaritimeDashboard: React.FC = () => {
   ]);
   const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(true);
 
   const { vessels, loading: vesselsLoading, error: vesselsError } = useVesselData({
     start: timeRange[0].toISOString(),
@@ -63,6 +65,19 @@ const MaritimeDashboard: React.FC = () => {
       setIsLoading(false);
     }
   }, [vesselsLoading, alertsLoading]);
+
+  useEffect(() => {
+    // Check if user has seen the tutorial before
+    const hasSeenTutorial = localStorage.getItem('hasSeenTutorial');
+    if (hasSeenTutorial) {
+      setShowTutorial(false);
+    }
+  }, []);
+
+  const handleTutorialComplete = () => {
+    setShowTutorial(false);
+    localStorage.setItem('hasSeenTutorial', 'true');
+  };
 
   if (vesselsError || alertsError) {
     return (
@@ -86,6 +101,59 @@ const MaritimeDashboard: React.FC = () => {
       opacity: isLoading ? 0 : 1,
       transition: 'opacity 0.5s ease-in-out'
     }}>
+      {showWelcome && (
+        <div className={styles.welcomeOverlay}>
+          <div className="card" style={{ 
+            padding: '2rem',
+            maxWidth: '600px',
+            textAlign: 'center'
+          }}>
+            <h2>Welcome to IODarkWatch</h2>
+            <p>Your maritime domain awareness platform for the Indian Ocean</p>
+            <div className={styles.quickActions}>
+              <button 
+                className="button"
+                onClick={() => setShowTutorial(true)}
+              >
+                Start Tutorial
+              </button>
+              <button 
+                className="button"
+                onClick={() => setShowWelcome(false)}
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTutorial && (
+        <div className={styles.tutorialOverlay}>
+          <div className="card" style={{ 
+            padding: '2rem',
+            maxWidth: '400px',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1000
+          }}>
+            <h3>Quick Tour</h3>
+            <p>1. Use the map to view vessel positions</p>
+            <p>2. Filter vessels by type and status</p>
+            <p>3. Check alerts for dark vessel detection</p>
+            <p>4. Use the timeline to track events</p>
+            <button 
+              className="button"
+              onClick={handleTutorialComplete}
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={styles.mapContainer}>
         <MapComponent
           vessels={vessels}

@@ -5,6 +5,9 @@ declare const styles: {
   readonly timeline: string;
   readonly vesselDetails: string;
   readonly darkVesselWarning: string;
+  readonly welcomeOverlay: string;
+  readonly tutorialOverlay: string;
+  readonly quickActions: string;
 };
 
 export default styles; 
