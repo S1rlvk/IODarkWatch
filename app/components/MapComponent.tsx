@@ -76,7 +76,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ onVesselClick }) => {
       <MapContainer
         center={[15, 73]}
         zoom={5}
-        className={styles.map}
+        className={`${styles.map} ${styles.leafletOverrides}`}
         scrollWheelZoom={true}
       >
         <TileLayer
