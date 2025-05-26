@@ -14,6 +14,8 @@
   z-index: 2;
   transition: opacity 1s ease-in-out;
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .title {
@@ -51,6 +53,39 @@
 .description p {
   margin: 0.5rem 0;
   font-size: 1.1rem;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.feature {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.feature h3 {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.feature p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .enterButton {
@@ -161,5 +196,14 @@
   .enterButton {
     padding: 0.8rem 1.6rem;
     font-size: 1rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .feature {
+    padding: 1rem;
   }
 } 

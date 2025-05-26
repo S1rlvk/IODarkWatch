@@ -37,11 +37,26 @@ const Intro: React.FC = () => {
           <span className={styles.cursor}>|</span>
         </h1>
         <p className={styles.subtitle}>
-          Maritime Intelligence Platform
+          Open-Source Maritime Domain Awareness for the Indian Ocean
         </p>
         <div className={styles.description}>
-          <p>Advanced vessel tracking and dark vessel detection</p>
-          <p>Powered by satellite data and machine learning</p>
+          <p>Multi-Source Intelligence: AIS broadcasts, Sentinel-2 imagery, and SAR snapshots</p>
+          <p>AI-Powered Detection: ML pipeline for dark vessel identification</p>
+          <p>Open Access: Live dashboard, REST API, and weekly briefs</p>
+        </div>
+        <div className={styles.features}>
+          <div className={styles.feature}>
+            <h3>Dark Vessels</h3>
+            <p>Thousands of vessels run "dark," hiding illegal activities</p>
+          </div>
+          <div className={styles.feature}>
+            <h3>Limited Visibility</h3>
+            <p>Expensive tools and lack of public surveillance feeds</p>
+          </div>
+          <div className={styles.feature}>
+            <h3>Our Solution</h3>
+            <p>Advanced fusion algorithms and AI-powered detection</p>
+          </div>
         </div>
         <button 
           className={styles.enterButton}
