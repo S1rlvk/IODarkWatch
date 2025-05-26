@@ -1,0 +1,265 @@
+.container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-color);
+  padding: 2rem;
+}
+
+.content {
+  max-width: 1200px;
+  width: 100%;
+  z-index: 2;
+  transition: opacity 1s ease-in-out;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+  animation: slideDown 0.8s ease-out;
+}
+
+.highlight {
+  color: var(--primary-color);
+  position: relative;
+  display: inline-block;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary-color);
+  transform: scaleX(0);
+  transform-origin: right;
+  animation: lineReveal 0.8s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+.infoCard {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.infoCard h2 {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.infoCard p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem 0;
+  animation: fadeInUp 0.8s ease-out;
+  animation-delay: 0.3s;
+}
+
+.statItem {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--item-bg);
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.statItem:hover {
+  transform: translateY(-5px);
+}
+
+.statNumber {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.threats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+  animation: fadeInUp 0.8s ease-out;
+  animation-delay: 0.6s;
+}
+
+.threatItem {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--item-bg);
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.threatItem:hover {
+  transform: translateY(-5px);
+}
+
+.threatIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.threatItem h3 {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.threatItem p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.backButton {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 1rem 2rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease-out;
+  animation-delay: 0.9s;
+}
+
+.backButton:hover {
+  background: var(--primary-color-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(45, 127, 249, 0.2);
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: url('/wave.svg');
+  background-size: 1000px 100px;
+  opacity: 0.1;
+}
+
+.wave:nth-child(1) {
+  animation: wave 30s linear infinite;
+  z-index: 3;
+  opacity: 0.1;
+  animation-delay: 0s;
+  bottom: 0;
+}
+
+.wave:nth-child(2) {
+  animation: wave 15s linear infinite;
+  z-index: 2;
+  opacity: 0.15;
+  animation-delay: -5s;
+  bottom: 10px;
+}
+
+.wave:nth-child(3) {
+  animation: wave 20s linear infinite;
+  z-index: 1;
+  opacity: 0.2;
+  animation-delay: -2s;
+  bottom: 15px;
+}
+
+@keyframes wave {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 1000px;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lineReveal {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .stats,
+  .threats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .infoCard {
+    padding: 1.5rem;
+  }
+
+  .statNumber {
+    font-size: 2rem;
+  }
+} 

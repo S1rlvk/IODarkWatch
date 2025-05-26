@@ -9,6 +9,7 @@ import { useDarkVesselAlerts } from '../hooks/useDarkVesselAlerts';
 import { TimelineView } from './TimelineView';
 import { FilterControls } from './FilterControls';
 import { AlertPanel } from './AlertPanel';
+import { useRouter } from 'next/router';
 
 // Dynamically import the map component with no SSR
 const MapComponent = dynamic(
@@ -41,6 +42,7 @@ const MapComponent = dynamic(
 );
 
 const MaritimeDashboard: React.FC = () => {
+  const router = useRouter();
   const [timeRange, setTimeRange] = useState<[Date, Date]>([
     new Date(Date.now() - 24 * 60 * 60 * 1000),
     new Date()
@@ -77,6 +79,10 @@ const MaritimeDashboard: React.FC = () => {
   const handleTutorialComplete = () => {
     setShowTutorial(false);
     localStorage.setItem('hasSeenTutorial', 'true');
+  };
+
+  const handleDarkVesselsClick = () => {
+    router.push('/dark-vessels');
   };
 
   if (vesselsError || alertsError) {
@@ -167,6 +173,13 @@ const MaritimeDashboard: React.FC = () => {
             timeRange={timeRange}
             onTimeRangeChange={setTimeRange}
           />
+          <button 
+            className="button"
+            onClick={handleDarkVesselsClick}
+            style={{ marginTop: '1rem', width: '100%' }}
+          >
+            Learn About Dark Vessels
+          </button>
         </div>
         
         <div className="card" style={{ flex: 1 }}>
