@@ -162,7 +162,6 @@ const MaritimeDashboard: React.FC = () => {
 
       <div className={styles.mapContainer}>
         <MapComponent
-          vessels={vessels}
           onVesselClick={setSelectedVessel}
         />
       </div>
