@@ -17,12 +17,12 @@ const MapComponent = dynamic(
     ssr: false,
     loading: () => (
       <div className={styles.mapContainer}>
-        <div style={{ 
+        <div className="card" style={{ 
           height: '100%', 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          background: '#f5f5f5',
+          background: 'var(--card-bg)',
           borderRadius: '8px'
         }}>
           <div style={{
@@ -31,15 +31,8 @@ const MapComponent = dynamic(
             alignItems: 'center',
             gap: '1rem'
           }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              border: '4px solid #f3f3f3',
-              borderTop: '4px solid #3498db',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite'
-            }} />
-            <span>Loading map...</span>
+            <div className="loading-spinner" />
+            <span style={{ color: 'var(--text-primary)' }}>Loading map...</span>
           </div>
         </div>
       </div>
@@ -53,6 +46,7 @@ const MaritimeDashboard: React.FC = () => {
     new Date()
   ]);
   const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { vessels, loading: vesselsLoading, error: vesselsError } = useVesselData({
     start: timeRange[0].toISOString(),
@@ -64,13 +58,22 @@ const MaritimeDashboard: React.FC = () => {
     end: timeRange[1].toISOString()
   });
 
+  useEffect(() => {
+    if (!vesselsLoading && !alertsLoading) {
+      setIsLoading(false);
+    }
+  }, [vesselsLoading, alertsLoading]);
+
   if (vesselsError || alertsError) {
     return (
       <div className={styles.dashboard}>
-        <div style={{ 
+        <div className="card" style={{ 
           padding: '2rem', 
           textAlign: 'center',
-          color: 'var(--danger-color)'
+          color: 'var(--danger-color)',
+          background: 'var(--card-bg)',
+          borderRadius: '8px',
+          margin: '1rem'
         }}>
           Error loading data. Please try again later.
         </div>
@@ -79,7 +82,10 @@ const MaritimeDashboard: React.FC = () => {
   }
 
   return (
-    <div className={styles.dashboard}>
+    <div className={styles.dashboard} style={{
+      opacity: isLoading ? 0 : 1,
+      transition: 'opacity 0.5s ease-in-out'
+    }}>
       <div className={styles.mapContainer}>
         <MapComponent
           vessels={vessels}
@@ -88,34 +94,33 @@ const MaritimeDashboard: React.FC = () => {
       </div>
 
       <div className={styles.controls}>
-        <FilterControls
-          timeRange={timeRange}
-          onTimeRangeChange={setTimeRange}
-        />
+        <div className="card" style={{ padding: '1rem', marginBottom: '1rem' }}>
+          <FilterControls
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+          />
+        </div>
         
-        <AlertPanel
-          alerts={alerts}
-          loading={alertsLoading}
-          onAlertClick={(alert) => {
-            setSelectedVessel(alert.vessel);
-          }}
-        />
+        <div className="card" style={{ flex: 1 }}>
+          <AlertPanel
+            alerts={alerts}
+            loading={alertsLoading}
+            onAlertClick={(alert) => {
+              setSelectedVessel(alert.vessel);
+            }}
+          />
+        </div>
       </div>
 
       <div className={styles.timeline}>
-        <TimelineView
-          timeRange={timeRange}
-          onTimeRangeChange={setTimeRange}
-          events={alerts}
-        />
+        <div className="card" style={{ height: '100%' }}>
+          <TimelineView
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+            events={alerts}
+          />
+        </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

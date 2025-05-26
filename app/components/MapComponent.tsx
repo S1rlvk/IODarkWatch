@@ -13,21 +13,25 @@ interface MapComponentProps {
 
 const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   return (
-    <div style={{ 
+    <div className="map-wrapper" style={{ 
       height: '100%', 
       width: '100%', 
       position: 'relative',
       opacity: isMounted ? 1 : 0,
-      transition: 'opacity 0.3s ease-in-out'
+      transition: 'opacity 0.5s ease-in-out',
+      background: 'var(--card-bg)',
+      borderRadius: '8px',
+      overflow: 'hidden'
     }}>
-      {!isMounted && (
-        <div style={{ 
+      {isLoading && (
+        <div className="loading-overlay" style={{ 
           position: 'absolute',
           top: 0,
           left: 0,
@@ -36,8 +40,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) =
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          background: '#f5f5f5',
-          zIndex: 1
+          background: 'var(--card-bg)',
+          zIndex: 1000,
+          transition: 'opacity 0.3s ease-in-out'
         }}>
           <div style={{
             display: 'flex',
@@ -45,15 +50,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) =
             alignItems: 'center',
             gap: '1rem'
           }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              border: '4px solid #f3f3f3',
-              borderTop: '4px solid #3498db',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite'
-            }} />
-            <span>Loading map...</span>
+            <div className="loading-spinner" />
+            <span style={{ color: 'var(--text-primary)' }}>Loading map...</span>
           </div>
         </div>
       )}
@@ -61,13 +59,20 @@ const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) =
       <MapContainer
         center={[15, 65]}
         zoom={4}
-        style={{ height: '100%', width: '100%' }}
+        style={{ 
+          height: '100%', 
+          width: '100%',
+          background: 'var(--card-bg)'
+        }}
         scrollWheelZoom={true}
-        whenReady={() => setIsMounted(true)}
+        whenReady={() => {
+          setIsLoading(false);
+          setIsMounted(true);
+        }}
       >
         <TileLayer
-          url="https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=YOUR_MAPTILER_KEY"
-          attribution='&copy; <a href="https://www.maptiler.com/">MapTiler</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
         {vessels.map((vessel) => (
           <VesselMarker
@@ -79,9 +84,34 @@ const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) =
       </MapContainer>
 
       <style jsx global>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        .leaflet-container {
+          background: var(--card-bg) !important;
+        }
+        
+        .leaflet-control-zoom {
+          border: none !important;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        }
+        
+        .leaflet-control-zoom a {
+          background: var(--item-bg) !important;
+          color: var(--text-primary) !important;
+          border: none !important;
+        }
+        
+        .leaflet-control-zoom a:hover {
+          background: var(--primary-color) !important;
+        }
+        
+        .leaflet-popup-content-wrapper {
+          background: var(--card-bg) !important;
+          color: var(--text-primary) !important;
+          border-radius: 8px !important;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        }
+        
+        .leaflet-popup-tip {
+          background: var(--card-bg) !important;
         }
       `}</style>
     </div>
