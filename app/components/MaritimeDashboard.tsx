@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import styles from '../styles/Dashboard.module.css';
 import { Vessel, Alert } from '../types';
 import { useVesselData } from '../hooks/useVesselData';
@@ -9,7 +10,6 @@ import { useDarkVesselAlerts } from '../hooks/useDarkVesselAlerts';
 import { TimelineView } from './TimelineView';
 import { FilterControls } from './FilterControls';
 import { AlertPanel } from './AlertPanel';
-import { useRouter } from 'next/router';
 
 // Dynamically import the map component with no SSR
 const MapComponent = dynamic(
@@ -173,13 +173,41 @@ const MaritimeDashboard: React.FC = () => {
             timeRange={timeRange}
             onTimeRangeChange={setTimeRange}
           />
-          <button 
-            className="button"
-            onClick={handleDarkVesselsClick}
-            style={{ marginTop: '1rem', width: '100%' }}
-          >
-            Learn About Dark Vessels
-          </button>
+          <div style={{ 
+            marginTop: '1rem', 
+            padding: '1rem',
+            background: 'var(--item-bg)',
+            borderRadius: '8px',
+            textAlign: 'center'
+          }}>
+            <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+              Learn More About Dark Vessels
+            </h3>
+            <p style={{ 
+              marginBottom: '1rem', 
+              color: 'var(--text-secondary)',
+              fontSize: '0.9rem'
+            }}>
+              Discover the impact of dark vessels on maritime security
+            </p>
+            <button 
+              className="button"
+              onClick={handleDarkVesselsClick}
+              style={{ 
+                width: '100%',
+                padding: '0.8rem',
+                fontSize: '1rem',
+                background: 'var(--primary-color)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Explore Dark Vessels
+            </button>
+          </div>
         </div>
         
         <div className="card" style={{ flex: 1 }}>
