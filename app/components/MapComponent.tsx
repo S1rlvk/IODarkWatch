@@ -1,119 +1,128 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Vessel } from '../types';
-import { VesselMarker } from './VesselMarker';
+import styles from './MapComponent.module.css';
+
+// Mock data for vessels
+const mockVessels: Vessel[] = [
+  {
+    id: '1',
+    mmsi: '123456789',
+    name: 'Ocean Voyager',
+    type: 'Cargo',
+    position: [15.5, 73.8],
+    speed: 12,
+    course: 45,
+    lastUpdate: new Date().toISOString(),
+    isDark: false
+  },
+  {
+    id: '2',
+    mmsi: '987654321',
+    name: 'Deep Sea Explorer',
+    type: 'Fishing',
+    position: [16.2, 74.5],
+    speed: 8,
+    course: 90,
+    lastUpdate: new Date().toISOString(),
+    isDark: true
+  },
+  {
+    id: '3',
+    mmsi: '456789123',
+    name: 'Maritime Star',
+    type: 'Tanker',
+    position: [14.8, 72.9],
+    speed: 15,
+    course: 180,
+    lastUpdate: new Date().toISOString(),
+    isDark: false
+  }
+];
 
 interface MapComponentProps {
-  vessels: Vessel[];
-  onVesselClick: (vessel: Vessel) => void;
+  onVesselClick?: (vessel: Vessel) => void;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ vessels, onVesselClick }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ onVesselClick }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  return (
-    <div className="map-wrapper" style={{ 
-      height: '100%', 
-      width: '100%', 
-      position: 'relative',
-      opacity: isMounted ? 1 : 0,
-      transition: 'opacity 0.5s ease-in-out',
-      background: 'var(--card-bg)',
-      borderRadius: '8px',
-      overflow: 'hidden'
-    }}>
-      {isLoading && (
-        <div className="loading-overlay" style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          background: 'var(--card-bg)',
-          zIndex: 1000,
-          transition: 'opacity 0.3s ease-in-out'
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1rem'
-          }}>
-            <div className="loading-spinner" />
-            <span style={{ color: 'var(--text-primary)' }}>Loading map...</span>
-          </div>
+  const handleVesselClick = (vessel: Vessel) => {
+    setSelectedVessel(vessel);
+    onVesselClick?.(vessel);
+  };
+
+  if (!isMounted) {
+    return (
+      <div className={styles.mapContainer}>
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingSpinner} />
+          <span>Loading map...</span>
         </div>
-      )}
-      
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.mapContainer}>
       <MapContainer
-        center={[15, 65]}
-        zoom={4}
-        style={{ 
-          height: '100%', 
-          width: '100%',
-          background: 'var(--card-bg)'
-        }}
+        center={[15, 73]}
+        zoom={5}
+        className={styles.map}
         scrollWheelZoom={true}
-        whenReady={() => {
-          setIsLoading(false);
-          setIsMounted(true);
-        }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
-        {vessels.map((vessel) => (
-          <VesselMarker
+        
+        {mockVessels.map((vessel) => (
+          <Marker
             key={vessel.id}
-            vessel={vessel}
-            onClick={() => onVesselClick(vessel)}
-          />
+            position={vessel.position}
+            eventHandlers={{
+              click: () => handleVesselClick(vessel)
+            }}
+          >
+            <Popup>
+              <div className={styles.popup}>
+                <h3>{vessel.name}</h3>
+                <p>Type: {vessel.type}</p>
+                <p>Speed: {vessel.speed} knots</p>
+                <p>Course: {vessel.course}°</p>
+                {vessel.isDark && (
+                  <div className={styles.darkVesselWarning}>
+                    Dark Vessel Detected
+                  </div>
+                )}
+              </div>
+            </Popup>
+          </Marker>
         ))}
       </MapContainer>
 
-      <style jsx global>{`
-        .leaflet-container {
-          background: var(--card-bg) !important;
-        }
-        
-        .leaflet-control-zoom {
-          border: none !important;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-        }
-        
-        .leaflet-control-zoom a {
-          background: var(--item-bg) !important;
-          color: var(--text-primary) !important;
-          border: none !important;
-        }
-        
-        .leaflet-control-zoom a:hover {
-          background: var(--primary-color) !important;
-        }
-        
-        .leaflet-popup-content-wrapper {
-          background: var(--card-bg) !important;
-          color: var(--text-primary) !important;
-          border-radius: 8px !important;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-        }
-        
-        .leaflet-popup-tip {
-          background: var(--card-bg) !important;
-        }
-      `}</style>
+      {selectedVessel && (
+        <div className={styles.vesselDetails}>
+          <h3>{selectedVessel.name}</h3>
+          <p>Type: {selectedVessel.type}</p>
+          <p>Speed: {selectedVessel.speed} knots</p>
+          <p>Course: {selectedVessel.course}°</p>
+          <p>Last Update: {new Date(selectedVessel.lastUpdate).toLocaleString()}</p>
+          {selectedVessel.isDark && (
+            <div className={styles.darkVesselWarning}>
+              Dark Vessel Detected
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
