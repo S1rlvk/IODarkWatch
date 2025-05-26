@@ -1,24 +1,51 @@
 .timelineContainer {
-  padding: 20px;
-  background-color: #f5f5f5;
+  background: var(--card-bg);
+  padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.timelineContainer h2 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
 }
 
 .timeline {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1rem;
 }
 
 .timelineItem {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background-color: white;
+  background: var(--item-bg);
+  padding: 1rem;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--primary-color);
+}
+
+.eventInfo {
+  margin-bottom: 0.5rem;
+}
+
+.eventInfo h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.eventInfo p {
+  margin: 0.25rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.eventDescription {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .vesselInfo {

@@ -1,41 +1,37 @@
 .filterControls {
-  display: flex;
-  gap: 20px;
-  padding: 15px;
-  background-color: #f8f9fa;
+  background: var(--card-bg);
+  padding: 1rem;
   border-radius: 8px;
-  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .filterGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  margin-bottom: 1rem;
+}
+
+.filterGroup:last-child {
+  margin-bottom: 0;
 }
 
 .filterGroup label {
-  font-size: 0.9rem;
-  color: #495057;
+  display: block;
+  margin-bottom: 0.5rem;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .filterGroup select {
-  padding: 8px 12px;
-  border: 1px solid #ced4da;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  background-color: white;
+  background: var(--input-bg);
+  color: var(--text-primary);
   font-size: 0.9rem;
-  color: #212529;
-  cursor: pointer;
-  transition: border-color 0.15s ease-in-out;
-}
-
-.filterGroup select:hover {
-  border-color: #adb5bd;
 }
 
 .filterGroup select:focus {
   outline: none;
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
 } 

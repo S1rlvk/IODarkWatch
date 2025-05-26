@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styles from './FilterControls.module.css';
 
 interface FilterControlsProps {
+  timeRange: [Date, Date];
+  onTimeRangeChange: (timeRange: [Date, Date]) => void;
   onFilterChange?: (filters: FilterState) => void;
 }
 
@@ -11,7 +13,7 @@ interface FilterState {
   timeRange: string;
 }
 
-const FilterControls: React.FC<FilterControlsProps> = ({ onFilterChange }) => {
+export const FilterControls: React.FC<FilterControlsProps> = ({ timeRange, onTimeRangeChange, onFilterChange }) => {
   const [filters, setFilters] = useState<FilterState>({
     vesselType: 'all',
     status: 'all',
@@ -68,6 +70,4 @@ const FilterControls: React.FC<FilterControlsProps> = ({ onFilterChange }) => {
       </div>
     </div>
   );
-};
-
-export default FilterControls; 
+}; 

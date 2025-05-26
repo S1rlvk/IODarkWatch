@@ -1,70 +1,94 @@
 .alertPanel {
-  padding: 20px;
-  background-color: #f8f9fa;
+  background: var(--card-bg);
+  padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: auto;
 }
 
 .alertPanel h2 {
-  margin: 0 0 20px 0;
-  color: #212529;
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
 }
 
-.alertsList {
+.loading {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.noAlerts {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+  font-style: italic;
+}
+
+.alertList {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1rem;
 }
 
 .alertItem {
-  padding: 15px;
-  background-color: white;
+  background: var(--item-bg);
+  padding: 1rem;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #6c757d;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.alertItem:hover {
+  transform: translateY(-2px);
 }
 
 .alertHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
 }
 
-.alertHeader h3 {
-  margin: 0;
-  color: #212529;
+.vesselName {
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
-.alertType {
-  font-size: 0.8rem;
-  text-transform: capitalize;
-  padding: 4px 8px;
-  background-color: #e9ecef;
-  border-radius: 4px;
-  color: #495057;
-}
-
-.alertDescription {
-  margin: 10px 0;
-  color: #495057;
+.timestamp {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 .alertDetails {
-  display: flex;
-  justify-content: space-between;
+  color: var(--text-secondary);
+}
+
+.alertType {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 4px;
   font-size: 0.8rem;
-  color: #6c757d;
+  margin-bottom: 0.5rem;
 }
 
-.highSeverity {
-  border-left-color: #dc3545;
+.description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
-.mediumSeverity {
-  border-left-color: #ffc107;
+.low {
+  border-left: 4px solid var(--severity-low);
 }
 
-.lowSeverity {
-  border-left-color: #28a745;
+.medium {
+  border-left: 4px solid var(--severity-medium);
+}
+
+.high {
+  border-left: 4px solid var(--severity-high);
 } 

@@ -1,44 +1,32 @@
 import React from 'react';
 import styles from './TimelineView.module.css';
-
-interface Vessel {
-  id: string;
-  name: string;
-  type: string;
-  lastKnownPosition: {
-    lat: number;
-    lng: number;
-  };
-  lastUpdate: string;
-  status: 'active' | 'dark' | 'inactive';
-}
+import { Alert } from '../types';
 
 interface TimelineViewProps {
-  vessels: Vessel[];
+  timeRange: [Date, Date];
+  onTimeRangeChange: (timeRange: [Date, Date]) => void;
+  events: Alert[];
 }
 
-const TimelineView: React.FC<TimelineViewProps> = ({ vessels }) => {
+export const TimelineView: React.FC<TimelineViewProps> = ({ timeRange, onTimeRangeChange, events }) => {
   return (
     <div className={styles.timelineContainer}>
       <h2>Vessel Timeline</h2>
       <div className={styles.timeline}>
-        {vessels.map((vessel) => (
-          <div key={vessel.id} className={styles.timelineItem}>
-            <div className={styles.vesselInfo}>
-              <h3>{vessel.name}</h3>
-              <p>Type: {vessel.type}</p>
-              <p>Status: {vessel.status}</p>
-              <p>Last Update: {new Date(vessel.lastUpdate).toLocaleString()}</p>
+        {events.map((event) => (
+          <div key={event.id} className={styles.timelineItem}>
+            <div className={styles.eventInfo}>
+              <h3>{event.vessel.name || 'Unknown Vessel'}</h3>
+              <p>Type: {event.type}</p>
+              <p>Severity: {event.severity}</p>
+              <p>Time: {new Date(event.timestamp).toLocaleString()}</p>
             </div>
-            <div className={styles.vesselPosition}>
-              <p>Lat: {vessel.lastKnownPosition.lat}</p>
-              <p>Lng: {vessel.lastKnownPosition.lng}</p>
+            <div className={styles.eventDescription}>
+              <p>{event.description}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-export default TimelineView; 
+}; 
