@@ -10,7 +10,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ timeRange, onTimeRangeChang
         {alerts.map((event) => (
           <div key={event.id} className={styles.timelineItem}>
             <div className={styles.eventInfo}>
-              <h3>{event.vessel.name || 'Unknown Vessel'}</h3>
+              <h3>{event.type}</h3>
               <p>Type: {event.type}</p>
               <p>Severity: {event.severity}</p>
               <p>Time: {new Date(event.timestamp).toLocaleString()}</p>
