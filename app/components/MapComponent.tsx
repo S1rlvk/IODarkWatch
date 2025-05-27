@@ -54,21 +54,28 @@ const MapComponent: React.FC<MapComponentProps> = ({
         ref={mapRef}
         className="industrial-map"
       >
-        <LayersControl position="topright" className="bg-surface border border-border rounded-sm">
-          <LayersControl.BaseLayer checked name="Dark Map">
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            />
-          </LayersControl.BaseLayer>
-          <LayersControl.Overlay checked name="Nautical Charts">
-            <TileLayer
-              url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors'
-              opacity={0.8}
-            />
-          </LayersControl.Overlay>
-        </LayersControl>
+        <div className="bg-surface border border-border rounded-sm">
+          <LayersControl position="topright">
+            <LayersControl.BaseLayer checked name="Dark Map">
+              <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Satellite">
+              <TileLayer
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.Overlay checked name="OpenSeaMap">
+              <TileLayer
+                url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+                attribution='Map data: &copy; <a href="https://www.openseamap.org">OpenSeaMap</a> contributors'
+              />
+            </LayersControl.Overlay>
+          </LayersControl>
+        </div>
         
         {/* Dummy dark ship marker with neon effect */}
         <Marker position={[-5, 75]}>
