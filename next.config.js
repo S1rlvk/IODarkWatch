@@ -12,12 +12,6 @@ const nextConfig = {
     };
     return config;
   },
-  // Ensure proper static generation
-  output: 'standalone',
-  // Disable experimental features that might cause issues
-  experimental: {
-    optimizePackageImports: ['@heroicons/react'],
-  },
 }
 
 module.exports = nextConfig; 

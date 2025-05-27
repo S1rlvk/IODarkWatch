@@ -4,45 +4,46 @@
 
 @layer base {
   :root {
-    --bg-primary: #111217;
-    --surface: #1A1C22;
-    --border: #2A2D35;
-    --accent-blue: #009DFF;
-    --accent-teal: #3CA3A8;
+    --bg-primary: #1a1a1a;
+    --bg-surface: #2a2a2a;
+    --border-color: #3a3a3a;
+    --accent-blue: #00a8ff;
+    --accent-teal: #00ffd5;
   }
 
   body {
-    @apply bg-bg-primary text-white font-body;
+    @apply bg-bg-primary text-white;
+    font-family: 'IBM Plex Sans', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer components {
   .industrial-map {
-    @apply bg-bg-primary;
+    @apply h-full w-full;
   }
 
   .industrial-map .leaflet-container {
-    @apply bg-bg-primary;
+    @apply h-full w-full bg-bg-primary;
   }
 
   .industrial-map .leaflet-control-zoom {
-    @apply border border-border rounded-sm shadow-industrial;
+    @apply border border-border bg-surface;
   }
 
   .industrial-map .leaflet-control-zoom a {
-    @apply bg-surface text-white border-border hover:bg-accent-blue transition-colors;
+    @apply text-white hover:bg-accent-blue;
   }
 
   .industrial-map .leaflet-popup-content-wrapper {
-    @apply bg-surface border border-border rounded-sm shadow-industrial;
+    @apply bg-surface border border-border rounded-sm;
   }
 
   .industrial-map .leaflet-popup-content {
-    @apply font-body text-white;
+    @apply text-white;
   }
 
   .industrial-map .leaflet-popup-tip {
@@ -63,19 +64,27 @@
   }
 
   .neon-marker {
-    @apply w-4 h-4 rounded-full bg-accent-blue shadow-glow;
+    @apply relative;
+  }
+
+  .neon-marker::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-accent-blue opacity-50;
     animation: pulse 2s infinite;
   }
 
   @keyframes pulse {
     0% {
-      box-shadow: 0 0 0 0 rgba(0, 157, 255, 0.4);
+      transform: scale(1);
+      opacity: 0.5;
     }
-    70% {
-      box-shadow: 0 0 0 10px rgba(0, 157, 255, 0);
+    50% {
+      transform: scale(1.2);
+      opacity: 0.2;
     }
     100% {
-      box-shadow: 0 0 0 0 rgba(0, 157, 255, 0);
+      transform: scale(1);
+      opacity: 0.5;
     }
   }
 } 

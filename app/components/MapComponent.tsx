@@ -1,11 +1,25 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Vessel, Alert } from '../types';
 import { VesselMarker } from './VesselMarker';
 import { AlertMarker } from './AlertMarker';
+
+// Fix Leaflet default icon
+const DefaultIcon = L.icon({
+  iconUrl: '/images/marker-icon.png',
+  iconRetinaUrl: '/images/marker-icon-2x.png',
+  shadowUrl: '/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 interface MapComponentProps {
   vessels: Vessel[];
@@ -21,23 +35,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
   selectedVessel
 }) => {
   const mapRef = useRef<L.Map>(null);
-  const [showSeaMap, setShowSeaMap] = useState(true);
-
-  // Mock data for testing
-  const mockVessel: Vessel = {
-    id: '1',
-    name: 'Ocean Voyager',
-    type: 'Cargo',
-    mmsi: '123456789',
-    imo: 'IMO1234567',
-    flag: 'Panama',
-    position: { lat: 15.5, lng: 73.8 },
-    speed: 12,
-    course: 45,
-    lastUpdate: new Date().toISOString(),
-    riskLevel: 'low',
-    region: 'Indian Ocean'
-  };
 
   useEffect(() => {
     if (mapRef.current) {
