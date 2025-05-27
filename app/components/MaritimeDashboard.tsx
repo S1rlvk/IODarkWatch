@@ -57,6 +57,7 @@ const MaritimeDashboard: React.FC = () => {
     riskLevels: [] as string[],
     regions: [] as string[]
   });
+  const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
 
   const { vessels, loading: vesselsLoading, error: vesselsError } = useVesselData({
     start: timeRange[0].toISOString(),
@@ -305,10 +306,9 @@ const MaritimeDashboard: React.FC = () => {
         border: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
         <MapComponent
-          vessels={filteredVessels}
           alerts={alerts}
-          onVesselSelect={handleVesselSelect}
-          selectedVessel={selectedVessel}
+          onAlertClick={alert => setSelectedAlert(alert)}
+          selectedAlert={selectedAlert}
         />
       </div>
 

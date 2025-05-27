@@ -10,26 +10,24 @@ interface AlertMarkerProps {
   isSelected: boolean;
 }
 
-export const AlertMarker: React.FC<AlertMarkerProps> = ({ alert, onClick, isSelected }) => {
+const AlertMarker: React.FC<AlertMarkerProps> = ({ alert, onClick, isSelected }) => {
   return (
-    <Marker
-      position={[alert.vessel.position.lat, alert.vessel.position.lng]}
+    <Marker 
+      position={[alert.location.lat, alert.location.lng]}
       eventHandlers={{
         click: onClick
       }}
     >
       <Popup>
-        <div>
-          <h3>Alert: {alert.type}</h3>
-          <p>Severity: {alert.severity}</p>
-          <p>Description: {alert.description}</p>
-          <p>Timestamp: {new Date(alert.timestamp).toLocaleString()}</p>
-          <h4>Vessel Details:</h4>
-          <p>Name: {alert.vessel.name}</p>
-          <p>Type: {alert.vessel.type}</p>
-          <p>Risk Level: {alert.vessel.riskLevel}</p>
+        <div className="p-2">
+          <h3 className="text-lg font-bold mb-2 text-accent-blue">Alert: {alert.type}</h3>
+          <p className="text-sm text-gray-300">Severity: {alert.severity}</p>
+          <p className="text-sm text-gray-300">Time: {new Date(alert.timestamp).toLocaleString()}</p>
+          <p className="text-sm text-gray-300 mt-2">{alert.description}</p>
         </div>
       </Popup>
     </Marker>
   );
-}; 
+};
+
+export default AlertMarker; 

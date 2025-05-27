@@ -2,23 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --bg-primary: #1a1a1a;
-    --bg-surface: #2a2a2a;
-    --border-color: #3a3a3a;
-    --accent-blue: #00a8ff;
-    --accent-teal: #00ffd5;
-  }
+:root {
+  --bg-primary: #111217;
+  --surface: #1A1C22;
+  --border: #2A2D35;
+  --accent-blue: #009DFF;
+  --accent-teal: #3CA3A8;
+}
 
-  body {
-    @apply bg-bg-primary text-white;
-    font-family: 'IBM Plex Sans', sans-serif;
-  }
+body {
+  @apply bg-bg-primary text-white font-body;
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'JetBrains Mono', monospace;
-  }
+h1, h2, h3, h4, h5, h6 {
+  @apply font-heading;
+}
+
+/* Map Styles */
+.leaflet-container {
+  @apply h-full w-full bg-bg-primary;
+}
+
+.leaflet-control-zoom {
+  @apply border border-border rounded-sm shadow-industrial;
+}
+
+.leaflet-control-zoom a {
+  @apply bg-surface text-white border-border hover:bg-accent-blue transition-colors;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply bg-surface border border-border rounded-sm shadow-industrial;
+}
+
+.leaflet-popup-content {
+  @apply font-body text-white;
+}
+
+.leaflet-popup-tip {
+  @apply bg-surface;
+}
+
+.leaflet-control-layers {
+  @apply bg-surface border border-border rounded-sm shadow-industrial;
+}
+
+.leaflet-control-layers-base label,
+.leaflet-control-layers-overlays label {
+  @apply text-white;
+}
+
+.leaflet-control-layers-expanded {
+  @apply bg-surface border border-border rounded-sm p-2;
 }
 
 @layer components {

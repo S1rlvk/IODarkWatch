@@ -19,10 +19,13 @@ export interface Vessel {
 export interface Alert {
   id: string;
   type: string;
-  severity: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
   timestamp: string;
+  severity: string;
   description: string;
-  vessel: Vessel;
 }
 
 export interface FilterState {
