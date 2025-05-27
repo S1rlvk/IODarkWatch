@@ -17,6 +17,7 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            background: #1a1a1a;
         }
         
         #map {
@@ -25,10 +26,23 @@
         }
 
         .leaflet-control-layers {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 10px;
             border-radius: 4px;
             box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+        }
+
+        .leaflet-popup-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .custom-marker {
+            background: #ff4444;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -41,36 +55,72 @@
             crossorigin=""></script>
 
     <script>
-        // Initialize the map
-        const map = L.map('map').setView([0, 80], 4);
+        // Initialize the map with a darker theme
+        const map = L.map('map', {
+            center: [0, 80],
+            zoom: 4,
+            zoomControl: true,
+            attributionControl: true
+        });
 
-        // Add OpenStreetMap base layer
-        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // Add OpenStreetMap base layer with dark theme
+        const osmLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
 
-        // Add OpenSeaMap nautical overlay
+        // Add OpenSeaMap layers
         const seaMapLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors'
+            attribution: '&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors',
+            opacity: 0.8
+        });
+
+        const shipwreckLayer = L.tileLayer('https://tiles.openseamap.org/shipwreck/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors',
+            opacity: 0.8
         });
 
         // Add base layer to map
         osmLayer.addTo(map);
+        seaMapLayer.addTo(map);
+        shipwreckLayer.addTo(map);
 
         // Add layer control
         const baseMaps = {
-            "OpenStreetMap": osmLayer
+            "Dark Map": osmLayer
         };
 
         const overlayMaps = {
-            "Nautical Charts": seaMapLayer
+            "Nautical Charts": seaMapLayer,
+            "Shipwrecks": shipwreckLayer
         };
 
-        L.control.layers(baseMaps, overlayMaps).addTo(map);
+        L.control.layers(baseMaps, overlayMaps, {
+            position: 'topright',
+            collapsed: false
+        }).addTo(map);
 
-        // Add dark ship detection marker
-        const darkShipMarker = L.marker([-5, 75]).addTo(map);
-        darkShipMarker.bindPopup("<b>Dark Ship Detection</b><br>Unidentified vessel detected - May 2025");
+        // Add custom dark ship detection marker
+        const darkShipIcon = L.divIcon({
+            className: 'custom-marker',
+            html: '<div style="width: 12px; height: 12px;"></div>',
+            iconSize: [12, 12]
+        });
+
+        const darkShipMarker = L.marker([-5, 75], {icon: darkShipIcon}).addTo(map);
+        darkShipMarker.bindPopup(`
+            <div style="font-family: Arial, sans-serif;">
+                <h3 style="color: #ff4444; margin: 0 0 10px 0;">🚨 Dark Ship Detection</h3>
+                <p style="margin: 5px 0;"><strong>Status:</strong> Unidentified vessel</p>
+                <p style="margin: 5px 0;"><strong>Date:</strong> May 2025</p>
+                <p style="margin: 5px 0;"><strong>Location:</strong> 5°S, 75°E</p>
+            </div>
+        `);
+
+        // Add scale control
+        L.control.scale({
+            imperial: false,
+            position: 'bottomleft'
+        }).addTo(map);
 
         // Handle window resize
         window.addEventListener('resize', () => {
