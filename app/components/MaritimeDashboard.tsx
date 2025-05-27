@@ -107,13 +107,21 @@ const MaritimeDashboard: React.FC = () => {
   }
 
   return (
-    <>
+    <div className={styles.dashboard} style={{
+      opacity: isLoading ? 0 : 1,
+      transition: 'opacity 0.5s ease-in-out',
+      background: 'var(--bg-primary)',
+      minHeight: '100vh',
+      padding: '2rem',
+      position: 'relative',
+      overflow: 'visible'
+    }}>
       <div style={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        padding: '20px',
-        zIndex: 99999
+        position: 'fixed',
+        top: '1rem',
+        right: '1rem',
+        zIndex: 99999,
+        pointerEvents: 'auto'
       }}>
         <a 
           href="mailto:ssattigeri65@gmail.com"
@@ -143,288 +151,243 @@ const MaritimeDashboard: React.FC = () => {
           Contact Us
         </a>
       </div>
-      <div className={styles.dashboard} style={{
-        opacity: isLoading ? 0 : 1,
-        transition: 'opacity 0.5s ease-in-out',
-        background: 'var(--bg-primary)',
-        minHeight: '100vh',
-        padding: '2rem',
-        position: 'relative',
-        overflow: 'visible'
-      }}>
-        <div style={{
-          position: 'fixed',
-          top: '1rem',
-          right: '1rem',
-          zIndex: 99999,
-          pointerEvents: 'auto'
-        }}>
-          <a 
-            href="mailto:ssattigeri65@gmail.com"
-            style={{
-              display: 'inline-block',
-              backgroundColor: '#ff4444',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '6px',
-              textDecoration: 'none',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              border: '3px solid white',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
-            }}
-          >
-            Contact Us
-          </a>
-        </div>
 
-        {/* Background gradient effect */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 50%)',
-          pointerEvents: 'none'
-        }} />
+      {/* Background gradient effect */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 50%)',
+        pointerEvents: 'none'
+      }} />
 
-        {showWelcome && (
-          <div className={styles.welcomeOverlay}>
-            <div className="card glass" style={{ 
-              padding: '3rem',
-              maxWidth: '800px',
-              textAlign: 'center',
-              position: 'relative',
-              overflow: 'hidden'
+      {showWelcome && (
+        <div className={styles.welcomeOverlay}>
+          <div className="card glass" style={{ 
+            padding: '3rem',
+            maxWidth: '800px',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '4px',
+              background: 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))'
+            }} />
+            <h2 className="gradient-text" style={{ 
+              fontSize: '3rem',
+              marginBottom: '1.5rem',
+              fontWeight: '700'
             }}>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '4px',
-                background: 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))'
-              }} />
-              <h2 className="gradient-text" style={{ 
-                fontSize: '3rem',
-                marginBottom: '1.5rem',
-                fontWeight: '700'
-              }}>
-                Welcome to IODarkWatch
-              </h2>
-              <p style={{ 
-                fontSize: '1.25rem',
-                color: 'var(--text-secondary)',
-                marginBottom: '2.5rem',
-                lineHeight: '1.6'
-              }}>
-                Your maritime domain awareness platform for the Indian Ocean
-              </p>
-              <div className={styles.quickActions} style={{
-                display: 'flex',
-                gap: '1.5rem',
-                justifyContent: 'center'
-              }}>
-                <button 
-                  className="button hover-lift"
-                  onClick={() => setShowTutorial(true)}
-                  style={{
-                    background: 'var(--secondary-color)'
-                  }}
-                >
-                  <span>Start Tutorial</span>
-                </button>
-                <button 
-                  className="button hover-lift"
-                  onClick={() => setShowWelcome(false)}
-                >
-                  <span>Get Started</span>
-                </button>
-              </div>
+              Welcome to IODarkWatch
+            </h2>
+            <p style={{ 
+              fontSize: '1.25rem',
+              color: 'var(--text-secondary)',
+              marginBottom: '2.5rem',
+              lineHeight: '1.6'
+            }}>
+              Your maritime domain awareness platform for the Indian Ocean
+            </p>
+            <div className={styles.quickActions} style={{
+              display: 'flex',
+              gap: '1.5rem',
+              justifyContent: 'center'
+            }}>
+              <button 
+                className="button hover-lift"
+                onClick={() => setShowTutorial(true)}
+                style={{
+                  background: 'var(--secondary-color)'
+                }}
+              >
+                <span>Start Tutorial</span>
+              </button>
+              <button 
+                className="button hover-lift"
+                onClick={() => setShowWelcome(false)}
+              >
+                <span>Get Started</span>
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {showTutorial && (
-          <div className={styles.tutorialOverlay}>
-            <div className="card glass" style={{ 
-              padding: '2.5rem',
-              maxWidth: '500px',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 1000
+      {showTutorial && (
+        <div className={styles.tutorialOverlay}>
+          <div className="card glass" style={{ 
+            padding: '2.5rem',
+            maxWidth: '500px',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1000
+          }}>
+            <h3 className="gradient-text" style={{ 
+              fontSize: '1.75rem',
+              marginBottom: '2rem',
+              fontWeight: '600'
+            }}>Quick Tour</h3>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem',
+              marginBottom: '2.5rem'
             }}>
-              <h3 className="gradient-text" style={{ 
-                fontSize: '1.75rem',
-                marginBottom: '2rem',
-                fontWeight: '600'
-              }}>Quick Tour</h3>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem',
-                marginBottom: '2.5rem'
-              }}>
-                {[
-                  'Use the map to view vessel positions',
-                  'Filter vessels by type and status',
-                  'Check alerts for dark vessel detection',
-                  'Use the timeline to track events'
-                ].map((text, index) => (
-                  <div key={index} style={{
+              {[
+                'Use the map to view vessel positions',
+                'Filter vessels by type and status',
+                'Check alerts for dark vessel detection',
+                'Use the timeline to track events'
+              ].map((text, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1.25rem'
+                }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '1.25rem'
-                  }}>
-                    <div style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem',
-                      boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-                    }}>{index + 1}</div>
-                    <p style={{ 
-                      color: 'var(--text-secondary)',
-                      fontSize: '1.1rem',
-                      lineHeight: '1.5'
-                    }}>{text}</p>
-                  </div>
-                ))}
-              </div>
-              <button 
-                className="button hover-lift"
-                onClick={handleTutorialComplete}
-                style={{
-                  width: '100%',
-                  padding: '1rem'
-                }}
-              >
-                <span>Got it!</span>
-              </button>
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: '1.1rem',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                  }}>{index + 1}</div>
+                  <p style={{ 
+                    color: 'var(--text-secondary)',
+                    fontSize: '1.1rem',
+                    lineHeight: '1.5'
+                  }}>{text}</p>
+                </div>
+              ))}
             </div>
+            <button 
+              className="button hover-lift"
+              onClick={handleTutorialComplete}
+              style={{
+                width: '100%',
+                padding: '1rem'
+              }}
+            >
+              <span>Got it!</span>
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
-        <div className={styles.mapContainer} style={{
-          height: 'calc(100vh - 4rem)',
-          borderRadius: '16px',
-          overflow: 'hidden',
-          border: '1px solid var(--border-color)',
-          background: 'var(--card-bg)',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+      <div className={styles.mapContainer} style={{
+        height: 'calc(100vh - 4rem)',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        border: '1px solid var(--border-color)',
+        background: 'var(--card-bg)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+      }}>
+        <MapComponent
+          onVesselClick={setSelectedVessel}
+        />
+      </div>
+
+      <div className={styles.controls} style={{
+        position: 'fixed',
+        right: '2rem',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        width: '360px',
+        zIndex: 100
+      }}>
+        <div className="card glass" style={{ 
+          padding: '1.5rem',
+          marginBottom: '1.5rem'
         }}>
-          <MapComponent
-            onVesselClick={setSelectedVessel}
+          <FilterControls
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+          />
+          <div style={{ 
+            marginTop: '1.5rem', 
+            padding: '1.5rem',
+            background: 'var(--item-bg)',
+            borderRadius: '12px',
+            textAlign: 'center',
+            border: '1px solid var(--border-color)'
+          }}>
+            <h3 className="gradient-text" style={{ 
+              marginBottom: '1rem',
+              fontSize: '1.25rem',
+              fontWeight: '600'
+            }}>
+              Learn More About Dark Vessels
+            </h3>
+            <p style={{ 
+              marginBottom: '1.5rem',
+              color: 'var(--text-secondary)',
+              fontSize: '1rem',
+              lineHeight: '1.6'
+            }}>
+              Discover the impact of dark vessels on maritime security
+            </p>
+            <button 
+              className="button hover-lift"
+              onClick={handleDarkVesselsClick}
+              style={{ 
+                width: '100%',
+                padding: '1rem'
+              }}
+            >
+              <span>Explore Dark Vessels</span>
+            </button>
+          </div>
+        </div>
+        
+        <div className="card glass" style={{ 
+          flex: 1
+        }}>
+          <AlertPanel
+            alerts={alerts}
+            loading={alertsLoading}
+            onAlertClick={(alert) => {
+              setSelectedVessel(alert.vessel);
+            }}
           />
         </div>
+      </div>
 
-        <div className={styles.controls} style={{
-          position: 'fixed',
-          right: '2rem',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '360px',
-          zIndex: 100
+      <div className={styles.timeline} style={{
+        position: 'fixed',
+        bottom: '2rem',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 4rem)',
+        maxWidth: '1200px',
+        height: '140px',
+        zIndex: 100
+      }}>
+        <div className="card glass" style={{ 
+          height: '100%',
+          padding: '1rem'
         }}>
-          <div className="card glass" style={{ 
-            padding: '1.5rem',
-            marginBottom: '1.5rem'
-          }}>
-            <FilterControls
-              timeRange={timeRange}
-              onTimeRangeChange={setTimeRange}
-            />
-            <div style={{ 
-              marginTop: '1.5rem', 
-              padding: '1.5rem',
-              background: 'var(--item-bg)',
-              borderRadius: '12px',
-              textAlign: 'center',
-              border: '1px solid var(--border-color)'
-            }}>
-              <h3 className="gradient-text" style={{ 
-                marginBottom: '1rem',
-                fontSize: '1.25rem',
-                fontWeight: '600'
-              }}>
-                Learn More About Dark Vessels
-              </h3>
-              <p style={{ 
-                marginBottom: '1.5rem',
-                color: 'var(--text-secondary)',
-                fontSize: '1rem',
-                lineHeight: '1.6'
-              }}>
-                Discover the impact of dark vessels on maritime security
-              </p>
-              <button 
-                className="button hover-lift"
-                onClick={handleDarkVesselsClick}
-                style={{ 
-                  width: '100%',
-                  padding: '1rem'
-                }}
-              >
-                <span>Explore Dark Vessels</span>
-              </button>
-            </div>
-          </div>
-          
-          <div className="card glass" style={{ 
-            flex: 1
-          }}>
-            <AlertPanel
-              alerts={alerts}
-              loading={alertsLoading}
-              onAlertClick={(alert) => {
-                setSelectedVessel(alert.vessel);
-              }}
-            />
-          </div>
-        </div>
-
-        <div className={styles.timeline} style={{
-          position: 'fixed',
-          bottom: '2rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'calc(100% - 4rem)',
-          maxWidth: '1200px',
-          height: '140px',
-          zIndex: 100
-        }}>
-          <div className="card glass" style={{ 
-            height: '100%',
-            padding: '1rem'
-          }}>
-            <TimelineView
-              timeRange={timeRange}
-              onTimeRangeChange={setTimeRange}
-              events={alerts}
-            />
-          </div>
+          <TimelineView
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+            events={alerts}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
