@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Vessel } from '../types';
+import { Vessel, MapComponentProps } from '../types';
 import styles from './MapComponent.module.css';
 
 // Mock data for vessels
@@ -43,87 +43,48 @@ const mockVessels: Vessel[] = [
   }
 ];
 
-interface MapComponentProps {
-  onVesselClick?: (vessel: Vessel) => void;
-}
-
-const MapComponent: React.FC<MapComponentProps> = ({ onVesselClick }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ vessels, alerts, onVesselSelect, selectedVessel }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   const handleVesselClick = (vessel: Vessel) => {
-    setSelectedVessel(vessel);
-    onVesselClick?.(vessel);
+    onVesselSelect(vessel);
   };
 
-  if (!isMounted) {
-    return (
-      <div className={styles.mapContainer}>
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loadingSpinner} />
-          <span>Loading map...</span>
-        </div>
-      </div>
-    );
-  }
+  if (!isMounted) return null;
 
   return (
-    <div className={styles.mapContainer}>
-      <MapContainer
-        center={[15, 73]}
-        zoom={5}
-        className={`${styles.map} ${styles.leafletOverrides}`}
-        scrollWheelZoom={true}
-      >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        />
-        
-        {mockVessels.map((vessel) => (
-          <Marker
-            key={vessel.id}
-            position={vessel.position}
-            eventHandlers={{
-              click: () => handleVesselClick(vessel)
-            }}
-          >
-            <Popup>
-              <div className={styles.popup}>
-                <h3>{vessel.name}</h3>
-                <p>Type: {vessel.type}</p>
-                <p>Speed: {vessel.speed} knots</p>
-                <p>Course: {vessel.course}°</p>
-                {vessel.isDark && (
-                  <div className={styles.darkVesselWarning}>
-                    Dark Vessel Detected
-                  </div>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
-
-      {selectedVessel && (
-        <div className={styles.vesselDetails}>
-          <h3>{selectedVessel.name}</h3>
-          <p>Type: {selectedVessel.type}</p>
-          <p>Speed: {selectedVessel.speed} knots</p>
-          <p>Course: {selectedVessel.course}°</p>
-          <p>Last Update: {new Date(selectedVessel.lastUpdate).toLocaleString()}</p>
-          {selectedVessel.isDark && (
-            <div className={styles.darkVesselWarning}>
-              Dark Vessel Detected
+    <MapContainer
+      center={[0, 0]}
+      zoom={2}
+      className={styles.mapContainer}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      />
+      {vessels.map((vessel) => (
+        <Marker
+          key={vessel.id}
+          position={[vessel.position.lat, vessel.position.lng]}
+          eventHandlers={{
+            click: () => handleVesselClick(vessel)
+          }}
+        >
+          <Popup>
+            <div>
+              <h3>{vessel.name}</h3>
+              <p>Type: {vessel.type}</p>
+              <p>Speed: {vessel.speed} knots</p>
+              <p>Course: {vessel.course}°</p>
             </div>
-          )}
-        </div>
-      )}
-    </div>
+          </Popup>
+        </Marker>
+      ))}
+    </MapContainer>
   );
 };
 

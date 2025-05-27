@@ -7,9 +7,9 @@ import styles from '../styles/Dashboard.module.css';
 import { Vessel, Alert } from '../types';
 import { useVesselData } from '../hooks/useVesselData';
 import { useDarkVesselAlerts } from '../hooks/useDarkVesselAlerts';
-import { TimelineView } from './TimelineView';
+import TimelineView from './TimelineView';
 import { FilterControls } from './FilterControls';
-import { AlertPanel } from './AlertPanel';
+import AlertPanel from './AlertPanel';
 import { ContactButton } from './ContactButton';
 
 // Dynamically import the map component with no SSR

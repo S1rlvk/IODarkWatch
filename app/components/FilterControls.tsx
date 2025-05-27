@@ -1,29 +1,19 @@
 import React, { useState } from 'react';
 import styles from './FilterControls.module.css';
+import { FilterState } from '../types';
 
 interface FilterControlsProps {
-  timeRange: [Date, Date];
-  onTimeRangeChange: (timeRange: [Date, Date]) => void;
-  onFilterChange?: (filters: FilterState) => void;
+  filters: FilterState;
+  onFilterChange: (filters: FilterState) => void;
 }
 
-interface FilterState {
-  vesselType: string;
-  status: string;
-  timeRange: string;
-}
-
-export const FilterControls: React.FC<FilterControlsProps> = ({ timeRange, onTimeRangeChange, onFilterChange }) => {
-  const [filters, setFilters] = useState<FilterState>({
-    vesselType: 'all',
-    status: 'all',
-    timeRange: '24h',
-  });
+export const FilterControls: React.FC<FilterControlsProps> = ({ filters, onFilterChange }) => {
+  const [localFilters, setLocalFilters] = useState<FilterState>(filters);
 
   const handleFilterChange = (key: keyof FilterState, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange?.(newFilters);
+    const newFilters = { ...localFilters, [key]: value };
+    setLocalFilters(newFilters);
+    onFilterChange(newFilters);
   };
 
   return (
@@ -32,7 +22,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ timeRange, onTim
         <label htmlFor="vesselType">Vessel Type:</label>
         <select
           id="vesselType"
-          value={filters.vesselType}
+          value={localFilters.vesselType}
           onChange={(e) => handleFilterChange('vesselType', e.target.value)}
         >
           <option value="all">All Types</option>
@@ -46,7 +36,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ timeRange, onTim
         <label htmlFor="status">Status:</label>
         <select
           id="status"
-          value={filters.status}
+          value={localFilters.status}
           onChange={(e) => handleFilterChange('status', e.target.value)}
         >
           <option value="all">All Status</option>
@@ -60,7 +50,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ timeRange, onTim
         <label htmlFor="timeRange">Time Range:</label>
         <select
           id="timeRange"
-          value={filters.timeRange}
+          value={localFilters.timeRange}
           onChange={(e) => handleFilterChange('timeRange', e.target.value)}
         >
           <option value="24h">Last 24 Hours</option>
@@ -70,4 +60,6 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ timeRange, onTim
       </div>
     </div>
   );
-}; 
+};
+
+export default FilterControls; 

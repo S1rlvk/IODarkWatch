@@ -1,19 +1,13 @@
 import React from 'react';
 import styles from './TimelineView.module.css';
-import { Alert } from '../types';
+import { TimelineViewProps } from '../types';
 
-interface TimelineViewProps {
-  timeRange: [Date, Date];
-  onTimeRangeChange: (timeRange: [Date, Date]) => void;
-  events: Alert[];
-}
-
-export const TimelineView: React.FC<TimelineViewProps> = ({ timeRange, onTimeRangeChange, events }) => {
+const TimelineView: React.FC<TimelineViewProps> = ({ timeRange, onTimeRangeChange, vessels, alerts }) => {
   return (
     <div className={styles.timelineContainer}>
       <h2>Vessel Timeline</h2>
       <div className={styles.timeline}>
-        {events.map((event) => (
+        {alerts.map((event) => (
           <div key={event.id} className={styles.timelineItem}>
             <div className={styles.eventInfo}>
               <h3>{event.vessel.name || 'Unknown Vessel'}</h3>
@@ -29,4 +23,6 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ timeRange, onTimeRan
       </div>
     </div>
   );
-}; 
+};
+
+export default TimelineView; 
