@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useEffect, useRef, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Vessel, Alert } from '../types';
 import { VesselMarker } from './VesselMarker';
@@ -21,6 +21,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   selectedVessel
 }) => {
   const mapRef = useRef<L.Map>(null);
+  const [showSeaMap, setShowSeaMap] = useState(true);
 
   // Mock data for testing
   const mockVessel: Vessel = {
@@ -51,10 +52,32 @@ const MapComponent: React.FC<MapComponentProps> = ({
       style={{ height: '100%', width: '100%' }}
       ref={mapRef}
     >
-      <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      />
+      <LayersControl position="topright">
+        <LayersControl.BaseLayer checked name="OpenStreetMap">
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          />
+        </LayersControl.BaseLayer>
+        <LayersControl.Overlay checked name="Nautical Charts">
+          <TileLayer
+            url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors'
+            opacity={0.8}
+          />
+        </LayersControl.Overlay>
+      </LayersControl>
+      
+      {/* Dummy dark ship marker */}
+      <Marker position={[-5, 75]}>
+        <Popup>
+          <div>
+            <h3>⚠️ Dark Ship Detected</h3>
+            <p>Date: May 2025</p>
+            <p>Location: 5°S, 75°E</p>
+          </div>
+        </Popup>
+      </Marker>
       
       {vessels.map((vessel) => (
         <VesselMarker

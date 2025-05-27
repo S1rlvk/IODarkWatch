@@ -28,8 +28,8 @@ export default function Dashboard() {
   return (
     <div className={styles.dashboard}>
       <header className={styles.header}>
-        <h1>Maritime Domain Awareness</h1>
-        <p>Real-time vessel tracking in the Indian Ocean</p>
+        <h1>IODarkWatch</h1>
+        <p>Maritime Domain Awareness Platform</p>
       </header>
 
       <main className={styles.main}>
@@ -43,6 +43,18 @@ export default function Dashboard() {
         </div>
 
         <div className={styles.sidebar}>
+          <div className={styles.projectInfo}>
+            <h2>About IODarkWatch</h2>
+            <p>Open-source maritime OSINT tracker for dark ships in the Indian Ocean</p>
+            <p><strong>Data Sources:</strong> Sentinel-1 SAR, AIS gaps</p>
+            <p><strong>License:</strong> MIT</p>
+            <p>
+              <a href="https://github.com/S1rlvk/IODarkWatch" target="_blank" rel="noopener noreferrer">
+                GitHub Repository
+              </a>
+            </p>
+          </div>
+
           <div className={styles.stats}>
             <div className={styles.statCard}>
               <h3>Active Vessels</h3>
