@@ -1,89 +1,83 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Vessel, MapComponentProps } from '../types';
-import styles from './MapComponent.module.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import { Vessel, Alert } from '../types';
+import { VesselMarker } from './VesselMarker';
+import { AlertMarker } from './AlertMarker';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 
-// Mock data for vessels
-const mockVessels: Vessel[] = [
-  {
+interface MapComponentProps {
+  vessels: Vessel[];
+  alerts: Alert[];
+  onVesselSelect: (vessel: Vessel) => void;
+  selectedVessel: Vessel | null;
+}
+
+const MapComponent: React.FC<MapComponentProps> = ({
+  vessels,
+  alerts,
+  onVesselSelect,
+  selectedVessel
+}) => {
+  const mapRef = useRef<L.Map>(null);
+
+  // Mock data for testing
+  const mockVessel: Vessel = {
     id: '1',
-    mmsi: '123456789',
     name: 'Ocean Voyager',
     type: 'Cargo',
-    position: [15.5, 73.8],
+    mmsi: '123456789',
+    imo: 'IMO1234567',
+    flag: 'Panama',
+    position: { lat: 15.5, lng: 73.8 },
     speed: 12,
     course: 45,
     lastUpdate: new Date().toISOString(),
-    isDark: false
-  },
-  {
-    id: '2',
-    mmsi: '987654321',
-    name: 'Deep Sea Explorer',
-    type: 'Fishing',
-    position: [16.2, 74.5],
-    speed: 8,
-    course: 90,
-    lastUpdate: new Date().toISOString(),
-    isDark: true
-  },
-  {
-    id: '3',
-    mmsi: '456789123',
-    name: 'Maritime Star',
-    type: 'Tanker',
-    position: [14.8, 72.9],
-    speed: 15,
-    course: 180,
-    lastUpdate: new Date().toISOString(),
-    isDark: false
-  }
-];
-
-const MapComponent: React.FC<MapComponentProps> = ({ vessels, alerts, onVesselSelect, selectedVessel }) => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const handleVesselClick = (vessel: Vessel) => {
-    onVesselSelect(vessel);
+    riskLevel: 'low',
+    region: 'Indian Ocean'
   };
 
-  if (!isMounted) return null;
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+    }
+  }, []);
 
   return (
     <MapContainer
-      center={[0, 0]}
-      zoom={2}
-      className={styles.mapContainer}
+      center={[15.5, 73.8]}
+      zoom={5}
+      style={{ height: '100%', width: '100%' }}
+      ref={mapRef}
     >
       <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
-      {vessels.map((vessel) => (
-        <Marker
-          key={vessel.id}
-          position={[vessel.position.lat, vessel.position.lng]}
-          eventHandlers={{
-            click: () => handleVesselClick(vessel)
-          }}
-        >
-          <Popup>
-            <div>
-              <h3>{vessel.name}</h3>
-              <p>Type: {vessel.type}</p>
-              <p>Speed: {vessel.speed} knots</p>
-              <p>Course: {vessel.course}°</p>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      
+      <MarkerClusterGroup>
+        {vessels.map((vessel) => (
+          <VesselMarker
+            key={vessel.id}
+            vessel={vessel}
+            onClick={() => onVesselSelect(vessel)}
+            isSelected={selectedVessel?.id === vessel.id}
+          />
+        ))}
+        
+        {alerts.map((alert) => (
+          <AlertMarker
+            key={alert.id}
+            alert={alert}
+            onClick={() => onVesselSelect(alert.vessel)}
+            isSelected={selectedVessel?.id === alert.vessel.id}
+          />
+        ))}
+      </MarkerClusterGroup>
     </MapContainer>
   );
 };

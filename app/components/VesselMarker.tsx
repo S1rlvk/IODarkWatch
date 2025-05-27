@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Marker as LeafletMarker } from 'react-leaflet';
+import { Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import { Vessel } from '../types';
 
 interface VesselMarkerProps {
   vessel: Vessel;
   onClick: () => void;
+  isSelected: boolean;
 }
 
-export const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick }) => {
+export const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick, isSelected }) => {
   const [icon, setIcon] = useState<Icon | null>(null);
 
   useEffect(() => {
@@ -25,12 +26,23 @@ export const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick }) =
   if (!icon) return null;
 
   return (
-    <LeafletMarker
-      position={vessel.position}
+    <Marker
+      position={[vessel.position.lat, vessel.position.lng]}
       icon={icon}
       eventHandlers={{
-        click: onClick,
+        click: onClick
       }}
-    />
+    >
+      <Popup>
+        <div>
+          <h3>{vessel.name}</h3>
+          <p>Type: {vessel.type}</p>
+          <p>Speed: {vessel.speed} knots</p>
+          <p>Course: {vessel.course}°</p>
+          <p>Risk Level: {vessel.riskLevel}</p>
+          <p>Region: {vessel.region}</p>
+        </div>
+      </Popup>
+    </Marker>
   );
 }; 
