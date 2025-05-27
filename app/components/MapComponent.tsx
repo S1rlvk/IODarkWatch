@@ -3,7 +3,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { AlertMarker } from './AlertMarker';
+import AlertMarker from './AlertMarker';
 import { Alert } from '../types';
 
 interface MapComponentProps {
