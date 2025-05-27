@@ -13,34 +13,33 @@ import { AlertPanel } from './AlertPanel';
 import { ContactButton } from './ContactButton';
 
 // Dynamically import the map component with no SSR
-const MapComponent = dynamic(
-  () => import('./MapComponent'),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className={styles.mapContainer}>
-        <div className="card" style={{ 
-          height: '100%', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          background: 'var(--card-bg)',
-          borderRadius: '8px'
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1rem'
-          }}>
-            <div className="loading-spinner" />
-            <span style={{ color: 'var(--text-primary)' }}>Loading map...</span>
-          </div>
-        </div>
+const MapComponent = dynamic(() => import('./MapComponent'), {
+  ssr: false,
+  loading: () => (
+    <div style={{
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'rgba(0, 0, 0, 0.2)',
+      backdropFilter: 'blur(10px)',
+      borderRadius: '12px'
+    }}>
+      <div style={{
+        color: '#fff',
+        fontSize: '1.2rem',
+        textAlign: 'center',
+        padding: '2rem',
+        background: 'rgba(0, 0, 0, 0.3)',
+        borderRadius: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        Loading Maritime Map...
       </div>
-    )
-  }
-);
+    </div>
+  )
+});
 
 const MaritimeDashboard: React.FC = () => {
   const router = useRouter();
@@ -52,6 +51,11 @@ const MaritimeDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showTutorial, setShowTutorial] = useState(true);
+  const [filters, setFilters] = useState({
+    vesselTypes: [] as string[],
+    riskLevels: [] as string[],
+    regions: [] as string[]
+  });
 
   const { vessels, loading: vesselsLoading, error: vesselsError } = useVesselData({
     start: timeRange[0].toISOString(),
@@ -90,6 +94,25 @@ const MaritimeDashboard: React.FC = () => {
     window.location.href = 'mailto:ssattigeri65@gmail.com';
   };
 
+  const handleVesselSelect = (vessel: Vessel) => {
+    setSelectedVessel(vessel);
+  };
+
+  const handleTimeRangeChange = (range: [Date, Date]) => {
+    setTimeRange(range);
+  };
+
+  const handleFilterChange = (newFilters: typeof filters) => {
+    setFilters(newFilters);
+  };
+
+  const filteredVessels = vessels.filter(vessel => {
+    if (filters.vesselTypes.length && !filters.vesselTypes.includes(vessel.type)) return false;
+    if (filters.riskLevels.length && !filters.riskLevels.includes(vessel.riskLevel)) return false;
+    if (filters.regions.length && !filters.regions.includes(vessel.region)) return false;
+    return true;
+  });
+
   if (vesselsError || alertsError) {
     return (
       <div className={styles.dashboard}>
@@ -111,11 +134,14 @@ const MaritimeDashboard: React.FC = () => {
     <div className={styles.dashboard} style={{
       opacity: isLoading ? 0 : 1,
       transition: 'opacity 0.5s ease-in-out',
-      background: 'var(--bg-primary)',
       minHeight: '100vh',
       padding: '2rem',
       position: 'relative',
-      overflow: 'visible'
+      display: 'grid',
+      gridTemplateColumns: '1fr 300px',
+      gridTemplateRows: '1fr auto',
+      gap: '1rem',
+      zIndex: 1
     }}>
       <ContactButton />
 
@@ -255,34 +281,43 @@ const MaritimeDashboard: React.FC = () => {
         </div>
       )}
 
-      <div className={styles.mapContainer} style={{
-        height: 'calc(100vh - 4rem)',
-        borderRadius: '16px',
+      {/* Main Map Area */}
+      <div style={{
+        gridColumn: '1',
+        gridRow: '1',
+        position: 'relative',
+        borderRadius: '12px',
         overflow: 'hidden',
-        border: '1px solid var(--border-color)',
-        background: 'var(--card-bg)',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+        background: 'rgba(0, 0, 0, 0.2)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
         <MapComponent
-          onVesselClick={setSelectedVessel}
+          vessels={filteredVessels}
+          alerts={alerts}
+          onVesselSelect={handleVesselSelect}
+          selectedVessel={selectedVessel}
         />
       </div>
 
-      <div className={styles.controls} style={{
-        position: 'fixed',
-        right: '2rem',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: '360px',
-        zIndex: 100
+      {/* Right Sidebar */}
+      <div style={{
+        gridColumn: '2',
+        gridRow: '1 / span 2',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem'
       }}>
-        <div className="card glass" style={{ 
-          padding: '1.5rem',
-          marginBottom: '1.5rem'
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          padding: '1rem',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
           <FilterControls
-            timeRange={timeRange}
-            onTimeRangeChange={setTimeRange}
+            onFilterChange={handleFilterChange}
+            filters={filters}
           />
           <div style={{ 
             marginTop: '1.5rem', 
@@ -320,39 +355,38 @@ const MaritimeDashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="card glass" style={{ 
-          flex: 1
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          padding: '1rem',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          flex: 1,
+          overflow: 'auto'
         }}>
           <AlertPanel
             alerts={alerts}
-            loading={alertsLoading}
-            onAlertClick={(alert) => {
-              setSelectedVessel(alert.vessel);
-            }}
+            selectedVessel={selectedVessel}
           />
         </div>
       </div>
 
-      <div className={styles.timeline} style={{
-        position: 'fixed',
-        bottom: '2rem',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 4rem)',
-        maxWidth: '1200px',
-        height: '140px',
-        zIndex: 100
+      {/* Timeline */}
+      <div style={{
+        gridColumn: '1',
+        gridRow: '2',
+        background: 'rgba(0, 0, 0, 0.2)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '12px',
+        padding: '1rem',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
-        <div className="card glass" style={{ 
-          height: '100%',
-          padding: '1rem'
-        }}>
-          <TimelineView
-            timeRange={timeRange}
-            onTimeRangeChange={setTimeRange}
-            events={alerts}
-          />
-        </div>
+        <TimelineView
+          timeRange={timeRange}
+          onTimeRangeChange={handleTimeRangeChange}
+          vessels={filteredVessels}
+          alerts={alerts}
+        />
       </div>
     </div>
   );
