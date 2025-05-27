@@ -22,7 +22,9 @@
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "@types/leaflet": "^1.9.8",
-    "react-leaflet-markercluster": "^3.0.0-rc1"
+    "react-leaflet-markercluster": "^3.0.0-rc1",
+    "@types/react-leaflet-markercluster": "^3.0.0",
+    "leaflet.markercluster": "^1.5.3"
   },
   "devDependencies": {
     "@types/node": "20.11.19",
