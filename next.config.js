@@ -14,9 +14,8 @@ const nextConfig = {
   },
   // Ensure proper static generation
   output: 'standalone',
-  // Enable static optimization
+  // Disable experimental features that might cause issues
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@heroicons/react'],
   },
 }

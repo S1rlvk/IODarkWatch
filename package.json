@@ -20,6 +20,7 @@
     "@types/react-datepicker": "^6.0.1",
     "@types/react-leaflet-markercluster": "^3.0.0",
     "axios": "^1.6.7",
+    "critters": "^0.0.23",
     "date-fns": "^3.3.1",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
