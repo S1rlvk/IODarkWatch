@@ -11,6 +11,7 @@ import TimelineView from './TimelineView';
 import { FilterControls } from './FilterControls';
 import AlertPanel from './AlertPanel';
 import { ContactButton } from './ContactButton';
+import { convertVesselsToCSV, downloadCSV } from '../utils/exportUtils';
 
 // Dynamically import the map component with no SSR
 const MapComponent = dynamic(() => import('./MapComponent'), {
@@ -112,6 +113,17 @@ const MaritimeDashboard: React.FC = () => {
     if (filters.regions.length && !filters.regions.includes(vessel.region)) return false;
     return true;
   });
+
+  const handleExportData = () => {
+    // Get the current date and time for the filename
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[:.]/g, '-');
+    const filename = `vessel-data-${timestamp}.csv`;
+
+    // Convert vessels to CSV and download
+    const csvContent = convertVesselsToCSV(filteredVessels);
+    downloadCSV(csvContent, filename);
+  };
 
   if (vesselsError || alertsError) {
     return (
@@ -319,6 +331,33 @@ const MaritimeDashboard: React.FC = () => {
             onFilterChange={handleFilterChange}
             filters={filters}
           />
+          
+          {/* Export Data Button */}
+          <div style={{ 
+            marginTop: '1.5rem',
+            padding: '1rem',
+            background: 'var(--item-bg)',
+            borderRadius: '12px',
+            textAlign: 'center'
+          }}>
+            <button 
+              className="button hover-lift"
+              onClick={handleExportData}
+              style={{ 
+                width: '100%',
+                padding: '1rem',
+                background: 'var(--primary-color)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              Export Vessel Data
+            </button>
+          </div>
+
           <div style={{ 
             marginTop: '1.5rem', 
             padding: '1.5rem',
