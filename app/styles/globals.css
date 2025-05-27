@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #111217;
+    --surface: #1A1C22;
+    --border: #2A2D35;
+    --accent-blue: #009DFF;
+    --accent-teal: #3CA3A8;
+  }
+
+  body {
+    @apply bg-bg-primary text-white font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .industrial-map {
+    @apply bg-bg-primary;
+  }
+
+  .industrial-map .leaflet-container {
+    @apply bg-bg-primary;
+  }
+
+  .industrial-map .leaflet-control-zoom {
+    @apply border border-border rounded-sm shadow-industrial;
+  }
+
+  .industrial-map .leaflet-control-zoom a {
+    @apply bg-surface text-white border-border hover:bg-accent-blue transition-colors;
+  }
+
+  .industrial-map .leaflet-popup-content-wrapper {
+    @apply bg-surface border border-border rounded-sm shadow-industrial;
+  }
+
+  .industrial-map .leaflet-popup-content {
+    @apply font-body text-white;
+  }
+
+  .industrial-map .leaflet-popup-tip {
+    @apply bg-surface;
+  }
+
+  .industrial-map .leaflet-control-layers {
+    @apply bg-surface border border-border rounded-sm shadow-industrial;
+  }
+
+  .industrial-map .leaflet-control-layers-base label,
+  .industrial-map .leaflet-control-layers-overlays label {
+    @apply text-white;
+  }
+
+  .industrial-map .leaflet-control-layers-expanded {
+    @apply bg-surface border border-border rounded-sm p-2;
+  }
+
+  .neon-marker {
+    @apply w-4 h-4 rounded-full bg-accent-blue shadow-glow;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 157, 255, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(0, 157, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 157, 255, 0);
+    }
+  }
+} 

@@ -2,16 +2,21 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import styles from './Dashboard.module.css';
+import { IndustrialLayout } from '../components/IndustrialLayout';
+import { MetricCard } from '../components/MetricCard';
 import { Vessel, Alert } from '../types';
+import { 
+  TruckIcon, 
+  ExclamationTriangleIcon, 
+  BellIcon 
+} from '@heroicons/react/24/outline';
 
 // Dynamically import the MapComponent to avoid SSR issues with Leaflet
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
   ssr: false,
   loading: () => (
-    <div className={styles.loadingContainer}>
-      <div className={styles.loadingSpinner} />
-      <span>Loading dashboard...</span>
+    <div className="flex items-center justify-center h-full bg-surface">
+      <div className="text-accent-blue animate-pulse">Loading map...</div>
     </div>
   ),
 });
@@ -26,14 +31,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className={styles.dashboard}>
-      <header className={styles.header}>
-        <h1>IODarkWatch</h1>
-        <p>Maritime Domain Awareness Platform</p>
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.mapWrapper}>
+    <IndustrialLayout>
+      <div className="h-full flex">
+        {/* Main Map Area */}
+        <div className="flex-1 relative">
           <MapComponent 
             vessels={vessels}
             alerts={alerts}
@@ -42,49 +43,45 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className={styles.sidebar}>
-          <div className={styles.projectInfo}>
-            <h2>About IODarkWatch</h2>
-            <p>Open-source maritime OSINT tracker for dark ships in the Indian Ocean</p>
-            <p><strong>Data Sources:</strong> Sentinel-1 SAR, AIS gaps</p>
-            <p><strong>License:</strong> MIT</p>
-            <p>
-              <a href="https://github.com/S1rlvk/IODarkWatch" target="_blank" rel="noopener noreferrer">
-                GitHub Repository
-              </a>
-            </p>
+        {/* Right Sidebar */}
+        <div className="w-80 bg-surface border-l border-border p-4 flex flex-col gap-4">
+          <div className="space-y-4">
+            <MetricCard
+              title="Active Vessels"
+              value={vessels.length}
+              icon={<TruckIcon className="w-6 h-6" />}
+              trend={{ value: 5, isPositive: true }}
+            />
+            <MetricCard
+              title="Dark Vessels"
+              value={vessels.filter(v => v.riskLevel === 'high').length}
+              icon={<ExclamationTriangleIcon className="w-6 h-6" />}
+              trend={{ value: 2, isPositive: false }}
+            />
+            <MetricCard
+              title="Active Alerts"
+              value={alerts.length}
+              icon={<BellIcon className="w-6 h-6" />}
+            />
           </div>
 
-          <div className={styles.stats}>
-            <div className={styles.statCard}>
-              <h3>Active Vessels</h3>
-              <p className={styles.statValue}>{vessels.length}</p>
+          {/* Vessel Details */}
+          {selectedVessel && (
+            <div className="bg-surface border border-border rounded-sm p-4 mt-4">
+              <h3 className="font-heading text-lg font-bold text-white mb-4">
+                Vessel Details
+              </h3>
+              <div className="space-y-2 font-body text-sm">
+                <p><span className="text-gray-400">Name:</span> {selectedVessel.name}</p>
+                <p><span className="text-gray-400">Type:</span> {selectedVessel.type}</p>
+                <p><span className="text-gray-400">Speed:</span> {selectedVessel.speed} knots</p>
+                <p><span className="text-gray-400">Course:</span> {selectedVessel.course}°</p>
+                <p><span className="text-gray-400">Risk Level:</span> {selectedVessel.riskLevel}</p>
+              </div>
             </div>
-            <div className={styles.statCard}>
-              <h3>Dark Vessels</h3>
-              <p className={styles.statValue}>
-                {vessels.filter(v => v.riskLevel === 'high').length}
-              </p>
-            </div>
-            <div className={styles.statCard}>
-              <h3>Alerts</h3>
-              <p className={styles.statValue}>{alerts.length}</p>
-            </div>
-          </div>
-
-          <div className={styles.controls}>
-            <button className={styles.controlButton}>
-              Filter Vessels
-            </button>
-            <button className={styles.controlButton}>
-              View Alerts
-            </button>
-            <button className={styles.controlButton}>
-              Export Data
-            </button>
-          </div>
+          )}
         </div>
-      </main>
-    </div>
+      </div>
+    </IndustrialLayout>
   );
 } 

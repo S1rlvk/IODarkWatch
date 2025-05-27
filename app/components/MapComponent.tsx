@@ -46,57 +46,60 @@ const MapComponent: React.FC<MapComponentProps> = ({
   }, []);
 
   return (
-    <MapContainer
-      center={[15.5, 73.8]}
-      zoom={5}
-      style={{ height: '100%', width: '100%' }}
-      ref={mapRef}
-    >
-      <LayersControl position="topright">
-        <LayersControl.BaseLayer checked name="OpenStreetMap">
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    <div className="h-full w-full bg-bg-primary">
+      <MapContainer
+        center={[15.5, 73.8]}
+        zoom={5}
+        style={{ height: '100%', width: '100%' }}
+        ref={mapRef}
+        className="industrial-map"
+      >
+        <LayersControl position="topright" className="bg-surface border border-border rounded-sm">
+          <LayersControl.BaseLayer checked name="Dark Map">
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.Overlay checked name="Nautical Charts">
+            <TileLayer
+              url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors'
+              opacity={0.8}
+            />
+          </LayersControl.Overlay>
+        </LayersControl>
+        
+        {/* Dummy dark ship marker with neon effect */}
+        <Marker position={[-5, 75]}>
+          <Popup className="industrial-popup">
+            <div className="font-body">
+              <h3 className="font-heading text-lg font-bold text-accent-blue mb-2">⚠️ Dark Ship Detected</h3>
+              <p className="text-gray-300">Date: May 2025</p>
+              <p className="text-gray-300">Location: 5°S, 75°E</p>
+            </div>
+          </Popup>
+        </Marker>
+        
+        {vessels.map((vessel) => (
+          <VesselMarker
+            key={vessel.id}
+            vessel={vessel}
+            onClick={() => onVesselSelect(vessel)}
+            isSelected={selectedVessel?.id === vessel.id}
           />
-        </LayersControl.BaseLayer>
-        <LayersControl.Overlay checked name="Nautical Charts">
-          <TileLayer
-            url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors'
-            opacity={0.8}
+        ))}
+        
+        {alerts.map((alert) => (
+          <AlertMarker
+            key={alert.id}
+            alert={alert}
+            onClick={() => onVesselSelect(alert.vessel)}
+            isSelected={selectedVessel?.id === alert.vessel.id}
           />
-        </LayersControl.Overlay>
-      </LayersControl>
-      
-      {/* Dummy dark ship marker */}
-      <Marker position={[-5, 75]}>
-        <Popup>
-          <div>
-            <h3>⚠️ Dark Ship Detected</h3>
-            <p>Date: May 2025</p>
-            <p>Location: 5°S, 75°E</p>
-          </div>
-        </Popup>
-      </Marker>
-      
-      {vessels.map((vessel) => (
-        <VesselMarker
-          key={vessel.id}
-          vessel={vessel}
-          onClick={() => onVesselSelect(vessel)}
-          isSelected={selectedVessel?.id === vessel.id}
-        />
-      ))}
-      
-      {alerts.map((alert) => (
-        <AlertMarker
-          key={alert.id}
-          alert={alert}
-          onClick={() => onVesselSelect(alert.vessel)}
-          isSelected={selectedVessel?.id === alert.vessel.id}
-        />
-      ))}
-    </MapContainer>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 
