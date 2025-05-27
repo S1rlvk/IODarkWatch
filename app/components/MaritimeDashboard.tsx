@@ -117,24 +117,46 @@ const MaritimeDashboard: React.FC = () => {
       overflow: 'hidden'
     }}>
       {/* Contact Button */}
-      <button 
-        className="button hover-lift"
-        onClick={handleContactClick}
-        style={{ 
-          position: 'fixed',
-          top: '2rem',
-          right: '2rem',
-          padding: '0.75rem 1.5rem',
-          background: 'var(--primary-color)',
-          zIndex: 1000,
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem'
-        }}
-      >
-        <span>Contact Us</span>
-      </button>
+      <div style={{
+        position: 'fixed',
+        top: '2rem',
+        right: '2rem',
+        zIndex: 9999,
+        background: 'rgba(0, 0, 0, 0.8)',
+        padding: '0.5rem',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <button 
+          onClick={handleContactClick}
+          style={{ 
+            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            color: 'white',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '6px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+          }}
+        >
+          <span>📧 Contact Us</span>
+        </button>
+      </div>
 
       {/* Background gradient effect */}
       <div style={{
