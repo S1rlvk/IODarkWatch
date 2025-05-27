@@ -116,6 +116,26 @@ const MaritimeDashboard: React.FC = () => {
       position: 'relative',
       overflow: 'hidden'
     }}>
+      {/* Contact Button */}
+      <button 
+        className="button hover-lift"
+        onClick={handleContactClick}
+        style={{ 
+          position: 'fixed',
+          top: '2rem',
+          right: '2rem',
+          padding: '0.75rem 1.5rem',
+          background: 'var(--primary-color)',
+          zIndex: 1000,
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}
+      >
+        <span>Contact Us</span>
+      </button>
+
       {/* Background gradient effect */}
       <div style={{
         position: 'absolute',
@@ -309,22 +329,10 @@ const MaritimeDashboard: React.FC = () => {
               onClick={handleDarkVesselsClick}
               style={{ 
                 width: '100%',
-                padding: '1rem',
-                marginBottom: '1rem'
+                padding: '1rem'
               }}
             >
               <span>Explore Dark Vessels</span>
-            </button>
-            <button 
-              className="button hover-lift"
-              onClick={handleContactClick}
-              style={{ 
-                width: '100%',
-                padding: '1rem',
-                background: 'var(--primary-color)'
-              }}
-            >
-              <span>Contact Us</span>
             </button>
           </div>
         </div>
