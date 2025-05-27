@@ -116,47 +116,26 @@ const MaritimeDashboard: React.FC = () => {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* Contact Button */}
-      <div style={{
-        position: 'fixed',
-        top: '2rem',
-        right: '2rem',
-        zIndex: 9999,
-        background: 'rgba(0, 0, 0, 0.8)',
-        padding: '0.5rem',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.1)'
-      }}>
-        <button 
-          onClick={handleContactClick}
-          style={{ 
-            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-            color: 'white',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '6px',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-          }}
-        >
-          <span>📧 Contact Us</span>
-        </button>
-      </div>
+      <a 
+        href="mailto:ssattigeri65@gmail.com"
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: '#3b82f6',
+          color: 'white',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          textDecoration: 'none',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          zIndex: 9999,
+          border: '2px solid white',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+        }}
+      >
+        Contact Us
+      </a>
 
       {/* Background gradient effect */}
       <div style={{
