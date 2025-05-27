@@ -12,6 +12,13 @@ const nextConfig = {
     };
     return config;
   },
+  // Ensure proper static generation
+  output: 'standalone',
+  // Enable static optimization
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['@heroicons/react'],
+  },
 }
 
 module.exports = nextConfig; 
