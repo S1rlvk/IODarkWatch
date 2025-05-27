@@ -4,79 +4,100 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { IndustrialLayout } from '../components/IndustrialLayout';
 import { MetricCard } from '../components/MetricCard';
+import { TruckIcon, ExclamationTriangleIcon, BellIcon } from '@heroicons/react/24/outline';
 import { Vessel, Alert } from '../types';
-import { 
-  TruckIcon, 
-  ExclamationTriangleIcon, 
-  BellIcon 
-} from '@heroicons/react/24/outline';
 
-// Dynamically import the MapComponent to avoid SSR issues with Leaflet
+// Dynamically import MapComponent to avoid SSR issues
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-full bg-surface">
-      <div className="text-accent-blue animate-pulse">Loading map...</div>
+    <div className="h-full w-full flex items-center justify-center bg-bg-primary text-white">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-blue mx-auto mb-4"></div>
+        <p className="text-lg">Loading map...</p>
+      </div>
     </div>
   ),
 });
 
-export default function Dashboard() {
-  const [vessels, setVessels] = useState<Vessel[]>([]);
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
+// Mock data
+const mockVessels: Vessel[] = [
+  {
+    id: '1',
+    name: 'Ocean Voyager',
+    type: 'Cargo',
+    mmsi: '123456789',
+    imo: 'IMO1234567',
+    flag: 'Panama',
+    position: { lat: 15.5, lng: 73.8 },
+    speed: 12,
+    course: 45,
+    lastUpdate: new Date().toISOString(),
+    riskLevel: 'low',
+    region: 'Indian Ocean'
+  }
+];
 
-  const handleVesselSelect = (vessel: Vessel) => {
-    setSelectedVessel(vessel);
-  };
+const mockAlerts: Alert[] = [
+  {
+    id: '1',
+    type: 'Dark Ship',
+    severity: 'high',
+    description: 'Vessel detected with AIS turned off',
+    timestamp: new Date().toISOString(),
+    vessel: mockVessels[0]
+  }
+];
+
+export default function Dashboard() {
+  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
 
   return (
     <IndustrialLayout>
-      <div className="h-full flex">
+      <div className="flex h-full">
         {/* Main Map Area */}
-        <div className="flex-1 relative">
-          <MapComponent 
-            vessels={vessels}
-            alerts={alerts}
-            onVesselSelect={handleVesselSelect}
+        <div className="flex-1 h-full">
+          <MapComponent
+            vessels={mockVessels}
+            alerts={mockAlerts}
+            onVesselSelect={setSelectedVessel}
             selectedVessel={selectedVessel}
           />
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-80 bg-surface border-l border-border p-4 flex flex-col gap-4">
-          <div className="space-y-4">
+        <div className="w-80 bg-surface border-l border-border p-4 flex flex-col">
+          {/* Metrics Section */}
+          <div className="space-y-4 mb-6">
             <MetricCard
               title="Active Vessels"
-              value={vessels.length}
+              value="1,234"
               icon={<TruckIcon className="w-6 h-6" />}
               trend={{ value: 5, isPositive: true }}
             />
             <MetricCard
               title="Dark Vessels"
-              value={vessels.filter(v => v.riskLevel === 'high').length}
+              value="12"
               icon={<ExclamationTriangleIcon className="w-6 h-6" />}
-              trend={{ value: 2, isPositive: false }}
+              trend={{ value: 2, isPositive: true }}
             />
             <MetricCard
               title="Active Alerts"
-              value={alerts.length}
+              value="5"
               icon={<BellIcon className="w-6 h-6" />}
+              trend={{ value: 10, isPositive: false }}
             />
           </div>
 
-          {/* Vessel Details */}
+          {/* Selected Vessel Details */}
           {selectedVessel && (
-            <div className="bg-surface border border-border rounded-sm p-4 mt-4">
-              <h3 className="font-heading text-lg font-bold text-white mb-4">
-                Vessel Details
-              </h3>
-              <div className="space-y-2 font-body text-sm">
-                <p><span className="text-gray-400">Name:</span> {selectedVessel.name}</p>
-                <p><span className="text-gray-400">Type:</span> {selectedVessel.type}</p>
-                <p><span className="text-gray-400">Speed:</span> {selectedVessel.speed} knots</p>
-                <p><span className="text-gray-400">Course:</span> {selectedVessel.course}°</p>
-                <p><span className="text-gray-400">Risk Level:</span> {selectedVessel.riskLevel}</p>
+            <div className="bg-bg-primary rounded-sm p-4 border border-border">
+              <h3 className="text-lg font-bold text-white mb-4">{selectedVessel.name}</h3>
+              <div className="space-y-2">
+                <p className="text-gray-300">Type: {selectedVessel.type}</p>
+                <p className="text-gray-300">Speed: {selectedVessel.speed} knots</p>
+                <p className="text-gray-300">Course: {selectedVessel.course}°</p>
+                <p className="text-gray-300">Risk Level: {selectedVessel.riskLevel}</p>
               </div>
             </div>
           )}
