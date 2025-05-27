@@ -57,6 +57,15 @@ export default function Intro() {
             </div>
           </div>
         </div>
+
+        <footer className={styles.footer}>
+          <div className={styles.license}>
+            <p>Licensed under the MIT License</p>
+          </div>
+          <div className={styles.builtWith}>
+            <p>Built with ❤️ for India</p>
+          </div>
+        </footer>
       </div>
     </div>
   );
