@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import { 
   MapIcon, 
-  TableIcon, 
-  TerminalIcon, 
+  TableCellsIcon, 
+  CommandLineIcon, 
   ChartBarIcon,
-  CogIcon,
+  Cog6ToothIcon,
   BellIcon
 } from '@heroicons/react/24/outline';
 
@@ -20,10 +20,10 @@ export const IndustrialLayout: React.FC<IndustrialLayoutProps> = ({ children }) 
 
   const navItems = [
     { id: 'map', icon: MapIcon, label: 'Map View' },
-    { id: 'table', icon: TableIcon, label: 'Vessel Table' },
+    { id: 'table', icon: TableCellsIcon, label: 'Vessel Table' },
     { id: 'analytics', icon: ChartBarIcon, label: 'Analytics' },
-    { id: 'console', icon: TerminalIcon, label: 'Console' },
-    { id: 'settings', icon: CogIcon, label: 'Settings' },
+    { id: 'console', icon: CommandLineIcon, label: 'Console' },
+    { id: 'settings', icon: Cog6ToothIcon, label: 'Settings' },
     { id: 'alerts', icon: BellIcon, label: 'Alerts' },
   ];
 
