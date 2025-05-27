@@ -127,7 +127,17 @@ const MaritimeDashboard: React.FC = () => {
             fontSize: '18px',
             fontWeight: 'bold',
             border: '3px solid white',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+            boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
           }}
         >
           Contact Us
@@ -140,28 +150,43 @@ const MaritimeDashboard: React.FC = () => {
         minHeight: '100vh',
         padding: '2rem',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'visible'
       }}>
-        <a 
-          href="mailto:ssattigeri65@gmail.com"
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            padding: '10px 20px',
-            borderRadius: '5px',
-            textDecoration: 'none',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            zIndex: 9999,
-            border: '2px solid white',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-          }}
-        >
-          Contact Us
-        </a>
+        <div style={{
+          position: 'fixed',
+          top: '1rem',
+          right: '1rem',
+          zIndex: 99999,
+          pointerEvents: 'auto'
+        }}>
+          <a 
+            href="mailto:ssattigeri65@gmail.com"
+            style={{
+              display: 'inline-block',
+              backgroundColor: '#ff4444',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '6px',
+              textDecoration: 'none',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              border: '3px solid white',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+            }}
+          >
+            Contact Us
+          </a>
+        </div>
 
         {/* Background gradient effect */}
         <div style={{
