@@ -31,7 +31,7 @@ const MapComponent: React.FC<MapComponentProps> = () => {
       <MapContainer
         center={[0, 0]}
         zoom={2}
-        style={{ height: '100%', width: '100%', background: '#1a1a1a' }}
+        style={{ height: '100%', width: '100%', background: '#000' }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"

@@ -14,7 +14,7 @@ const MapComponent = dynamic(() => import('../components/MapComponent').then(mod
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: '#1a1a1a',
+      background: '#000',
       color: 'white'
     }}>
       Loading map...
@@ -28,29 +28,33 @@ export default function Dashboard() {
       padding: '20px',
       maxWidth: '1200px',
       margin: '0 auto',
-      color: 'white'
+      color: 'white',
+      background: '#000',
+      minHeight: '100vh'
     }}>
-      <h1>Maritime Domain Awareness</h1>
-      <p>Real-time vessel tracking in the Indian Ocean</p>
+      <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>Maritime Domain Awareness</h1>
+      <p style={{ marginBottom: '20px' }}>Real-time vessel tracking in the Indian Ocean</p>
 
-      <p>Loading dashboard...</p>
+      <p style={{ marginBottom: '20px' }}>Loading dashboard...</p>
 
-      <h3>Active Vessels</h3>
-      <p>0</p>
+      <div style={{ marginBottom: '20px' }}>
+        <h3 style={{ marginBottom: '5px' }}>Active Vessels</h3>
+        <p style={{ marginBottom: '15px' }}>0</p>
 
-      <h3>Dark Vessels</h3>
-      <p>0</p>
+        <h3 style={{ marginBottom: '5px' }}>Dark Vessels</h3>
+        <p style={{ marginBottom: '15px' }}>0</p>
 
-      <h3>Alerts</h3>
-      <p>0</p>
+        <h3 style={{ marginBottom: '5px' }}>Alerts</h3>
+        <p style={{ marginBottom: '15px' }}>0</p>
+      </div>
 
-      <div style={{ margin: '20px 0' }}>
+      <div style={{ marginBottom: '20px' }}>
         <button style={{ marginRight: '10px' }}>Filter Vessels</button>
         <button style={{ marginRight: '10px' }}>View Alerts</button>
         <button>Export Data</button>
       </div>
 
-      <div style={{ height: '600px', width: '100%', background: '#1a1a1a' }}>
+      <div style={{ height: '600px', width: '100%', background: '#000' }}>
         <MapComponent
           alerts={[]}
           onAlertClick={() => {}}
