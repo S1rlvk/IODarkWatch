@@ -39,6 +39,24 @@ export default function Intro() {
         >
           {isLoading ? 'Entering Platform...' : 'Enter Platform'}
         </button>
+
+        <div className={styles.aimSection}>
+          <h2 className={styles.aimTitle}>Our Aim</h2>
+          <div className={styles.aimContent}>
+            <div className={styles.aimCard}>
+              <h3>Maritime Security</h3>
+              <p>Enhancing maritime domain awareness through advanced technology and open-source intelligence to ensure safer waters in the Indian Ocean region.</p>
+            </div>
+            <div className={styles.aimCard}>
+              <h3>Transparency</h3>
+              <p>Providing accessible and transparent maritime data to empower stakeholders in making informed decisions about maritime security and safety.</p>
+            </div>
+            <div className={styles.aimCard}>
+              <h3>Innovation</h3>
+              <p>Leveraging cutting-edge AI and machine learning technologies to detect and monitor dark vessels, contributing to a more secure maritime environment.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
