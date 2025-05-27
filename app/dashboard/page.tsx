@@ -2,11 +2,16 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
 
 // Dynamically import MapComponent to avoid SSR issues
 const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {
   ssr: false,
-  loading: () => <div className="h-full w-full flex items-center justify-center bg-gray-900 text-white">Loading map...</div>
+  loading: () => (
+    <div className="h-[600px] w-full flex items-center justify-center bg-gray-800 text-white rounded-lg">
+      Loading map...
+    </div>
+  )
 });
 
 export default function Dashboard() {
@@ -35,12 +40,12 @@ export default function Dashboard() {
       </div>
 
       <div className="flex gap-4 mb-8">
-        <button className="bg-blue-600 px-4 py-2 rounded">Filter Vessels</button>
-        <button className="bg-blue-600 px-4 py-2 rounded">View Alerts</button>
-        <button className="bg-blue-600 px-4 py-2 rounded">Export Data</button>
+        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">Filter Vessels</button>
+        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">View Alerts</button>
+        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">Export Data</button>
       </div>
 
-      <div className="h-[600px] bg-gray-800 rounded-lg">
+      <div className="h-[600px] bg-gray-800 rounded-lg overflow-hidden">
         <MapComponent
           alerts={[]}
           onAlertClick={() => {}}
@@ -49,7 +54,7 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-8 text-center">
-        <button className="text-blue-400 hover:text-blue-300">Contact Us</button>
+        <button className="text-blue-400 hover:text-blue-300 transition-colors">Contact Us</button>
       </div>
     </main>
   );

@@ -22,6 +22,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       center={[0, 0]}
       zoom={2}
       className="h-full w-full"
+      style={{ background: '#1a1a1a' }}
     >
       <LayersControl position="topright">
         <LayersControl.BaseLayer checked name="Dark Map">
