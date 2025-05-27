@@ -85,6 +85,10 @@ const MaritimeDashboard: React.FC = () => {
     router.push('/dark-vessels');
   };
 
+  const handleContactClick = () => {
+    window.location.href = 'mailto:ssattigeri65@gmail.com';
+  };
+
   if (vesselsError || alertsError) {
     return (
       <div className={styles.dashboard}>
@@ -305,10 +309,22 @@ const MaritimeDashboard: React.FC = () => {
               onClick={handleDarkVesselsClick}
               style={{ 
                 width: '100%',
-                padding: '1rem'
+                padding: '1rem',
+                marginBottom: '1rem'
               }}
             >
               <span>Explore Dark Vessels</span>
+            </button>
+            <button 
+              className="button hover-lift"
+              onClick={handleContactClick}
+              style={{ 
+                width: '100%',
+                padding: '1rem',
+                background: 'var(--primary-color)'
+              }}
+            >
+              <span>Contact Us</span>
             </button>
           </div>
         </div>
