@@ -3,12 +3,9 @@
 import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { Vessel, Alert } from '../types';
 import { VesselMarker } from './VesselMarker';
 import { AlertMarker } from './AlertMarker';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 interface MapComponentProps {
   vessels: Vessel[];
@@ -59,25 +56,23 @@ const MapComponent: React.FC<MapComponentProps> = ({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
       
-      <MarkerClusterGroup>
-        {vessels.map((vessel) => (
-          <VesselMarker
-            key={vessel.id}
-            vessel={vessel}
-            onClick={() => onVesselSelect(vessel)}
-            isSelected={selectedVessel?.id === vessel.id}
-          />
-        ))}
-        
-        {alerts.map((alert) => (
-          <AlertMarker
-            key={alert.id}
-            alert={alert}
-            onClick={() => onVesselSelect(alert.vessel)}
-            isSelected={selectedVessel?.id === alert.vessel.id}
-          />
-        ))}
-      </MarkerClusterGroup>
+      {vessels.map((vessel) => (
+        <VesselMarker
+          key={vessel.id}
+          vessel={vessel}
+          onClick={() => onVesselSelect(vessel)}
+          isSelected={selectedVessel?.id === vessel.id}
+        />
+      ))}
+      
+      {alerts.map((alert) => (
+        <AlertMarker
+          key={alert.id}
+          alert={alert}
+          onClick={() => onVesselSelect(alert.vessel)}
+          isSelected={selectedVessel?.id === alert.vessel.id}
+        />
+      ))}
     </MapContainer>
   );
 };
