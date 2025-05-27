@@ -1,20 +1,40 @@
-import React from 'react';
-import styles from '../styles/ContactButton.module.css';
+'use client';
 
-export const ContactButton: React.FC = () => {
+import React from 'react';
+
+export const ContactButton = () => {
   return (
-    <div className={styles.contactButton}>
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      zIndex: 999999,
+    }}>
       <a 
-        href="mailto:ssattigeri65@gmail.com?subject=IODarkWatch%20Inquiry&body=Hello%20there,%0A%0AI%20found%20your%20maritime%20domain%20awareness%20platform%20and%20would%20like%20to%20get%20in%20touch.%0A%0ABest%20regards"
-        className={styles.button}
+        href="mailto:ssattigeri65@gmail.com"
+        style={{
+          display: 'inline-block',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          textDecoration: 'none',
+          fontSize: '16px',
+          fontWeight: '500',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          transition: 'all 0.3s ease'
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+          e.currentTarget.style.transform = 'translateY(-2px)';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
       >
-        <svg 
-          className={styles.icon}
-          viewBox="0 0 24 24" 
-          fill="currentColor"
-        >
-          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-        </svg>
         Contact Us
       </a>
     </div>
