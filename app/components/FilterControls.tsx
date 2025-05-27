@@ -1,61 +1,80 @@
-import React, { useState } from 'react';
-import styles from './FilterControls.module.css';
-import { FilterState } from '../types';
+import React, { useState, useEffect } from 'react';
+import styles from '../styles/FilterControls.module.css';
 
-interface FilterControlsProps {
-  filters: FilterState;
-  onFilterChange: (filters: FilterState) => void;
+interface FilterState {
+  vesselTypes: string[];
+  riskLevels: string[];
+  regions: string[];
 }
 
-export const FilterControls: React.FC<FilterControlsProps> = ({ filters, onFilterChange }) => {
+interface FilterControlsProps {
+  onFilterChange: (filters: FilterState) => void;
+  filters: FilterState;
+}
+
+export const FilterControls: React.FC<FilterControlsProps> = ({ onFilterChange, filters }) => {
   const [localFilters, setLocalFilters] = useState<FilterState>(filters);
 
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
-    const newFilters = { ...localFilters, [key]: value };
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
+  const handleFilterChange = (filterType: keyof FilterState, value: string) => {
+    const newFilters = { ...localFilters };
+    
+    if (value === 'all') {
+      newFilters[filterType] = [];
+    } else {
+      newFilters[filterType] = [value];
+    }
+    
     setLocalFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   return (
     <div className={styles.filterControls}>
+      <h3 className="gradient-text" style={{ marginBottom: '1.5rem' }}>Filters</h3>
+      
       <div className={styles.filterGroup}>
-        <label htmlFor="vesselType">Vessel Type:</label>
+        <label htmlFor="vesselType">Vessel Type</label>
         <select
           id="vesselType"
-          value={localFilters.vesselType}
-          onChange={(e) => handleFilterChange('vesselType', e.target.value)}
+          value={localFilters.vesselTypes[0] || 'all'}
+          onChange={(e) => handleFilterChange('vesselTypes', e.target.value)}
         >
           <option value="all">All Types</option>
-          <option value="cargo">Cargo</option>
-          <option value="tanker">Tanker</option>
-          <option value="fishing">Fishing</option>
+          <option value="Tanker">Tanker</option>
+          <option value="Cargo">Cargo</option>
+          <option value="Fishing">Fishing</option>
         </select>
       </div>
 
       <div className={styles.filterGroup}>
-        <label htmlFor="status">Status:</label>
+        <label htmlFor="riskLevel">Risk Level</label>
         <select
-          id="status"
-          value={localFilters.status}
-          onChange={(e) => handleFilterChange('status', e.target.value)}
+          id="riskLevel"
+          value={localFilters.riskLevels[0] || 'all'}
+          onChange={(e) => handleFilterChange('riskLevels', e.target.value)}
         >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="dark">Dark Mode</option>
-          <option value="inactive">Inactive</option>
+          <option value="all">All Levels</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
         </select>
       </div>
 
       <div className={styles.filterGroup}>
-        <label htmlFor="timeRange">Time Range:</label>
+        <label htmlFor="region">Region</label>
         <select
-          id="timeRange"
-          value={localFilters.timeRange}
-          onChange={(e) => handleFilterChange('timeRange', e.target.value)}
+          id="region"
+          value={localFilters.regions[0] || 'all'}
+          onChange={(e) => handleFilterChange('regions', e.target.value)}
         >
-          <option value="24h">Last 24 Hours</option>
-          <option value="7d">Last 7 Days</option>
-          <option value="30d">Last 30 Days</option>
+          <option value="all">All Regions</option>
+          <option value="Indian Ocean">Indian Ocean</option>
+          <option value="Arabian Sea">Arabian Sea</option>
+          <option value="Bay of Bengal">Bay of Bengal</option>
         </select>
       </div>
     </div>
