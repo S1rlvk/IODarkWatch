@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
-import { Alert } from '../types';
 
 // Dynamically import MapComponent to avoid SSR issues
 const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {
@@ -11,45 +10,46 @@ const MapComponent = dynamic(() => import('../components/MapComponent').then(mod
 });
 
 export default function Dashboard() {
-  const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
-
-  // Dummy data for testing
-  const alerts: Alert[] = [
-    {
-      id: '1',
-      type: 'dark_ship',
-      location: { lat: 20, lng: 20 },
-      timestamp: new Date().toISOString(),
-      severity: 'high',
-      description: 'Vessel detected with AIS turned off'
-    }
-  ];
-
   return (
-    <main className="flex h-screen bg-gray-900">
-      {/* Main map area */}
-      <div className="flex-1 h-full">
+    <main className="min-h-screen bg-gray-900 text-white p-8">
+      <h1 className="text-3xl font-bold mb-4">Maritime Domain Awareness</h1>
+      <p className="text-gray-400 mb-8">Real-time vessel tracking in the Indian Ocean</p>
+
+      <div className="mb-8">
+        <p className="text-lg">Loading dashboard...</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-6 mb-8">
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">Active Vessels</h3>
+          <p className="text-3xl font-bold">0</p>
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">Dark Vessels</h3>
+          <p className="text-3xl font-bold">0</p>
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold mb-2">Alerts</h3>
+          <p className="text-3xl font-bold">0</p>
+        </div>
+      </div>
+
+      <div className="flex gap-4 mb-8">
+        <button className="bg-blue-600 px-4 py-2 rounded">Filter Vessels</button>
+        <button className="bg-blue-600 px-4 py-2 rounded">View Alerts</button>
+        <button className="bg-blue-600 px-4 py-2 rounded">Export Data</button>
+      </div>
+
+      <div className="h-[600px] bg-gray-800 rounded-lg">
         <MapComponent
-          alerts={alerts}
-          onAlertClick={setSelectedAlert}
-          selectedAlert={selectedAlert}
+          alerts={[]}
+          onAlertClick={() => {}}
+          selectedAlert={null}
         />
       </div>
 
-      {/* Right sidebar */}
-      <div className="w-80 bg-gray-800 border-l border-gray-700 p-4 overflow-y-auto">
-        <h2 className="text-xl font-bold text-white mb-4">Vessel Details</h2>
-        {selectedAlert ? (
-          <div className="bg-gray-700 rounded p-4">
-            <h3 className="text-lg font-semibold text-white mb-2">Alert Details</h3>
-            <p className="text-gray-300">Type: {selectedAlert.type}</p>
-            <p className="text-gray-300">Severity: {selectedAlert.severity}</p>
-            <p className="text-gray-300">Time: {new Date(selectedAlert.timestamp).toLocaleString()}</p>
-            <p className="text-gray-300 mt-2">{selectedAlert.description}</p>
-          </div>
-        ) : (
-          <p className="text-gray-400">Select a vessel on the map to view details</p>
-        )}
+      <div className="mt-8 text-center">
+        <button className="text-blue-400 hover:text-blue-300">Contact Us</button>
       </div>
     </main>
   );
