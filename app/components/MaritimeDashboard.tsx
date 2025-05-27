@@ -124,30 +124,44 @@ const MaritimeDashboard: React.FC = () => {
         pointerEvents: 'auto'
       }}>
         <a 
-          href="mailto:ssattigeri65@gmail.com"
+          href="mailto:ssattigeri65@gmail.com?subject=IODarkWatch%20Inquiry&body=Hello%20there,%0A%0AI%20found%20your%20maritime%20domain%20awareness%20platform%20and%20would%20like%20to%20get%20in%20touch.%0A%0ABest%20regards"
           style={{
-            display: 'inline-block',
-            backgroundColor: '#ff4444',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            padding: '16px 32px',
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
             color: 'white',
-            padding: '12px 24px',
-            borderRadius: '6px',
             textDecoration: 'none',
+            borderRadius: '50px',
             fontSize: '18px',
-            fontWeight: 'bold',
-            border: '3px solid white',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+            fontWeight: '600',
+            transition: 'all 0.3s ease',
+            border: 'none',
             cursor: 'pointer',
-            transition: 'transform 0.2s ease'
+            boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)'
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.4)';
+            e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 107, 107, 0.6)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, #ff5252 0%, #d63031 100%)';
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.4)';
+            e.currentTarget.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
           }}
         >
+          <svg 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="currentColor"
+            style={{ flexShrink: 0 }}
+          >
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
           Contact Us
         </a>
       </div>
