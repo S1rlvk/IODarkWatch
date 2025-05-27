@@ -8,7 +8,15 @@ import 'leaflet/dist/leaflet.css';
 const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {
   ssr: false,
   loading: () => (
-    <div className="h-[600px] w-full flex items-center justify-center bg-gray-800 text-white rounded-lg">
+    <div style={{ 
+      height: '600px', 
+      width: '100%', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      background: '#1a1a1a',
+      color: 'white'
+    }}>
       Loading map...
     </div>
   )
@@ -16,36 +24,33 @@ const MapComponent = dynamic(() => import('../components/MapComponent').then(mod
 
 export default function Dashboard() {
   return (
-    <main className="min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-3xl font-bold mb-4">Maritime Domain Awareness</h1>
-      <p className="text-gray-400 mb-8">Real-time vessel tracking in the Indian Ocean</p>
+    <div style={{ 
+      padding: '20px',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      color: 'white'
+    }}>
+      <h1>Maritime Domain Awareness</h1>
+      <p>Real-time vessel tracking in the Indian Ocean</p>
 
-      <div className="mb-8">
-        <p className="text-lg">Loading dashboard...</p>
+      <p>Loading dashboard...</p>
+
+      <h3>Active Vessels</h3>
+      <p>0</p>
+
+      <h3>Dark Vessels</h3>
+      <p>0</p>
+
+      <h3>Alerts</h3>
+      <p>0</p>
+
+      <div style={{ margin: '20px 0' }}>
+        <button style={{ marginRight: '10px' }}>Filter Vessels</button>
+        <button style={{ marginRight: '10px' }}>View Alerts</button>
+        <button>Export Data</button>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-xl font-semibold mb-2">Active Vessels</h3>
-          <p className="text-3xl font-bold">0</p>
-        </div>
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-xl font-semibold mb-2">Dark Vessels</h3>
-          <p className="text-3xl font-bold">0</p>
-        </div>
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-xl font-semibold mb-2">Alerts</h3>
-          <p className="text-3xl font-bold">0</p>
-        </div>
-      </div>
-
-      <div className="flex gap-4 mb-8">
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">Filter Vessels</button>
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">View Alerts</button>
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition-colors">Export Data</button>
-      </div>
-
-      <div className="h-[600px] bg-gray-800 rounded-lg overflow-hidden">
+      <div style={{ height: '600px', width: '100%', background: '#1a1a1a' }}>
         <MapComponent
           alerts={[]}
           onAlertClick={() => {}}
@@ -53,9 +58,9 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="mt-8 text-center">
-        <button className="text-blue-400 hover:text-blue-300 transition-colors">Contact Us</button>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <button>Contact Us</button>
       </div>
-    </main>
+    </div>
   );
 } 
