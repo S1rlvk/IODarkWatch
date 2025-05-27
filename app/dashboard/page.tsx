@@ -1,5 +1,6 @@
 'use client';
 
+// Dashboard page with industrial dark-mode layout
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { IndustrialLayout } from '../components/IndustrialLayout';
