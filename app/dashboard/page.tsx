@@ -3,6 +3,12 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard - IODarkWatch',
+  description: 'Maritime Domain Awareness Dashboard',
+};
 
 // Dynamically import MapComponent to avoid SSR issues
 const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {

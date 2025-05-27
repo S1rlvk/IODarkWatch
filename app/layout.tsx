@@ -17,17 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{
-        backgroundImage: 'url(\'/background.jpg\')',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        margin: 0,
-        padding: 0,
-        color: '#fff',
-        position: 'relative'
-      }}>
+      <body className={inter.className}>
         {children}
         <ContactButton />
       </body>
