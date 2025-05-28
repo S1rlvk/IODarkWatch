@@ -1,25 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
 import StatsCard from '../components/StatsCard';
 import FilterDrawer from '../components/FilterDrawer';
 import AlertsModal from '../components/AlertsModal';
 import ExportModal from '../components/ExportModal';
 import { useVesselStore } from '../store/useVesselStore';
-
-// Dynamically import VesselMap to avoid SSR issues
-const VesselMap = dynamic(() => import('../components/VesselMap').then(mod => mod.default), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[600px] w-full flex items-center justify-center bg-[#0a0a0a] text-white rounded-lg border border-[#333]">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-        <p className="text-lg">Loading map...</p>
-      </div>
-    </div>
-  )
-});
+import VesselMapClient from './VesselMapClient';
 
 export default function Dashboard() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -89,7 +76,9 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <VesselMap className="flex-1 rounded-2xl shadow-lg border border-[#333]" />
+        <div className="h-[600px] rounded-2xl shadow-lg border border-[#333] overflow-hidden">
+          <VesselMapClient />
+        </div>
 
         <div className="text-center py-6">
           <button className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors min-w-[120px] flex items-center justify-center gap-2 mx-auto">
