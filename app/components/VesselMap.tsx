@@ -4,6 +4,20 @@ import 'leaflet/dist/leaflet.css';
 import { useVesselStore } from '../store/useVesselStore';
 import AlertMarker from './AlertMarker';
 
+// Fix Leaflet default icon issue
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+  iconUrl: icon.src,
+  shadowUrl: iconShadow.src,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
+
 interface VesselMapProps {
   className?: string;
 }
@@ -40,6 +54,7 @@ export default function VesselMap({ className = '' }: VesselMapProps) {
         className="h-full w-full"
         ref={mapRef}
         zoomControl={false}
+        style={{ background: '#0a0a0a' }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
