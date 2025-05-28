@@ -28,6 +28,11 @@ export interface Alert {
   vesselId?: string;
 }
 
+export interface AlertPanelProps {
+  alerts: Alert[];
+  selectedVessel: Vessel | null;
+}
+
 export interface VesselState {
   vessels: Vessel[];
   alerts: Alert[];
