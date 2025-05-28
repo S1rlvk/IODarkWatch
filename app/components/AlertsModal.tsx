@@ -14,13 +14,13 @@ const AlertsModal: React.FC<AlertsModalProps> = ({ isOpen, onClose, alerts, onAl
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] w-3/4 h-3/4 rounded-lg overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]">
+      <div className="bg-[#1a1a1a] w-3/4 h-3/4 rounded-lg overflow-hidden flex flex-col shadow-2xl">
         <div className="p-6 border-b border-gray-700 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-white">Vessel Alerts</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-800 rounded-full"
           >
             ✕
           </button>
@@ -32,7 +32,7 @@ const AlertsModal: React.FC<AlertsModalProps> = ({ isOpen, onClose, alerts, onAl
               <div
                 key={alert.id}
                 onClick={() => onAlertSelect(alert)}
-                className="bg-[#333] rounded-lg p-4 cursor-pointer hover:bg-[#444] transition-colors"
+                className="bg-[#333] rounded-lg p-4 cursor-pointer hover:bg-[#444] transition-colors border border-gray-700"
               >
                 <div className="flex justify-between items-start">
                   <div>

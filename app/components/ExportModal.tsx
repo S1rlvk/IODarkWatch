@@ -25,13 +25,13 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExport, to
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] w-96 rounded-lg p-6">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]">
+      <div className="bg-[#1a1a1a] w-96 rounded-lg p-6 shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-white">Export Data</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-800 rounded-full"
           >
             ✕
           </button>
@@ -44,7 +44,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExport, to
               id="onlyFlagged"
               checked={onlyFlagged}
               onChange={(e) => setOnlyFlagged(e.target.checked)}
-              className="rounded bg-[#333] border-gray-600"
+              className="rounded bg-[#333] border-gray-600 focus:ring-blue-500"
             />
             <label htmlFor="onlyFlagged" className="text-gray-300">
               Only export flagged vessels
@@ -54,7 +54,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExport, to
           <div className="space-y-3">
             <button
               onClick={() => onExport('csv', onlyFlagged)}
-              className="w-full bg-[#333] text-white py-2 rounded hover:bg-[#444] transition-colors flex justify-between items-center px-4"
+              className="w-full bg-[#333] text-white py-2 rounded hover:bg-[#444] transition-colors flex justify-between items-center px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-700"
             >
               <span>Export as CSV</span>
               <span className="text-sm text-gray-400">
@@ -64,7 +64,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExport, to
 
             <button
               onClick={() => onExport('geojson', onlyFlagged)}
-              className="w-full bg-[#333] text-white py-2 rounded hover:bg-[#444] transition-colors flex justify-between items-center px-4"
+              className="w-full bg-[#333] text-white py-2 rounded hover:bg-[#444] transition-colors flex justify-between items-center px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-700"
             >
               <span>Export as GeoJSON</span>
               <span className="text-sm text-gray-400">
@@ -74,7 +74,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExport, to
 
             <button
               onClick={() => onExport('json', onlyFlagged)}
-              className="w-full bg-[#333] text-white py-2 rounded hover:bg-[#444] transition-colors flex justify-between items-center px-4"
+              className="w-full bg-[#333] text-white py-2 rounded hover:bg-[#444] transition-colors flex justify-between items-center px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-700"
             >
               <span>Copy as JSON</span>
               <span className="text-sm text-gray-400">
