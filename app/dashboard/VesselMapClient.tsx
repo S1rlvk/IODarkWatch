@@ -226,21 +226,21 @@ export default function VesselMapClient() {
       <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
         <button
           onClick={() => setShowSatellite(!showSatellite)}
-          className={`p-2 rounded-lg ${
-            showSatellite ? 'bg-[#00FFFF] text-[#121212]' : 'bg-[#1A1A1A] text-[#E0E0E0]'
-          } hover:bg-[#222] transition-colors`}
+          className={`p-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group ${
+            showSatellite ? 'bg-[#00FFFF] text-[#121212]' : 'bg-[#1A1A1A] text-[#E0E0E0] hover:bg-[#222]'
+          }`}
           title="Toggle Satellite View"
         >
-          <ViewfinderCircleIcon className="w-5 h-5" />
+          <ViewfinderCircleIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
         </button>
         <button
           onClick={() => setShowHeatmap(!showHeatmap)}
-          className={`p-2 rounded-lg ${
-            showHeatmap ? 'bg-[#00FFFF] text-[#121212]' : 'bg-[#1A1A1A] text-[#E0E0E0]'
-          } hover:bg-[#222] transition-colors`}
+          className={`p-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group ${
+            showHeatmap ? 'bg-[#00FFFF] text-[#121212]' : 'bg-[#1A1A1A] text-[#E0E0E0] hover:bg-[#222]'
+          }`}
           title="Toggle AIS Heatmap"
         >
-          <ChartBarIcon className="w-5 h-5" />
+          <ChartBarIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
         </button>
       </div>
     </div>
