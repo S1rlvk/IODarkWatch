@@ -39,14 +39,14 @@ export default function DashboardClient() {
   const alertPercentage = totalVessels > 0 ? (alerts.length / totalVessels * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="min-h-screen bg-[#121212] text-[#E0E0E0]">
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
       {/* Header */}
-      <header className="bg-[#1A1A1A] border-b border-[#333] p-4">
+      <header className="bg-[#111111] border-b border-[#222] p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 text-white"
+              className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 text-white"
             >
               {sidebarOpen ? (
                 <ChevronLeftIcon className="w-6 h-6" />
@@ -59,14 +59,14 @@ export default function DashboardClient() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setFilterOpen(true)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white"
+              className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white"
               title="Filter"
             >
               <FunnelIcon className="w-5 h-5 group-hover:text-[#00FFFF]" />
             </button>
             <button
               onClick={() => setAlertsOpen(true)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group relative text-white"
+              className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group relative text-white"
               title="Alerts"
             >
               <BellIcon className="w-5 h-5 group-hover:text-[#00FFFF]" />
@@ -78,7 +78,7 @@ export default function DashboardClient() {
             </button>
             <button
               onClick={() => setExportOpen(true)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white"
+              className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white"
               title="Export Data"
             >
               <ArrowDownTrayIcon className="w-5 h-5 group-hover:text-[#00FFFF]" />
@@ -91,21 +91,21 @@ export default function DashboardClient() {
       <main className="flex-1 p-4">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333] hover:border-[#39FF14]/30 transition-colors duration-200">
+          <div className="bg-[#111111] rounded-lg p-4 border border-[#222] hover:border-[#39FF14]/30 transition-colors duration-200">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-white/80 font-medium">Active Vessels</span>
               <span className="text-[#39FF14] font-semibold">{activePercentage}%</span>
             </div>
             <div className="text-2xl font-bold text-white">{activeVessels}</div>
           </div>
-          <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333] hover:border-[#FF5F5F]/30 transition-colors duration-200">
+          <div className="bg-[#111111] rounded-lg p-4 border border-[#222] hover:border-[#FF5F5F]/30 transition-colors duration-200">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-white/80 font-medium">Dark Vessels</span>
               <span className="text-[#FF5F5F] font-semibold">{darkPercentage}%</span>
             </div>
             <div className="text-2xl font-bold text-white">{darkVessels}</div>
           </div>
-          <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333] hover:border-[#00FFFF]/30 transition-colors duration-200">
+          <div className="bg-[#111111] rounded-lg p-4 border border-[#222] hover:border-[#00FFFF]/30 transition-colors duration-200">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-white/80 font-medium">Open Alerts</span>
               <span className="text-[#00FFFF] font-semibold">{alertPercentage}%</span>
@@ -117,18 +117,18 @@ export default function DashboardClient() {
         {/* Map and Table Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ height: 'calc(100vh - 14rem)' }}>
           {/* Map Area */}
-          <div className="lg:col-span-2 bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200">
+          <div className="lg:col-span-2 bg-[#111111] rounded-lg border border-[#222] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200">
             <VesselMapClient />
           </div>
 
           {/* Detection List */}
-          <div className="bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200">
-            <div className="p-4 border-b border-[#333]">
+          <div className="bg-[#111111] rounded-lg border border-[#222] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200">
+            <div className="p-4 border-b border-[#222]">
               <h3 className="font-semibold text-white">Recent Detections</h3>
             </div>
-            <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-[#1A1A1A]" style={{ height: 'calc(100% - 3.5rem)' }}>
+            <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-[#222] scrollbar-track-[#111111]" style={{ height: 'calc(100% - 3.5rem)' }}>
               {vessels.map(vessel => (
-                <div key={vessel.id} className="p-4 border-b border-[#333] hover:bg-[#222] transition-colors duration-200">
+                <div key={vessel.id} className="p-4 border-b border-[#222] hover:bg-[#1A1A1A] transition-colors duration-200">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h4 className="font-medium text-white">{vessel.name}</h4>
