@@ -6,16 +6,14 @@ export const convertVesselsToCSV = (vessels: Vessel[]): string => {
     'ID',
     'Name',
     'Type',
+    'Status',
     'MMSI',
     'IMO',
     'Flag',
     'Latitude',
     'Longitude',
-    'Speed',
-    'Course',
     'Last Update',
-    'Risk Level',
-    'Region'
+    'Confidence'
   ].join(',');
 
   // Convert each vessel to CSV row
@@ -23,16 +21,14 @@ export const convertVesselsToCSV = (vessels: Vessel[]): string => {
     vessel.id,
     `"${vessel.name}"`,
     vessel.type,
-    vessel.mmsi,
-    vessel.imo,
-    vessel.flag,
-    vessel.position.lat,
-    vessel.position.lng,
-    vessel.speed,
-    vessel.course,
-    vessel.lastUpdate,
-    vessel.riskLevel,
-    vessel.region
+    vessel.status,
+    vessel.mmsi || '',
+    vessel.imo || '',
+    vessel.flag || '',
+    vessel.lat,
+    vessel.lon,
+    new Date(vessel.timestamp).toISOString(),
+    vessel.confidence
   ].join(','));
 
   // Combine headers and rows
