@@ -48,11 +48,12 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
   });
 
   return (
-    <div style={{ height: '100%', width: '100%' }}>
+    <div className="h-full w-full relative">
       <MapContainer
         center={[15, 75]} // Center on Indian Ocean
         zoom={5}
-        style={{ height: '100%', width: '100%', background: '#111' }}
+        className="h-full w-full"
+        style={{ background: '#111' }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -67,11 +68,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
             icon={vessel.status === 'dark' ? darkVesselIcon : activeVesselIcon}
           >
             <Popup>
-              <div style={{ color: '#000' }}>
-                <h3 style={{ marginBottom: '5px' }}>{vessel.name}</h3>
-                <p>Type: {vessel.type}</p>
-                <p>Status: {vessel.status}</p>
-                <p>Last Seen: {new Date(vessel.lastSeen).toLocaleString()}</p>
+              <div className="p-2">
+                <h3 className="text-lg font-bold mb-2">{vessel.name}</h3>
+                <p className="text-sm text-gray-600">Type: {vessel.type}</p>
+                <p className="text-sm text-gray-600">Status: {vessel.status}</p>
+                <p className="text-sm text-gray-600">Last Seen: {new Date(vessel.lastSeen).toLocaleString()}</p>
               </div>
             </Popup>
           </Marker>
@@ -87,11 +88,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
             }}
           >
             <Popup>
-              <div style={{ color: '#000' }}>
-                <h3 style={{ marginBottom: '5px' }}>Alert: {alert.type}</h3>
-                <p>Severity: {alert.severity}</p>
-                <p>Time: {new Date(alert.timestamp).toLocaleString()}</p>
-                <p>{alert.description}</p>
+              <div className="p-2">
+                <h3 className="text-lg font-bold mb-2 text-accent-blue">Alert: {alert.type}</h3>
+                <p className="text-sm text-gray-600">Severity: {alert.severity}</p>
+                <p className="text-sm text-gray-600">Time: {new Date(alert.timestamp).toLocaleString()}</p>
+                <p className="text-sm text-gray-600 mt-2">{alert.description}</p>
               </div>
             </Popup>
           </Marker>

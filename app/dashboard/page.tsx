@@ -90,7 +90,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="h-[600px] w-full bg-[#111]">
+        <div className="h-[600px] w-full bg-[#111] rounded-lg overflow-hidden">
           <MapComponent
             alerts={sampleAlerts}
             onAlertClick={setSelectedAlert}
