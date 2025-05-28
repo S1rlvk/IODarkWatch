@@ -7,6 +7,7 @@ export async function GET() {
     {
       id: '1',
       type: 'Dark Vessel',
+      vessel: 'Ocean Voyager',
       severity: 'high',
       timestamp: new Date().toISOString(),
       description: 'Vessel detected operating without AIS',
@@ -15,6 +16,7 @@ export async function GET() {
     {
       id: '2',
       type: 'Suspicious Activity',
+      vessel: 'Pacific Star',
       severity: 'medium',
       timestamp: new Date().toISOString(),
       description: 'Vessel detected in restricted area',

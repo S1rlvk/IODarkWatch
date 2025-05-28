@@ -3,15 +3,7 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-
-interface Alert {
-  id: string;
-  type: string;
-  vessel: string;
-  timestamp: string;
-  description: string;
-  severity: 'high' | 'medium' | 'low';
-}
+import { Alert } from '../types';
 
 interface AlertsModalProps {
   isOpen: boolean;
