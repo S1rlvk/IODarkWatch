@@ -9,26 +9,24 @@ export async function GET() {
       name: 'Vessel 1',
       type: 'Tanker',
       status: 'active',
-      lat: 20.5937,
-      lon: 78.9629,
-      timestamp: new Date().toISOString(),
-      confidence: 0.95,
-      mmsi: '123456789',
-      imo: 'IMO1234567',
-      flag: 'Panama'
+      location: {
+        lat: 20.5937,
+        lng: 78.9629
+      },
+      speed: 12,
+      course: 45
     },
     {
       id: '2',
       name: 'Vessel 2',
       type: 'Cargo',
       status: 'dark',
-      lat: 15.5937,
-      lon: 73.9629,
-      timestamp: new Date().toISOString(),
-      confidence: 0.85,
-      mmsi: '987654321',
-      imo: 'IMO7654321',
-      flag: 'Liberia'
+      location: {
+        lat: 15.5937,
+        lng: 73.9629
+      },
+      speed: 0,
+      course: 0
     }
   ];
 
