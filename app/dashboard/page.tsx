@@ -31,73 +31,86 @@ export default function Dashboard() {
 
   return (
     <div style={{ 
-      padding: '20px',
-      maxWidth: '1200px',
-      margin: '0 auto',
-      color: '#fff',
+      minHeight: '100vh',
+      width: '100vw',
       background: '#111',
-      minHeight: '100vh'
+      color: '#fff',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      overflowY: 'auto'
     }}>
-      <h1 style={{ fontSize: '24px', marginBottom: '10px', color: '#fff' }}>Maritime Domain Awareness</h1>
-      <p style={{ marginBottom: '20px', color: '#ccc' }}>Real-time vessel tracking in the Indian Ocean</p>
+      <div style={{ 
+        padding: '20px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+      }}>
+        <h1 style={{ fontSize: '24px', marginBottom: '10px', color: '#fff' }}>Maritime Domain Awareness</h1>
+        <p style={{ marginBottom: '20px', color: '#ccc' }}>Real-time vessel tracking in the Indian Ocean</p>
 
-      <div style={{ marginBottom: '20px' }}>
-        <h3 style={{ marginBottom: '5px', color: '#fff' }}>Active Vessels</h3>
-        <p style={{ marginBottom: '15px', color: '#ccc' }}>{activeVessels}</p>
+        <div style={{ marginBottom: '20px' }}>
+          <h3 style={{ marginBottom: '5px', color: '#fff' }}>Active Vessels</h3>
+          <p style={{ marginBottom: '15px', color: '#ccc' }}>{activeVessels}</p>
 
-        <h3 style={{ marginBottom: '5px', color: '#fff' }}>Dark Vessels</h3>
-        <p style={{ marginBottom: '15px', color: '#ccc' }}>{darkVessels}</p>
+          <h3 style={{ marginBottom: '5px', color: '#fff' }}>Dark Vessels</h3>
+          <p style={{ marginBottom: '15px', color: '#ccc' }}>{darkVessels}</p>
 
-        <h3 style={{ marginBottom: '5px', color: '#fff' }}>Alerts</h3>
-        <p style={{ marginBottom: '15px', color: '#ccc' }}>{totalAlerts}</p>
-      </div>
+          <h3 style={{ marginBottom: '5px', color: '#fff' }}>Alerts</h3>
+          <p style={{ marginBottom: '15px', color: '#ccc' }}>{totalAlerts}</p>
+        </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <button style={{ 
-          marginRight: '10px',
-          padding: '8px 16px',
-          background: '#333',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>Filter Vessels</button>
-        <button style={{ 
-          marginRight: '10px',
-          padding: '8px 16px',
-          background: '#333',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>View Alerts</button>
-        <button style={{ 
-          padding: '8px 16px',
-          background: '#333',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>Export Data</button>
-      </div>
+        <div style={{ marginBottom: '20px' }}>
+          <button style={{ 
+            marginRight: '10px',
+            padding: '8px 16px',
+            background: '#333',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}>Filter Vessels</button>
+          <button style={{ 
+            marginRight: '10px',
+            padding: '8px 16px',
+            background: '#333',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}>View Alerts</button>
+          <button style={{ 
+            padding: '8px 16px',
+            background: '#333',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}>Export Data</button>
+        </div>
 
-      <div style={{ height: '600px', width: '100%', background: '#111' }}>
-        <MapComponent
-          alerts={sampleAlerts}
-          onAlertClick={setSelectedAlert}
-          selectedAlert={selectedAlert}
-        />
-      </div>
+        <div style={{ height: '600px', width: '100%', background: '#111' }}>
+          <MapComponent
+            alerts={sampleAlerts}
+            onAlertClick={setSelectedAlert}
+            selectedAlert={selectedAlert}
+          />
+        </div>
 
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button style={{ 
-          padding: '8px 16px',
-          background: '#333',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>Contact Us</button>
+        <div style={{ 
+          textAlign: 'center', 
+          marginTop: '20px',
+          padding: '20px 0'
+        }}>
+          <button style={{ 
+            padding: '8px 16px',
+            background: '#333',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            minWidth: '120px'
+          }}>Contact Us</button>
+        </div>
       </div>
     </div>
   );
