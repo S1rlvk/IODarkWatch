@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, CircleMarker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, useMap, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useVesselStore } from '../store/useVesselStore';
 import AlertMarker from './AlertMarker';
@@ -33,12 +33,13 @@ export default function VesselMap({ className = '' }: VesselMapProps) {
   const setSelectedAlert = useVesselStore(state => state.setSelectedAlert);
 
   return (
-    <div className={`h-[600px] w-full bg-[#111] rounded-lg overflow-hidden ${className}`}>
+    <div className={`h-[600px] w-full bg-[#0a0a0a] rounded-lg overflow-hidden ${className}`}>
       <MapContainer
         center={[0, 0]}
         zoom={2}
         className="h-full w-full"
         ref={mapRef}
+        zoomControl={false}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -56,13 +57,45 @@ export default function VesselMap({ className = '' }: VesselMapProps) {
               weight: 1
             }}
           >
-            <div className="p-2">
-              <p className="font-medium">{vessel.name || 'Unknown Vessel'}</p>
-              <p className="text-sm text-gray-400">MMSI: {vessel.id}</p>
-              <p className="text-sm text-gray-400">
-                Confidence: {(vessel.confidence * 100).toFixed(1)}%
-              </p>
-            </div>
+            <Popup>
+              <div className="p-2 min-w-[200px]">
+                <h3 className="text-lg font-bold mb-2 text-white">{vessel.name || 'Unknown Vessel'}</h3>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-300">
+                    <span className="font-medium">Status:</span>{' '}
+                    <span className={vessel.status === 'dark' ? 'text-red-500' : 'text-blue-500'}>
+                      {vessel.status}
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-300">
+                    <span className="font-medium">Type:</span> {vessel.type}
+                  </p>
+                  {vessel.mmsi && (
+                    <p className="text-sm text-gray-300">
+                      <span className="font-medium">MMSI:</span> {vessel.mmsi}
+                    </p>
+                  )}
+                  {vessel.imo && (
+                    <p className="text-sm text-gray-300">
+                      <span className="font-medium">IMO:</span> {vessel.imo}
+                    </p>
+                  )}
+                  {vessel.flag && (
+                    <p className="text-sm text-gray-300">
+                      <span className="font-medium">Flag:</span> {vessel.flag}
+                    </p>
+                  )}
+                  <p className="text-sm text-gray-300">
+                    <span className="font-medium">Last Update:</span>{' '}
+                    {new Date(vessel.timestamp).toLocaleString()}
+                  </p>
+                  <p className="text-sm text-gray-300">
+                    <span className="font-medium">Confidence:</span>{' '}
+                    {(vessel.confidence * 100).toFixed(1)}%
+                  </p>
+                </div>
+              </div>
+            </Popup>
           </CircleMarker>
         ))}
         {alerts.map(alert => (
