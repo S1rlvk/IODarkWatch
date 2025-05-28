@@ -39,7 +39,7 @@ export default function DashboardClient() {
   const alertPercentage = totalVessels > 0 ? (alerts.length / totalVessels * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="flex h-screen bg-[#121212] text-[#E0E0E0]">
+    <div className="flex flex-col h-screen bg-[#121212] text-[#E0E0E0]">
       {/* Collapsible Sidebar */}
       <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-[#1A1A1A] transition-all duration-300 flex flex-col`}>
         <div className="p-4 flex items-center justify-between border-b border-[#333]">
@@ -75,7 +75,7 @@ export default function DashboardClient() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Top Header */}
         <div className="h-14 bg-[#1A1A1A] border-b border-[#333] flex items-center justify-between px-6">
           <div className="flex items-center space-x-4">
@@ -136,14 +136,14 @@ export default function DashboardClient() {
         {/* Map and Table Layout */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden">
           {/* Map Area */}
-          <div className="lg:col-span-2 bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden">
+          <div className="lg:col-span-2 bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden h-full">
             <div className="h-full">
               <VesselMapClient />
             </div>
           </div>
 
           {/* Detection List */}
-          <div className="bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden">
+          <div className="bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden h-full">
             <div className="p-4 border-b border-[#333]">
               <h3 className="font-semibold">Recent Detections</h3>
             </div>

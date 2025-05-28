@@ -121,7 +121,7 @@ export default function VesselMapClient() {
 
   if (!L) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-[#1A1A1A]">
+      <div className="w-full h-full flex items-center justify-center bg-[#1A1A1A]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00FFFF] mx-auto mb-4"></div>
           <p className="text-[#A0A0A0] text-lg">Loading map...</p>
@@ -131,11 +131,11 @@ export default function VesselMapClient() {
   }
 
   return (
-    <div className="relative h-full">
+    <div className="w-full h-full relative">
       <MapContainer
         center={[13, 74.7]} // Center on the Indian Ocean region
         zoom={6}
-        style={{ height: '100%', width: '100%' }}
+        style={{ width: '100%', height: '100%' }}
         ref={mapRef}
         className="rounded-xl"
       >
