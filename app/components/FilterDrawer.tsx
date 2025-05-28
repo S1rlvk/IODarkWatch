@@ -1,104 +1,109 @@
+'use client';
+
 import React from 'react';
 import { useVesselStore } from '../store/useVesselStore';
 
-interface FilterDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function FilterDrawer({ isOpen, onClose }: FilterDrawerProps) {
-  const filters = useVesselStore(state => state.filters);
-  const setFilters = useVesselStore(state => state.setFilters);
-
-  if (!isOpen) return null;
+const FilterDrawer: React.FC = () => {
+  const { filters, setFilters } = useVesselStore();
 
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-[#1a1a1a] border-l border-[#333] p-6 overflow-y-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-white">Filter Vessels</h2>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-white"
-        >
-          ✕
-        </button>
+    <div className="p-4 bg-[#111] text-white">
+      <h2 className="text-xl font-bold mb-4">Filters</h2>
+      
+      {/* Status Filter */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Status</label>
+        <div className="space-y-2">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={filters.status.includes('active')}
+              onChange={(e) => {
+                const newStatus = e.target.checked
+                  ? [...filters.status, 'active']
+                  : filters.status.filter(s => s !== 'active');
+                setFilters({ status: newStatus });
+              }}
+              className="mr-2"
+            />
+            Active
+          </label>
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={filters.status.includes('dark')}
+              onChange={(e) => {
+                const newStatus = e.target.checked
+                  ? [...filters.status, 'dark']
+                  : filters.status.filter(s => s !== 'dark');
+                setFilters({ status: newStatus });
+              }}
+              className="mr-2"
+            />
+            Dark
+          </label>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Date Range
-          </label>
-          <div className="grid grid-cols-2 gap-4">
+      {/* Date Range Filter */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Date Range</label>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs mb-1">Start Date</label>
             <input
               type="date"
-              value={filters.dateRange.start}
-              onChange={(e) => setFilters({
-                dateRange: { ...filters.dateRange, start: e.target.value }
-              })}
-              className="w-full px-3 py-2 bg-[#333] text-white rounded border border-[#444] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              value={filters.dateRange[0]?.toISOString().split('T')[0] || ''}
+              onChange={(e) => {
+                const startDate = e.target.value ? new Date(e.target.value) : null;
+                setFilters({
+                  dateRange: [startDate, filters.dateRange[1]]
+                });
+              }}
+              className="w-full p-2 bg-[#222] border border-[#333] rounded"
             />
+          </div>
+          <div>
+            <label className="block text-xs mb-1">End Date</label>
             <input
               type="date"
-              value={filters.dateRange.end}
-              onChange={(e) => setFilters({
-                dateRange: { ...filters.dateRange, end: e.target.value }
-              })}
-              className="w-full px-3 py-2 bg-[#333] text-white rounded border border-[#444] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              value={filters.dateRange[1]?.toISOString().split('T')[0] || ''}
+              onChange={(e) => {
+                const endDate = e.target.value ? new Date(e.target.value) : null;
+                setFilters({
+                  dateRange: [filters.dateRange[0], endDate]
+                });
+              }}
+              className="w-full p-2 bg-[#222] border border-[#333] rounded"
             />
           </div>
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Regions
-          </label>
-          <select
-            multiple
-            value={filters.regions}
-            onChange={(e) => setFilters({
-              regions: Array.from(e.target.selectedOptions, option => option.value)
-            })}
-            className="w-full px-3 py-2 bg-[#333] text-white rounded border border-[#444] focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="north">North Indian Ocean</option>
-            <option value="south">South Indian Ocean</option>
-            <option value="east">East Indian Ocean</option>
-            <option value="west">West Indian Ocean</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={filters.onlyDarkShips}
-              onChange={(e) => setFilters({ onlyDarkShips: e.target.checked })}
-              className="w-4 h-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500"
-            />
-            <span className="text-sm font-medium text-gray-400">
-              Only show dark ships
-            </span>
-          </label>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Minimum Confidence Score: {(filters.confidenceScore * 100).toFixed(0)}%
-          </label>
-          <input
-            type="range"
-            min="0.5"
-            max="1"
-            step="0.1"
-            value={filters.confidenceScore}
-            onChange={(e) => setFilters({
-              confidenceScore: parseFloat(e.target.value)
-            })}
-            className="w-full h-2 bg-[#333] rounded-lg appearance-none cursor-pointer"
-          />
+      {/* Type Filter */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Vessel Type</label>
+        <div className="space-y-2">
+          {['Cargo', 'Tanker', 'Fishing'].map((type) => (
+            <label key={type} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.type.includes(type)}
+                onChange={(e) => {
+                  const newTypes = e.target.checked
+                    ? [...filters.type, type]
+                    : filters.type.filter(t => t !== type);
+                  setFilters({ type: newTypes });
+                }}
+                className="mr-2"
+              />
+              {type}
+            </label>
+          ))}
         </div>
       </div>
     </div>
   );
-} 
+};
+
+export default FilterDrawer; 
