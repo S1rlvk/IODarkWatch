@@ -17,6 +17,12 @@ export default function DashboardClient() {
   const alerts = useVesselStore(state => state.alerts);
   const activeVessels = vessels.filter(v => v.status === 'active').length;
   const darkVessels = vessels.filter(v => v.status === 'dark').length;
+  const totalVessels = vessels.length;
+
+  // Calculate percentages
+  const activePercentage = totalVessels > 0 ? (activeVessels / totalVessels * 100).toFixed(1) : '0.0';
+  const darkPercentage = totalVessels > 0 ? (darkVessels / totalVessels * 100).toFixed(1) : '0.0';
+  const alertPercentage = totalVessels > 0 ? (alerts.length / totalVessels * 100).toFixed(1) : '0.0';
 
   return (
     <main className="min-h-screen p-6">
@@ -40,7 +46,7 @@ export default function DashboardClient() {
             <div className="text-4xl font-bold text-white mb-2">{activeVessels}</div>
             <div className="flex items-center text-green-400 text-sm">
               <i className="fas fa-arrow-up mr-1"></i>
-              <span>5.2%</span>
+              <span>{activePercentage}%</span>
             </div>
           </div>
 
@@ -53,20 +59,20 @@ export default function DashboardClient() {
             <div className="text-4xl font-bold text-white mb-2">{darkVessels}</div>
             <div className="flex items-center text-red-400 text-sm">
               <i className="fas fa-arrow-down mr-1"></i>
-              <span>2.1%</span>
+              <span>{darkPercentage}%</span>
             </div>
           </div>
 
           <div className="bg-[#2d3748]/80 backdrop-blur-sm border border-[#2d3748] rounded-xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-orange-600"></div>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
             <div className="flex justify-between items-center mb-4">
               <span className="text-gray-300 text-sm font-medium uppercase tracking-wider">Open Alerts</span>
-              <i className="fas fa-exclamation-triangle text-orange-400 text-xl"></i>
+              <i className="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
             </div>
             <div className="text-4xl font-bold text-white mb-2">{alerts.length}</div>
-            <div className="flex items-center text-green-400 text-sm">
+            <div className="flex items-center text-yellow-400 text-sm">
               <i className="fas fa-arrow-up mr-1"></i>
-              <span>8.4%</span>
+              <span>{alertPercentage}%</span>
             </div>
           </div>
         </div>
@@ -153,4 +159,4 @@ export default function DashboardClient() {
       />
     </main>
   );
-} 
+}

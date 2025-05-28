@@ -77,8 +77,8 @@ export default function VesselMapClient() {
 
   return (
     <MapContainer
-      center={[0, 60]}
-      zoom={4}
+      center={[13, 74.7]} // Center on the Indian Ocean region
+      zoom={6}
       style={{ height: '100%', width: '100%' }}
       ref={mapRef}
       className="rounded-lg"
@@ -97,8 +97,10 @@ export default function VesselMapClient() {
             <div className="vessel-popup">
               <h4 className="text-lg font-semibold mb-2">{vessel.name}</h4>
               <p>Type: {vessel.type}</p>
-              <p>Speed: {vessel.speed} knots</p>
-              <p>Course: {vessel.course}°</p>
+              <p>Status: {vessel.status}</p>
+              {vessel.confidence && (
+                <p>Confidence: {(vessel.confidence * 100).toFixed(1)}%</p>
+              )}
               <div className={`vessel-status status-${vessel.status}`}>
                 {vessel.status.toUpperCase()}
               </div>

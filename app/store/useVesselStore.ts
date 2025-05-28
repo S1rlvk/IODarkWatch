@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { Vessel, Alert } from '../types';
+import { Vessel, Alert, VesselState } from '../types';
+import mockData from '../data/mockVessels.json';
 
 interface VesselState {
   vessels: Vessel[];
@@ -17,6 +18,9 @@ interface VesselState {
   addAlert: (alert: Alert) => void;
   removeAlert: (id: string) => void;
   getFilteredVessels: () => Vessel[];
+  setVessels: (vessels: Vessel[]) => void;
+  setAlerts: (alerts: Alert[]) => void;
+  setFilters: (filters: Partial<VesselState['filters']>) => void;
 }
 
 // Mock data for development
@@ -72,43 +76,37 @@ const mockAlerts: Alert[] = [
 ];
 
 export const useVesselStore = create<VesselState>((set, get) => ({
-  vessels: mockVessels,
-  alerts: mockAlerts,
+  vessels: mockData.vessels.map(v => ({
+    id: v.id,
+    name: v.name,
+    type: v.type,
+    status: v.status,
+    location: {
+      lat: v.lat,
+      lng: v.lon
+    },
+    speed: 0, // Default values since not in mock data
+    course: 0
+  })),
+  alerts: mockData.alerts || [],
   selectedAlert: null,
   filters: {
     status: [],
     type: [],
     dateRange: [null, null]
   },
+  setVessels: (vessels) => set({ vessels }),
+  setAlerts: (alerts) => set({ alerts }),
   setSelectedAlert: (alert) => set({ selectedAlert: alert }),
-  addVessel: (vessel) => set((state) => ({ vessels: [...state.vessels, vessel] })),
-  updateVessel: (id, vessel) =>
-    set((state) => ({
-      vessels: state.vessels.map((v) => (v.id === id ? { ...v, ...vessel } : v))
-    })),
-  removeVessel: (id) =>
-    set((state) => ({
-      vessels: state.vessels.filter((v) => v.id !== id)
-    })),
-  addAlert: (alert) => set((state) => ({ alerts: [...state.alerts, alert] })),
-  removeAlert: (id) =>
-    set((state) => ({
-      alerts: state.alerts.filter((a) => a.id !== id)
-    })),
+  setFilters: (filters) => set((state) => ({
+    filters: { ...state.filters, ...filters }
+  })),
   getFilteredVessels: () => {
-    const state = get();
-    let filtered = [...state.vessels];
-
-    // Filter by status
-    if (state.filters.status.length > 0) {
-      filtered = filtered.filter(vessel => state.filters.status.includes(vessel.status));
-    }
-
-    // Filter by type
-    if (state.filters.type.length > 0) {
-      filtered = filtered.filter(vessel => state.filters.type.includes(vessel.type));
-    }
-
-    return filtered;
+    const { vessels, filters } = get();
+    return vessels.filter(vessel => {
+      if (filters.status.length && !filters.status.includes(vessel.status)) return false;
+      if (filters.type.length && !filters.type.includes(vessel.type)) return false;
+      return true;
+    });
   }
 })); 

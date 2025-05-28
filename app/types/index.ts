@@ -14,19 +14,22 @@ export interface Vessel {
   };
   speed: number;
   course: number;
+  confidence?: number;
+  aisMatch?: boolean;
+  timestamp?: string;
 }
 
 export interface Alert {
   id: string;
   type: string;
-  vessel: string;
+  severity: string;
   timestamp: string;
-  description: string;
-  severity: 'high' | 'medium' | 'low';
   location: {
     lat: number;
     lng: number;
   };
+  description: string;
+  vessel?: string;
 }
 
 export interface AlertPanelProps {
