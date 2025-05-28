@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
+import { sampleVessels, sampleAlerts } from '../data/sampleVessels';
 
 // Dynamically import MapComponent to avoid SSR issues
 const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {
@@ -23,6 +24,11 @@ const MapComponent = dynamic(() => import('../components/MapComponent').then(mod
 });
 
 export default function Dashboard() {
+  const [selectedAlert, setSelectedAlert] = useState(null);
+  const activeVessels = sampleVessels.filter(v => v.status === 'active').length;
+  const darkVessels = sampleVessels.filter(v => v.status === 'dark').length;
+  const totalAlerts = sampleAlerts.length;
+
   return (
     <div style={{ 
       padding: '20px',
@@ -37,13 +43,13 @@ export default function Dashboard() {
 
       <div style={{ marginBottom: '20px' }}>
         <h3 style={{ marginBottom: '5px', color: '#fff' }}>Active Vessels</h3>
-        <p style={{ marginBottom: '15px', color: '#ccc' }}>0</p>
+        <p style={{ marginBottom: '15px', color: '#ccc' }}>{activeVessels}</p>
 
         <h3 style={{ marginBottom: '5px', color: '#fff' }}>Dark Vessels</h3>
-        <p style={{ marginBottom: '15px', color: '#ccc' }}>0</p>
+        <p style={{ marginBottom: '15px', color: '#ccc' }}>{darkVessels}</p>
 
         <h3 style={{ marginBottom: '5px', color: '#fff' }}>Alerts</h3>
-        <p style={{ marginBottom: '15px', color: '#ccc' }}>0</p>
+        <p style={{ marginBottom: '15px', color: '#ccc' }}>{totalAlerts}</p>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
@@ -77,9 +83,9 @@ export default function Dashboard() {
 
       <div style={{ height: '600px', width: '100%', background: '#111' }}>
         <MapComponent
-          alerts={[]}
-          onAlertClick={() => {}}
-          selectedAlert={null}
+          alerts={sampleAlerts}
+          onAlertClick={setSelectedAlert}
+          selectedAlert={selectedAlert}
         />
       </div>
 
