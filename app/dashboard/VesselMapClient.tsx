@@ -63,16 +63,51 @@ export default function VesselMapClient() {
     if (!L) return null;
     
     const color = status === 'active' ? '#68d391' : status === 'dark' ? '#f56565' : '#ed8936';
+    const size = status === 'dark' ? 16 : 12; // Make dark vessels more prominent
+    
     return L.divIcon({
       className: 'custom-div-icon',
-      html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>`,
-      iconSize: [12, 12],
-      iconAnchor: [6, 6]
+      html: `
+        <div class="relative">
+          <div style="
+            background-color: ${color};
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+          "></div>
+          ${status === 'dark' ? `
+            <div style="
+              position: absolute;
+              top: -4px;
+              left: -4px;
+              right: -4px;
+              bottom: -4px;
+              border-radius: 50%;
+              border: 2px solid ${color};
+              opacity: 0.5;
+              animation: pulse 2s infinite;
+            "></div>
+          ` : ''}
+        </div>
+      `,
+      iconSize: [size, size],
+      iconAnchor: [size/2, size/2]
     });
   };
 
   if (!L) {
-    return <div className="h-full w-full flex items-center justify-center bg-gray-900">Loading map...</div>;
+    return (
+      <div className="h-full w-full flex items-center justify-center bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400 text-lg">Loading map...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -81,7 +116,7 @@ export default function VesselMapClient() {
       zoom={6}
       style={{ height: '100%', width: '100%' }}
       ref={mapRef}
-      className="rounded-lg"
+      className="rounded-xl"
     >
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -94,15 +129,34 @@ export default function VesselMapClient() {
           icon={getVesselIcon(vessel.status)}
         >
           <Popup>
-            <div className="vessel-popup">
-              <h4 className="text-lg font-semibold mb-2">{vessel.name}</h4>
-              <p>Type: {vessel.type}</p>
-              <p>Status: {vessel.status}</p>
-              {vessel.confidence && (
-                <p>Confidence: {(vessel.confidence * 100).toFixed(1)}%</p>
-              )}
-              <div className={`vessel-status status-${vessel.status}`}>
-                {vessel.status.toUpperCase()}
+            <div className="vessel-popup p-2">
+              <h4 className="text-lg font-semibold mb-2 text-gray-900">{vessel.name}</h4>
+              <div className="space-y-1 text-sm">
+                <p className="flex items-center gap-2">
+                  <span className="text-gray-600">Type:</span>
+                  <span className="font-medium capitalize">{vessel.type}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="text-gray-600">Status:</span>
+                  <span className={`font-medium capitalize ${
+                    vessel.status === 'active' ? 'text-green-600' : 
+                    vessel.status === 'dark' ? 'text-red-600' : 'text-orange-600'
+                  }`}>
+                    {vessel.status}
+                  </span>
+                </p>
+                {vessel.speed > 0 && (
+                  <p className="flex items-center gap-2">
+                    <span className="text-gray-600">Speed:</span>
+                    <span className="font-medium">{vessel.speed} knots</span>
+                  </p>
+                )}
+                {vessel.course > 0 && (
+                  <p className="flex items-center gap-2">
+                    <span className="text-gray-600">Course:</span>
+                    <span className="font-medium">{vessel.course}°</span>
+                  </p>
+                )}
               </div>
             </div>
           </Popup>

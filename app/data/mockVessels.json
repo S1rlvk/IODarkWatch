@@ -2,58 +2,78 @@
   "vessels": [
     {
       "id": "img_001",
-      "lat": 13.05,
-      "lon": 74.7,
+      "name": "MV Horizon",
+      "type": "cargo",
+      "status": "dark",
+      "location": {
+        "lat": 13.05,
+        "lng": 74.7
+      },
+      "speed": 0,
+      "course": 0,
       "timestamp": "2024-05-26T04:23:00Z",
       "aisMatch": false,
-      "confidence": 0.82,
-      "type": "cargo",
-      "name": "MV Horizon",
-      "status": "dark"
+      "confidence": 0.82
     },
     {
       "id": "img_002",
-      "lat": 12.85,
-      "lon": 74.8,
+      "name": "MT Pacific Star",
+      "type": "tanker",
+      "status": "active",
+      "location": {
+        "lat": 12.85,
+        "lng": 74.8
+      },
+      "speed": 12,
+      "course": 45,
       "timestamp": "2024-05-26T04:25:00Z",
       "aisMatch": true,
-      "confidence": 0.95,
-      "type": "tanker",
-      "name": "MT Pacific Star",
-      "status": "active"
+      "confidence": 0.95
     },
     {
       "id": "img_003",
-      "lat": 13.15,
-      "lon": 74.6,
+      "name": "FV Ocean Explorer",
+      "type": "fishing",
+      "status": "dark",
+      "location": {
+        "lat": 13.15,
+        "lng": 74.6
+      },
+      "speed": 0,
+      "course": 0,
       "timestamp": "2024-05-26T04:27:00Z",
       "aisMatch": false,
-      "confidence": 0.78,
-      "type": "fishing",
-      "name": "FV Ocean Explorer",
-      "status": "dark"
+      "confidence": 0.78
     },
     {
       "id": "img_004",
-      "lat": 12.95,
-      "lon": 74.75,
+      "name": "MV Global Trader",
+      "type": "cargo",
+      "status": "active",
+      "location": {
+        "lat": 12.95,
+        "lng": 74.75
+      },
+      "speed": 15,
+      "course": 90,
       "timestamp": "2024-05-26T04:30:00Z",
       "aisMatch": true,
-      "confidence": 0.92,
-      "type": "cargo",
-      "name": "MV Global Trader",
-      "status": "active"
+      "confidence": 0.92
     },
     {
       "id": "img_005",
-      "lat": 13.1,
-      "lon": 74.65,
+      "name": "MT Energy Carrier",
+      "type": "tanker",
+      "status": "dark",
+      "location": {
+        "lat": 13.1,
+        "lng": 74.65
+      },
+      "speed": 0,
+      "course": 0,
       "timestamp": "2024-05-26T04:32:00Z",
       "aisMatch": false,
-      "confidence": 0.85,
-      "type": "tanker",
-      "name": "MT Energy Carrier",
-      "status": "dark"
+      "confidence": 0.85
     }
   ],
   "alerts": [
