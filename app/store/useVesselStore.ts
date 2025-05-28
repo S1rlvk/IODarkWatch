@@ -60,12 +60,9 @@ export const useVesselStore = create<VesselState>((set, get) => ({
     name: v.name,
     type: v.type,
     status: v.status as 'active' | 'dark' | 'alert',
-    location: {
-      lat: v.lat,
-      lng: v.lon
-    },
-    speed: 0, // Default values since not in mock data
-    course: 0
+    location: v.location,
+    speed: v.speed || 0,
+    course: v.course || 0
   })),
   alerts: mockData.alerts || [],
   selectedAlert: null,
