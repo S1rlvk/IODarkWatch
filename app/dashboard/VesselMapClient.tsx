@@ -1,39 +1,67 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useEffect, useRef, useState } from 'react';
 import { useVesselStore } from '../store/useVesselStore';
+import dynamic from 'next/dynamic';
 
-// Fix for default marker icons in Leaflet with Next.js
-const DefaultIcon = L.icon({
-  iconUrl: '/images/marker-icon.png',
-  iconRetinaUrl: '/images/marker-icon-2x.png',
-  shadowUrl: '/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
+// Dynamically import Leaflet components with no SSR
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+);
 
 export default function VesselMapClient() {
-  const mapRef = useRef<L.Map>(null);
+  const [L, setL] = useState<any>(null);
+  const mapRef = useRef<any>(null);
   const vessels = useVesselStore(state => state.vessels);
   const selectedAlert = useVesselStore(state => state.selectedAlert);
 
   useEffect(() => {
-    if (selectedAlert && mapRef.current) {
+    // Import Leaflet only on client side
+    import('leaflet').then((leaflet) => {
+      setL(leaflet.default);
+      // Import CSS dynamically
+      require('leaflet/dist/leaflet.css');
+
+      // Fix for default marker icons in Leaflet with Next.js
+      const DefaultIcon = leaflet.default.icon({
+        iconUrl: '/images/marker-icon.png',
+        iconRetinaUrl: '/images/marker-icon-2x.png',
+        shadowUrl: '/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
+      leaflet.default.Marker.prototype.options.icon = DefaultIcon;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedAlert && mapRef.current && L) {
       mapRef.current.setView(
         [selectedAlert.location.lat, selectedAlert.location.lng],
         12
       );
     }
-  }, [selectedAlert]);
+  }, [selectedAlert, L]);
 
   const getVesselIcon = (status: string) => {
+    if (!L) return null;
+    
     const color = status === 'active' ? '#68d391' : status === 'dark' ? '#f56565' : '#ed8936';
     return L.divIcon({
       className: 'custom-div-icon',
@@ -42,6 +70,10 @@ export default function VesselMapClient() {
       iconAnchor: [6, 6]
     });
   };
+
+  if (!L) {
+    return <div className="h-full w-full flex items-center justify-center bg-gray-900">Loading map...</div>;
+  }
 
   return (
     <MapContainer
