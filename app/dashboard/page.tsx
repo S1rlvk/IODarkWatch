@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { sampleVessels, sampleAlerts } from '../data/sampleVessels';
+import FilterModal from '../components/FilterModal';
+import AlertsModal from '../components/AlertsModal';
+import ExportModal from '../components/ExportModal';
 
 // Dynamically import MapComponent to avoid SSR issues
 const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {
@@ -25,9 +28,37 @@ const MapComponent = dynamic(() => import('../components/MapComponent').then(mod
 
 export default function Dashboard() {
   const [selectedAlert, setSelectedAlert] = useState(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    dateRange: { start: '', end: '' },
+    regions: [],
+    onlyDarkShips: false,
+    confidenceScore: 0.5
+  });
+
   const activeVessels = sampleVessels.filter(v => v.status === 'active').length;
   const darkVessels = sampleVessels.filter(v => v.status === 'dark').length;
   const totalAlerts = sampleAlerts.length;
+
+  const handleFilterApply = (newFilters: any) => {
+    setFilters(newFilters);
+    // Here you would typically filter the vessels based on the new filters
+    // For now, we're just storing the filters
+  };
+
+  const handleAlertSelect = (alert: any) => {
+    setSelectedAlert(alert);
+    setIsAlertsModalOpen(false);
+    // Here you would typically zoom the map to the alert location
+  };
+
+  const handleExport = (format: string, onlyFlagged: boolean) => {
+    // Here you would implement the actual export functionality
+    console.log(`Exporting as ${format}, onlyFlagged: ${onlyFlagged}`);
+    setIsExportModalOpen(false);
+  };
 
   return (
     <div style={{ 
@@ -60,32 +91,47 @@ export default function Dashboard() {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <button style={{ 
-            marginRight: '10px',
-            padding: '8px 16px',
-            background: '#333',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>Filter Vessels</button>
-          <button style={{ 
-            marginRight: '10px',
-            padding: '8px 16px',
-            background: '#333',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>View Alerts</button>
-          <button style={{ 
-            padding: '8px 16px',
-            background: '#333',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>Export Data</button>
+          <button 
+            onClick={() => setIsFilterModalOpen(true)}
+            style={{ 
+              marginRight: '10px',
+              padding: '8px 16px',
+              background: '#333',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Filter Vessels
+          </button>
+          <button 
+            onClick={() => setIsAlertsModalOpen(true)}
+            style={{ 
+              marginRight: '10px',
+              padding: '8px 16px',
+              background: '#333',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            View Alerts
+          </button>
+          <button 
+            onClick={() => setIsExportModalOpen(true)}
+            style={{ 
+              padding: '8px 16px',
+              background: '#333',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Export Data
+          </button>
         </div>
 
         <div style={{ height: '600px', width: '100%', background: '#111' }}>
@@ -112,6 +158,26 @@ export default function Dashboard() {
           }}>Contact Us</button>
         </div>
       </div>
+
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+      />
+
+      <AlertsModal
+        isOpen={isAlertsModalOpen}
+        onClose={() => setIsAlertsModalOpen(false)}
+        alerts={sampleAlerts}
+        onAlertSelect={handleAlertSelect}
+      />
+
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
+        totalRecords={sampleVessels.length}
+      />
     </div>
   );
 } 
