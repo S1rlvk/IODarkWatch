@@ -46,7 +46,7 @@ export default function DashboardClient() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10"
+              className="p-2 hover:bg-[#222] rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 text-white"
             >
               {sidebarOpen ? (
                 <ChevronLeftIcon className="w-6 h-6" />
@@ -59,14 +59,14 @@ export default function DashboardClient() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setFilterOpen(true)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group"
+              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white"
               title="Filter"
             >
               <FunnelIcon className="w-5 h-5 group-hover:text-[#00FFFF]" />
             </button>
             <button
               onClick={() => setAlertsOpen(true)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group relative"
+              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group relative text-white"
               title="Alerts"
             >
               <BellIcon className="w-5 h-5 group-hover:text-[#00FFFF]" />
@@ -78,7 +78,7 @@ export default function DashboardClient() {
             </button>
             <button
               onClick={() => setExportOpen(true)}
-              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group"
+              className="p-2 hover:bg-[#222] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white"
               title="Export Data"
             >
               <ArrowDownTrayIcon className="w-5 h-5 group-hover:text-[#00FFFF]" />
@@ -93,24 +93,24 @@ export default function DashboardClient() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333] hover:border-[#39FF14]/30 transition-colors duration-200">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-[#A0A0A0] font-medium">Active Vessels</span>
+              <span className="text-sm text-white/80 font-medium">Active Vessels</span>
               <span className="text-[#39FF14] font-semibold">{activePercentage}%</span>
             </div>
-            <div className="text-2xl font-bold text-[#E0E0E0]">{activeVessels}</div>
+            <div className="text-2xl font-bold text-white">{activeVessels}</div>
           </div>
           <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333] hover:border-[#FF5F5F]/30 transition-colors duration-200">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-[#A0A0A0] font-medium">Dark Vessels</span>
+              <span className="text-sm text-white/80 font-medium">Dark Vessels</span>
               <span className="text-[#FF5F5F] font-semibold">{darkPercentage}%</span>
             </div>
-            <div className="text-2xl font-bold text-[#E0E0E0]">{darkVessels}</div>
+            <div className="text-2xl font-bold text-white">{darkVessels}</div>
           </div>
           <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333] hover:border-[#00FFFF]/30 transition-colors duration-200">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-[#A0A0A0] font-medium">Open Alerts</span>
+              <span className="text-sm text-white/80 font-medium">Open Alerts</span>
               <span className="text-[#00FFFF] font-semibold">{alertPercentage}%</span>
             </div>
-            <div className="text-2xl font-bold text-[#E0E0E0]">{alerts.length}</div>
+            <div className="text-2xl font-bold text-white">{alerts.length}</div>
           </div>
         </div>
 
@@ -124,15 +124,15 @@ export default function DashboardClient() {
           {/* Detection List */}
           <div className="bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200">
             <div className="p-4 border-b border-[#333]">
-              <h3 className="font-semibold text-[#E0E0E0]">Recent Detections</h3>
+              <h3 className="font-semibold text-white">Recent Detections</h3>
             </div>
             <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-[#1A1A1A]" style={{ height: 'calc(100% - 3.5rem)' }}>
               {vessels.map(vessel => (
                 <div key={vessel.id} className="p-4 border-b border-[#333] hover:bg-[#222] transition-colors duration-200">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h4 className="font-medium text-[#E0E0E0]">{vessel.name}</h4>
-                      <p className="text-sm text-[#A0A0A0]">
+                      <h4 className="font-medium text-white">{vessel.name}</h4>
+                      <p className="text-sm text-white/70">
                         {vessel.timestamp ? new Date(vessel.timestamp).toLocaleString() : 'No timestamp'}
                       </p>
                     </div>
@@ -144,7 +144,7 @@ export default function DashboardClient() {
                       {vessel.status}
                     </span>
                   </div>
-                  <div className="text-sm text-[#A0A0A0] space-y-1">
+                  <div className="text-sm text-white/70 space-y-1">
                     <p>Lat: {vessel.location.lat.toFixed(4)}</p>
                     <p>Lon: {vessel.location.lng.toFixed(4)}</p>
                     <p>Confidence: {((vessel.confidence || 0) * 100).toFixed(1)}%</p>
