@@ -64,7 +64,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
         {sampleVessels.map(vessel => (
           <Marker
             key={vessel.id}
-            position={[vessel.location.lat, vessel.location.lng]}
+            position={[vessel.lat, vessel.lon]}
             icon={vessel.status === 'dark' ? darkVesselIcon : activeVesselIcon}
           >
             <Popup>
@@ -72,7 +72,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
                 <h3 className="text-lg font-bold mb-2">{vessel.name}</h3>
                 <p className="text-sm text-gray-600">Type: {vessel.type}</p>
                 <p className="text-sm text-gray-600">Status: {vessel.status}</p>
-                <p className="text-sm text-gray-600">Last Seen: {new Date(vessel.lastSeen).toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Last Seen: {new Date(vessel.timestamp).toLocaleString()}</p>
               </div>
             </Popup>
           </Marker>
