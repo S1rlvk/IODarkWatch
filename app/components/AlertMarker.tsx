@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Marker, Popup } from 'react-leaflet';
+import { CircleMarker, Popup } from 'react-leaflet';
 import { Alert } from '../types';
 
 interface AlertMarkerProps {
@@ -12,8 +12,9 @@ interface AlertMarkerProps {
 
 const AlertMarker: React.FC<AlertMarkerProps> = ({ alert, onClick, isSelected }) => {
   return (
-    <Marker
-      position={[alert.location.lat, alert.location.lng]}
+    <CircleMarker
+      center={[alert.location.lat, alert.location.lng]}
+      radius={isSelected ? 8 : 6}
       eventHandlers={{
         click: onClick
       }}
@@ -32,7 +33,7 @@ const AlertMarker: React.FC<AlertMarkerProps> = ({ alert, onClick, isSelected })
           <p className="text-sm text-gray-300 mt-2">{alert.description}</p>
         </div>
       </Popup>
-    </Marker>
+    </CircleMarker>
   );
 };
 
