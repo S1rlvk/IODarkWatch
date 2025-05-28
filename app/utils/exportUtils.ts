@@ -1,38 +1,34 @@
 import { Vessel } from '../types';
 
-export const convertVesselsToCSV = (vessels: Vessel[]): string => {
-  // Define CSV headers
+export const exportVesselsToCSV = (vessels: Vessel[]): string => {
   const headers = [
     'ID',
     'Name',
     'Type',
     'Status',
-    'MMSI',
-    'IMO',
-    'Flag',
     'Latitude',
     'Longitude',
-    'Last Update',
-    'Confidence'
-  ].join(',');
+    'Speed',
+    'Course'
+  ];
 
-  // Convert each vessel to CSV row
   const rows = vessels.map(vessel => [
     vessel.id,
-    `"${vessel.name}"`,
+    vessel.name,
     vessel.type,
     vessel.status,
-    vessel.mmsi || '',
-    vessel.imo || '',
-    vessel.flag || '',
-    vessel.lat,
-    vessel.lon,
-    new Date(vessel.timestamp).toISOString(),
-    vessel.confidence
-  ].join(','));
+    vessel.location.lat,
+    vessel.location.lng,
+    vessel.speed,
+    vessel.course
+  ]);
 
-  // Combine headers and rows
-  return [headers, ...rows].join('\n');
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+
+  return csvContent;
 };
 
 export const downloadCSV = (csvContent: string, filename: string) => {
