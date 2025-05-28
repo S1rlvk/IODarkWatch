@@ -5,12 +5,18 @@ interface VesselState {
   vessels: Vessel[];
   alerts: Alert[];
   selectedAlert: Alert | null;
+  filters: {
+    status: string[];
+    type: string[];
+    dateRange: [Date | null, Date | null];
+  };
   setSelectedAlert: (alert: Alert | null) => void;
   addVessel: (vessel: Vessel) => void;
   updateVessel: (id: string, vessel: Partial<Vessel>) => void;
   removeVessel: (id: string) => void;
   addAlert: (alert: Alert) => void;
   removeAlert: (id: string) => void;
+  getFilteredVessels: () => Vessel[];
 }
 
 // Mock data for development
@@ -65,10 +71,15 @@ const mockAlerts: Alert[] = [
   }
 ];
 
-export const useVesselStore = create<VesselState>((set) => ({
+export const useVesselStore = create<VesselState>((set, get) => ({
   vessels: mockVessels,
   alerts: mockAlerts,
   selectedAlert: null,
+  filters: {
+    status: [],
+    type: [],
+    dateRange: [null, null]
+  },
   setSelectedAlert: (alert) => set({ selectedAlert: alert }),
   addVessel: (vessel) => set((state) => ({ vessels: [...state.vessels, vessel] })),
   updateVessel: (id, vessel) =>
@@ -83,5 +94,21 @@ export const useVesselStore = create<VesselState>((set) => ({
   removeAlert: (id) =>
     set((state) => ({
       alerts: state.alerts.filter((a) => a.id !== id)
-    }))
+    })),
+  getFilteredVessels: () => {
+    const state = get();
+    let filtered = [...state.vessels];
+
+    // Filter by status
+    if (state.filters.status.length > 0) {
+      filtered = filtered.filter(vessel => state.filters.status.includes(vessel.status));
+    }
+
+    // Filter by type
+    if (state.filters.type.length > 0) {
+      filtered = filtered.filter(vessel => state.filters.type.includes(vessel.type));
+    }
+
+    return filtered;
+  }
 })); 
