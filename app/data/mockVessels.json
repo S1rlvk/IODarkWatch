@@ -1,0 +1,94 @@
+{
+  "vessels": [
+    {
+      "id": "img_001",
+      "lat": 13.05,
+      "lon": 74.7,
+      "timestamp": "2024-05-26T04:23:00Z",
+      "aisMatch": false,
+      "confidence": 0.82,
+      "type": "cargo",
+      "name": "MV Horizon",
+      "status": "dark"
+    },
+    {
+      "id": "img_002",
+      "lat": 12.85,
+      "lon": 74.8,
+      "timestamp": "2024-05-26T04:25:00Z",
+      "aisMatch": true,
+      "confidence": 0.95,
+      "type": "tanker",
+      "name": "MT Pacific Star",
+      "status": "active"
+    },
+    {
+      "id": "img_003",
+      "lat": 13.15,
+      "lon": 74.6,
+      "timestamp": "2024-05-26T04:27:00Z",
+      "aisMatch": false,
+      "confidence": 0.78,
+      "type": "fishing",
+      "name": "FV Ocean Explorer",
+      "status": "dark"
+    },
+    {
+      "id": "img_004",
+      "lat": 12.95,
+      "lon": 74.75,
+      "timestamp": "2024-05-26T04:30:00Z",
+      "aisMatch": true,
+      "confidence": 0.92,
+      "type": "cargo",
+      "name": "MV Global Trader",
+      "status": "active"
+    },
+    {
+      "id": "img_005",
+      "lat": 13.1,
+      "lon": 74.65,
+      "timestamp": "2024-05-26T04:32:00Z",
+      "aisMatch": false,
+      "confidence": 0.85,
+      "type": "tanker",
+      "name": "MT Energy Carrier",
+      "status": "dark"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alert_001",
+      "type": "dark_ship",
+      "severity": "high",
+      "timestamp": "2024-05-26T04:23:00Z",
+      "location": {
+        "lat": 13.05,
+        "lng": 74.7
+      },
+      "description": "Vessel detected with AIS transponder off"
+    },
+    {
+      "id": "alert_002",
+      "type": "speed_anomaly",
+      "severity": "medium",
+      "timestamp": "2024-05-26T04:25:00Z",
+      "location": {
+        "lat": 12.85,
+        "lng": 74.8
+      },
+      "description": "Unusual speed pattern detected"
+    },
+    {
+      "id": "alert_003",
+      "type": "dark_ship",
+      "severity": "high",
+      "timestamp": "2024-05-26T04:27:00Z",
+      "location": {
+        "lat": 13.15,
+        "lng": 74.6
+      },
+      "description": "Vessel detected with AIS transponder off"
+    }
+  ]
+} 

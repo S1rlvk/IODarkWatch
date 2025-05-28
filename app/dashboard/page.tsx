@@ -2,127 +2,112 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import 'leaflet/dist/leaflet.css';
-import { sampleVessels, sampleAlerts } from '../data/sampleVessels';
-import FilterModal from '../components/FilterModal';
+import StatsCard from '../components/StatsCard';
+import FilterDrawer from '../components/FilterDrawer';
 import AlertsModal from '../components/AlertsModal';
 import ExportModal from '../components/ExportModal';
+import { useVesselStore } from '../store/useVesselStore';
 
-// Dynamically import MapComponent to avoid SSR issues
-const MapComponent = dynamic(() => import('../components/MapComponent').then(mod => mod.default), {
+// Dynamically import VesselMap to avoid SSR issues
+const VesselMap = dynamic(() => import('../components/VesselMap').then(mod => mod.default), {
   ssr: false,
   loading: () => (
-    <div className="h-[600px] w-full flex items-center justify-center bg-[#111] text-white">
+    <div className="h-[600px] w-full flex items-center justify-center bg-[#111] text-white rounded-lg">
       Loading map...
     </div>
   )
 });
 
 export default function Dashboard() {
-  const [selectedAlert, setSelectedAlert] = useState(null);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
-  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    dateRange: { start: '', end: '' },
-    regions: [],
-    onlyDarkShips: false,
-    confidenceScore: 0.5
-  });
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isAlertsOpen, setIsAlertsOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
-  const activeVessels = sampleVessels.filter(v => v.status === 'active').length;
-  const darkVessels = sampleVessels.filter(v => v.status === 'dark').length;
-  const totalAlerts = sampleAlerts.length;
-
-  const handleFilterApply = (newFilters: any) => {
-    setFilters(newFilters);
-    // Here you would typically filter the vessels based on the new filters
-    // For now, we're just storing the filters
-  };
-
-  const handleAlertSelect = (alert: any) => {
-    setSelectedAlert(alert);
-    setIsAlertsModalOpen(false);
-    // Here you would typically zoom the map to the alert location
-  };
-
-  const handleExport = (format: string, onlyFlagged: boolean) => {
-    // Here you would implement the actual export functionality
-    console.log(`Exporting as ${format}, onlyFlagged: ${onlyFlagged}`);
-    setIsExportModalOpen(false);
-  };
+  const vessels = useVesselStore(state => state.vessels);
+  const alerts = useVesselStore(state => state.alerts);
+  const activeVessels = vessels.filter(v => v.status === 'active').length;
+  const darkVessels = vessels.filter(v => v.status === 'dark').length;
 
   return (
-    <div className="min-h-screen w-screen bg-[#111] text-white fixed top-0 left-0 overflow-y-auto">
-      <div className="p-5 max-w-7xl mx-auto">
-        <h1 className="text-2xl mb-2.5 text-white">Maritime Domain Awareness</h1>
-        <p className="mb-5 text-gray-300">Real-time vessel tracking in the Indian Ocean</p>
-
-        <div className="mb-5">
-          <h3 className="mb-1.5 text-white">Active Vessels</h3>
-          <p className="mb-4 text-gray-300">{activeVessels}</p>
-
-          <h3 className="mb-1.5 text-white">Dark Vessels</h3>
-          <p className="mb-4 text-gray-300">{darkVessels}</p>
-
-          <h3 className="mb-1.5 text-white">Alerts</h3>
-          <p className="mb-4 text-gray-300">{totalAlerts}</p>
+    <div className="min-h-screen bg-[#111] text-white p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold mb-2">Maritime Domain Awareness</h1>
+          <p className="text-gray-400">Real-time vessel tracking in the Indian Ocean</p>
         </div>
 
-        <div className="mb-5 space-x-2.5">
-          <button 
-            onClick={() => setIsFilterModalOpen(true)}
+        <div className="grid grid-cols-3 gap-4">
+          <StatsCard
+            title="Active Vessels"
+            count={activeVessels}
+            trend={5.2}
+          />
+          <StatsCard
+            title="Dark Vessels"
+            count={darkVessels}
+            trend={-2.1}
+          />
+          <StatsCard
+            title="Open Alerts"
+            count={alerts.length}
+            trend={8.4}
+          />
+        </div>
+
+        <div className="flex gap-4">
+          <button
+            onClick={() => setIsFilterOpen(true)}
             className="px-4 py-2 bg-[#333] text-white rounded hover:bg-[#444] transition-colors"
           >
             Filter Vessels
           </button>
-          <button 
-            onClick={() => setIsAlertsModalOpen(true)}
+          <button
+            onClick={() => setIsAlertsOpen(true)}
             className="px-4 py-2 bg-[#333] text-white rounded hover:bg-[#444] transition-colors"
           >
             View Alerts
           </button>
-          <button 
-            onClick={() => setIsExportModalOpen(true)}
+          <button
+            onClick={() => setIsExportOpen(true)}
             className="px-4 py-2 bg-[#333] text-white rounded hover:bg-[#444] transition-colors"
           >
             Export Data
           </button>
         </div>
 
-        <div className="h-[600px] w-full bg-[#111] rounded-lg overflow-hidden">
-          <MapComponent
-            alerts={sampleAlerts}
-            onAlertClick={setSelectedAlert}
-            selectedAlert={selectedAlert}
-          />
-        </div>
+        <VesselMap className="flex-1 rounded-2xl shadow-lg" />
 
-        <div className="text-center mt-5 py-5">
+        <div className="text-center py-6">
           <button className="px-4 py-2 bg-[#333] text-white rounded hover:bg-[#444] transition-colors min-w-[120px]">
             Contact Us
           </button>
         </div>
       </div>
 
-      <FilterModal
-        isOpen={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-        onApply={handleFilterApply}
+      <FilterDrawer
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
       />
 
       <AlertsModal
-        isOpen={isAlertsModalOpen}
-        onClose={() => setIsAlertsModalOpen(false)}
-        alerts={sampleAlerts}
-        onAlertSelect={handleAlertSelect}
+        isOpen={isAlertsOpen}
+        onClose={() => setIsAlertsOpen(false)}
+        alerts={alerts}
+        onAlertSelect={(alert) => {
+          useVesselStore.getState().setSelectedAlert(alert);
+          setIsAlertsOpen(false);
+        }}
       />
 
       <ExportModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-        onExport={handleExport}
-        totalRecords={sampleVessels.length}
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        onExport={(format, onlyFlagged) => {
+          // TODO: Implement export functionality
+          console.log(`Exporting as ${format}, onlyFlagged: ${onlyFlagged}`);
+          setIsExportOpen(false);
+        }}
+        totalRecords={vessels.length}
       />
     </div>
   );
