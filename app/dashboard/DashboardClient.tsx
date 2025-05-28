@@ -39,81 +39,62 @@ export default function DashboardClient() {
   const alertPercentage = totalVessels > 0 ? (alerts.length / totalVessels * 100).toFixed(1) : '0.0';
 
   return (
-    <div className="flex flex-col h-screen bg-[#121212] text-[#E0E0E0]">
-      {/* Collapsible Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-[#1A1A1A] transition-all duration-300 flex flex-col`}>
-        <div className="p-4 flex items-center justify-between border-b border-[#333]">
-          {sidebarOpen && <h2 className="text-lg font-semibold">Filters</h2>}
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1 hover:bg-[#222] rounded"
-          >
-            {sidebarOpen ? <ChevronLeftIcon className="w-5 h-5" /> : <ChevronRightIcon className="w-5 h-5" />}
-          </button>
-        </div>
-        
-        {sidebarOpen && (
-          <div className="p-4 space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Date Range</label>
-              <input type="date" className="w-full bg-[#222] border border-[#333] rounded p-2" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Confidence Score</label>
-              <input type="range" min="0" max="100" className="w-full" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Area of Interest</label>
-              <select className="w-full bg-[#222] border border-[#333] rounded p-2">
-                <option>Indian Ocean</option>
-                <option>Arabian Sea</option>
-                <option>Bay of Bengal</option>
-              </select>
-            </div>
+    <div className="min-h-screen bg-[#121212] text-[#E0E0E0]">
+      {/* Header */}
+      <header className="bg-[#1A1A1A] border-b border-[#333] p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 hover:bg-[#222] rounded-lg transition-colors"
+            >
+              {sidebarOpen ? (
+                <ChevronLeftIcon className="w-6 h-6" />
+              ) : (
+                <ChevronRightIcon className="w-6 h-6" />
+              )}
+            </button>
+            <h1 className="text-xl font-semibold">IODarkWatch</h1>
           </div>
-        )}
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Top Header */}
-        <div className="h-14 bg-[#1A1A1A] border-b border-[#333] flex items-center justify-between px-6">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-bold">IODarkWatch</h1>
-            <span className="text-sm text-[#A0A0A0]">· Open Maritime OSINT</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center text-sm text-[#A0A0A0]">
-              <ClockIcon className="w-4 h-4 mr-1" />
-              Last Updated: {lastUpdated}
-            </div>
-            <button 
+          <div className="flex items-center gap-2">
+            <button
               onClick={() => setFilterOpen(true)}
-              className="p-2 hover:bg-[#222] rounded"
+              className="p-2 hover:bg-[#222] rounded-lg transition-colors"
+              title="Filter"
             >
               <FunnelIcon className="w-5 h-5" />
             </button>
-            <button 
+            <button
               onClick={() => setAlertsOpen(true)}
-              className="p-2 hover:bg-[#222] rounded"
+              className="p-2 hover:bg-[#222] rounded-lg transition-colors relative"
+              title="Alerts"
             >
               <BellIcon className="w-5 h-5" />
+              {alerts.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#FF5F5F] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {alerts.length}
+                </span>
+              )}
             </button>
-            <button 
+            <button
               onClick={() => setExportOpen(true)}
-              className="p-2 hover:bg-[#222] rounded"
+              className="p-2 hover:bg-[#222] rounded-lg transition-colors"
+              title="Export Data"
             >
               <ArrowDownTrayIcon className="w-5 h-5" />
             </button>
           </div>
         </div>
+      </header>
 
+      {/* Main Content */}
+      <main className="flex-1 p-4">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333]">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-[#A0A0A0]">Active Vessels</span>
-              <span className="text-[#00FFFF]">{activePercentage}%</span>
+              <span className="text-[#39FF14]">{activePercentage}%</span>
             </div>
             <div className="text-2xl font-bold">{activeVessels}</div>
           </div>
@@ -127,27 +108,25 @@ export default function DashboardClient() {
           <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#333]">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-[#A0A0A0]">Open Alerts</span>
-              <span className="text-[#39FF14]">{alertPercentage}%</span>
+              <span className="text-[#00FFFF]">{alertPercentage}%</span>
             </div>
             <div className="text-2xl font-bold">{alerts.length}</div>
           </div>
         </div>
 
         {/* Map and Table Layout */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden" style={{ height: 'calc(100vh - 14rem)' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ height: 'calc(100vh - 14rem)' }}>
           {/* Map Area */}
-          <div className="lg:col-span-2 bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden" style={{ height: '100%' }}>
-            <div className="h-full w-full">
-              <VesselMapClient />
-            </div>
+          <div className="lg:col-span-2 bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden">
+            <VesselMapClient />
           </div>
 
           {/* Detection List */}
-          <div className="bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden h-full">
+          <div className="bg-[#1A1A1A] rounded-lg border border-[#333] overflow-hidden">
             <div className="p-4 border-b border-[#333]">
               <h3 className="font-semibold">Recent Detections</h3>
             </div>
-            <div className="overflow-y-auto h-full">
+            <div className="overflow-y-auto" style={{ height: 'calc(100% - 3.5rem)' }}>
               {vessels.map(vessel => (
                 <div key={vessel.id} className="p-4 border-b border-[#333] hover:bg-[#222]">
                   <div className="flex justify-between items-start mb-2">
@@ -170,28 +149,17 @@ export default function DashboardClient() {
                     <p>Lon: {vessel.location.lng.toFixed(4)}</p>
                     <p>Confidence: {((vessel.confidence || 0) * 100).toFixed(1)}%</p>
                   </div>
-                  <div className="mt-2 flex space-x-2">
-                    <button className="px-2 py-1 text-xs bg-[#222] rounded hover:bg-[#333]">
-                      Flag
-                    </button>
-                    <button className="px-2 py-1 text-xs bg-[#222] rounded hover:bg-[#333]">
-                      Export
-                    </button>
-                  </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
-      <FilterDrawer
-        isOpen={filterOpen}
-        onClose={() => setFilterOpen(false)}
-      />
-
-      <AlertsModal
-        isOpen={alertsOpen}
+      {/* Modals */}
+      <FilterDrawer isOpen={filterOpen} onClose={() => setFilterOpen(false)} />
+      <AlertsModal 
+        isOpen={alertsOpen} 
         onClose={() => setAlertsOpen(false)}
         alerts={alerts}
         onAlertSelect={(alert) => {
@@ -199,9 +167,8 @@ export default function DashboardClient() {
           setAlertsOpen(false);
         }}
       />
-
-      <ExportModal
-        isOpen={exportOpen}
+      <ExportModal 
+        isOpen={exportOpen} 
         onClose={() => setExportOpen(false)}
         onExport={(format, onlyFlagged) => {
           console.log(`Exporting as ${format}, onlyFlagged: ${onlyFlagged}`);

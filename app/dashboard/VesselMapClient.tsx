@@ -42,6 +42,14 @@ export default function VesselMapClient() {
     import('leaflet').then((leaflet) => {
       setL(leaflet.default);
 
+      // Fix Leaflet marker icon issue
+      delete (leaflet.default.Icon.Default.prototype as any)._getIconUrl;
+      leaflet.default.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+      });
+
       // Create a custom default icon
       const DefaultIcon = leaflet.default.divIcon({
         className: 'custom-div-icon',
@@ -150,7 +158,7 @@ export default function VesselMapClient() {
   }
 
   return (
-    <div className="w-full h-full relative" style={{ minHeight: '500px' }}>
+    <div className="w-full h-full relative industrial-map" style={{ minHeight: '500px' }}>
       <MapContainer
         center={[13, 74.7]} // Center on the Indian Ocean region
         zoom={6}

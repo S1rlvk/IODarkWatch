@@ -62,40 +62,40 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   .industrial-map .leaflet-container {
-    @apply h-full w-full bg-bg-primary;
+    @apply h-full w-full bg-[#1A1A1A];
   }
 
   .industrial-map .leaflet-control-zoom {
-    @apply border border-border bg-surface;
+    @apply border border-[#333] bg-[#1A1A1A] shadow-lg;
   }
 
   .industrial-map .leaflet-control-zoom a {
-    @apply text-white hover:bg-accent-blue;
+    @apply text-[#E0E0E0] hover:bg-[#00FFFF] hover:text-[#121212];
   }
 
   .industrial-map .leaflet-popup-content-wrapper {
-    @apply bg-surface border border-border rounded-sm;
+    @apply bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg;
   }
 
   .industrial-map .leaflet-popup-content {
-    @apply text-white;
+    @apply text-[#E0E0E0];
   }
 
   .industrial-map .leaflet-popup-tip {
-    @apply bg-surface;
+    @apply bg-[#1A1A1A];
   }
 
   .industrial-map .leaflet-control-layers {
-    @apply bg-surface border border-border rounded-sm shadow-industrial;
+    @apply bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg;
   }
 
   .industrial-map .leaflet-control-layers-base label,
   .industrial-map .leaflet-control-layers-overlays label {
-    @apply text-white;
+    @apply text-[#E0E0E0];
   }
 
   .industrial-map .leaflet-control-layers-expanded {
-    @apply bg-surface border border-border rounded-sm p-2;
+    @apply bg-[#1A1A1A] border border-[#333] rounded-lg p-2;
   }
 
   .neon-marker {
@@ -104,7 +104,7 @@ h1, h2, h3, h4, h5, h6 {
 
   .neon-marker::after {
     content: '';
-    @apply absolute inset-0 rounded-full bg-accent-blue opacity-50;
+    @apply absolute inset-0 rounded-full bg-[#00FFFF] opacity-50;
     animation: pulse 2s infinite;
   }
 
@@ -121,5 +121,25 @@ h1, h2, h3, h4, h5, h6 {
       transform: scale(1);
       opacity: 0.5;
     }
+  }
+
+  .vessel-popup {
+    @apply bg-[#1A1A1A] text-[#E0E0E0];
+  }
+
+  .vessel-popup h4 {
+    @apply text-lg font-semibold mb-2;
+  }
+
+  .vessel-popup p {
+    @apply text-sm;
+  }
+
+  .vessel-popup .text-gray-400 {
+    @apply text-[#A0A0A0];
+  }
+
+  .vessel-popup .text-gray-200 {
+    @apply text-[#E0E0E0];
   }
 } 
