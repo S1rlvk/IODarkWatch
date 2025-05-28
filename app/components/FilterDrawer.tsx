@@ -1,14 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useVesselStore } from '../store/useVesselStore';
 
-const FilterDrawer: React.FC = () => {
+interface FilterDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const FilterDrawer: React.FC<FilterDrawerProps> = ({ isOpen, onClose }) => {
   const { filters, setFilters } = useVesselStore();
 
+  if (!isOpen) return null;
+
   return (
-    <div className="p-4 bg-[#111] text-white">
-      <h2 className="text-xl font-bold mb-4">Filters</h2>
+    <div className="fixed inset-y-0 right-0 w-96 bg-[#111] border-l border-[#333] p-6 overflow-y-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-white">Filter Vessels</h2>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-white"
+        >
+          ✕
+        </button>
+      </div>
       
       {/* Status Filter */}
       <div className="mb-4">
