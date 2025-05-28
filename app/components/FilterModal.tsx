@@ -50,7 +50,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
           <h2 className="text-xl font-semibold text-white">Filter Vessels</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400 hover:text-white transition-colors"
           >
             ✕
           </button>
@@ -70,7 +70,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
                   ...prev,
                   dateRange: { ...prev.dateRange, start: e.target.value }
                 }))}
-                className="w-full bg-[#333] text-white rounded px-3 py-2"
+                className="w-full bg-[#333] text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <input
                 type="date"
@@ -79,7 +79,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
                   ...prev,
                   dateRange: { ...prev.dateRange, end: e.target.value }
                 }))}
-                className="w-full bg-[#333] text-white rounded px-3 py-2"
+                className="w-full bg-[#333] text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -96,7 +96,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
                     type="checkbox"
                     checked={filters.regions.includes(region)}
                     onChange={() => handleRegionChange(region)}
-                    className="rounded bg-[#333] border-gray-600"
+                    className="rounded bg-[#333] border-gray-600 focus:ring-blue-500"
                   />
                   <span className="text-gray-300">{region}</span>
                 </label>
@@ -114,7 +114,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
                   ...prev,
                   onlyDarkShips: e.target.checked
                 }))}
-                className="rounded bg-[#333] border-gray-600"
+                className="rounded bg-[#333] border-gray-600 focus:ring-blue-500"
               />
               <span className="text-gray-300">Only dark ships (no AIS match)</span>
             </label>
@@ -135,14 +135,14 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
                 ...prev,
                 confidenceScore: parseFloat(e.target.value)
               }))}
-              className="w-full"
+              className="w-full accent-blue-500"
             />
           </div>
 
           {/* Apply Button */}
           <button
             onClick={handleApply}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-[#1a1a1a]"
           >
             Apply Filters
           </button>
