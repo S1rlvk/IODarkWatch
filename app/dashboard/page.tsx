@@ -19,71 +19,110 @@ export default function Dashboard() {
   const darkVessels = vessels.filter(v => v.status === 'dark').length;
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white p-6">
+    <main className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="border-b border-[#1a1a1a] pb-6">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+        {/* Header */}
+        <div className="text-center mb-8 pb-6 border-b border-[#2a4365]">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Maritime Domain Awareness
           </h1>
           <p className="text-gray-400 text-lg">Real-time vessel tracking in the Indian Ocean</p>
         </div>
 
-        {/* Stats */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatsCard 
-            title="Active Vessels" 
-            count={activeVessels} 
-            trend={5.2}
-            className="bg-[#1a1a1a] border border-[#333]"
-          />
-          <StatsCard 
-            title="Dark Vessels" 
-            count={darkVessels} 
-            trend={-2.1}
-            className="bg-[#1a1a1a] border border-[#333]"
-          />
-          <StatsCard 
-            title="Open Alerts" 
-            count={alerts.length} 
-            trend={8.4}
-            className="bg-[#1a1a1a] border border-[#333]"
-          />
-        </section>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-[#2d3748]/80 backdrop-blur-sm border border-[#2d3748] rounded-xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-300 text-sm font-medium uppercase tracking-wider">Active Vessels</span>
+              <i className="fas fa-ship text-blue-400 text-xl"></i>
+            </div>
+            <div className="text-4xl font-bold text-white mb-2">{activeVessels}</div>
+            <div className="flex items-center text-green-400 text-sm">
+              <i className="fas fa-arrow-up mr-1"></i>
+              <span>5.2%</span>
+            </div>
+          </div>
 
-        {/* Action buttons */}
-        <section className="flex flex-wrap gap-4">
-          <button
-            onClick={() => setFilterOpen(true)}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-            </svg>
-            Filter Vessels
-          </button>
-          <button
-            onClick={() => setAlertsOpen(true)}
-            className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 shadow-lg shadow-red-500/20"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            View Alerts
-          </button>
-          <button
-            onClick={() => setExportOpen(true)}
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center gap-2 shadow-lg shadow-green-500/20"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-            Export Data
-          </button>
-        </section>
+          <div className="bg-[#2d3748]/80 backdrop-blur-sm border border-[#2d3748] rounded-xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-600"></div>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-300 text-sm font-medium uppercase tracking-wider">Dark Vessels</span>
+              <i className="fas fa-eye-slash text-red-400 text-xl"></i>
+            </div>
+            <div className="text-4xl font-bold text-white mb-2">{darkVessels}</div>
+            <div className="flex items-center text-red-400 text-sm">
+              <i className="fas fa-arrow-down mr-1"></i>
+              <span>2.1%</span>
+            </div>
+          </div>
 
-        {/* Map */}
-        <div className="h-[600px] rounded-2xl shadow-lg border border-[#333] overflow-hidden bg-[#0a0a0a]">
-          <VesselMapClient />
+          <div className="bg-[#2d3748]/80 backdrop-blur-sm border border-[#2d3748] rounded-xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-orange-600"></div>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-300 text-sm font-medium uppercase tracking-wider">Open Alerts</span>
+              <i className="fas fa-exclamation-triangle text-orange-400 text-xl"></i>
+            </div>
+            <div className="text-4xl font-bold text-white mb-2">{alerts.length}</div>
+            <div className="flex items-center text-green-400 text-sm">
+              <i className="fas fa-arrow-up mr-1"></i>
+              <span>8.4%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Controls Panel */}
+        <div className="bg-[#2d3748]/80 backdrop-blur-sm border border-[#2d3748] rounded-xl p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button
+              onClick={() => setFilterOpen(true)}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 hover:-translate-y-0.5"
+            >
+              <i className="fas fa-filter"></i>
+              Filter Vessels
+            </button>
+            <button
+              onClick={() => setAlertsOpen(true)}
+              className="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 hover:-translate-y-0.5"
+            >
+              <i className="fas fa-bell"></i>
+              View Alerts
+            </button>
+            <button
+              onClick={() => setExportOpen(true)}
+              className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-green-500/20 hover:-translate-y-0.5"
+            >
+              <i className="fas fa-download"></i>
+              Export Data
+            </button>
+          </div>
+        </div>
+
+        {/* Map Container */}
+        <div className="bg-[#2d3748]/80 backdrop-blur-sm border border-[#2d3748] rounded-xl p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold text-white">Live Vessel Tracking</h3>
+            <div className="flex items-center gap-2 text-green-400 text-sm">
+              <div className="status-dot"></div>
+              <span>System Online</span>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="h-[600px] rounded-lg overflow-hidden">
+              <VesselMapClient />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center pt-6 border-t border-[#2a4365]">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-blue-400 text-blue-400 rounded-lg hover:bg-blue-400 hover:text-white transition-all duration-300"
+          >
+            <i className="fas fa-envelope"></i>
+            Contact Us
+          </a>
         </div>
       </div>
 

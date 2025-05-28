@@ -1,124 +1,179 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useVesselStore } from '../store/useVesselStore';
+import { Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface FilterDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const FilterDrawer: React.FC<FilterDrawerProps> = ({ isOpen, onClose }) => {
-  const { filters, setFilters } = useVesselStore();
-
-  if (!isOpen) return null;
-
+export default function FilterDrawer({ isOpen, onClose }: FilterDrawerProps) {
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-[#111] border-l border-[#333] p-6 overflow-y-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-white">Filter Vessels</h2>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-white"
+    <Transition.Root show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-in-out duration-500"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in-out duration-500"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          ✕
-        </button>
-      </div>
-      
-      {/* Status Filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Status</label>
-        <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={filters.status.includes('active')}
-              onChange={(e) => {
-                const newStatus = e.target.checked
-                  ? [...filters.status, 'active']
-                  : filters.status.filter(s => s !== 'active');
-                setFilters({ status: newStatus });
-              }}
-              className="mr-2"
-            />
-            Active
-          </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={filters.status.includes('dark')}
-              onChange={(e) => {
-                const newStatus = e.target.checked
-                  ? [...filters.status, 'dark']
-                  : filters.status.filter(s => s !== 'dark');
-                setFilters({ status: newStatus });
-              }}
-              className="mr-2"
-            />
-            Dark
-          </label>
-        </div>
-      </div>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" />
+        </Transition.Child>
 
-      {/* Date Range Filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Date Range</label>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs mb-1">Start Date</label>
-            <input
-              type="date"
-              value={filters.dateRange[0]?.toISOString().split('T')[0] || ''}
-              onChange={(e) => {
-                const startDate = e.target.value ? new Date(e.target.value) : null;
-                setFilters({
-                  dateRange: [startDate, filters.dateRange[1]]
-                });
-              }}
-              className="w-full p-2 bg-[#222] border border-[#333] rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-xs mb-1">End Date</label>
-            <input
-              type="date"
-              value={filters.dateRange[1]?.toISOString().split('T')[0] || ''}
-              onChange={(e) => {
-                const endDate = e.target.value ? new Date(e.target.value) : null;
-                setFilters({
-                  dateRange: [filters.dateRange[0], endDate]
-                });
-              }}
-              className="w-full p-2 bg-[#222] border border-[#333] rounded"
-            />
-          </div>
-        </div>
-      </div>
+        <div className="fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-in-out duration-500"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                  <div className="flex h-full flex-col bg-[#1a202c] shadow-xl">
+                    <div className="px-4 py-6 sm:px-6 border-b border-[#2d3748]">
+                      <div className="flex items-start justify-between">
+                        <Dialog.Title className="text-xl font-semibold text-white">
+                          Filter Vessels
+                        </Dialog.Title>
+                        <div className="ml-3 flex h-7 items-center">
+                          <button
+                            type="button"
+                            className="rounded-md text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onClick={onClose}
+                          >
+                            <span className="sr-only">Close panel</span>
+                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
 
-      {/* Type Filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Vessel Type</label>
-        <div className="space-y-2">
-          {['Cargo', 'Tanker', 'Fishing'].map((type) => (
-            <label key={type} className="flex items-center">
-              <input
-                type="checkbox"
-                checked={filters.type.includes(type)}
-                onChange={(e) => {
-                  const newTypes = e.target.checked
-                    ? [...filters.type, type]
-                    : filters.type.filter(t => t !== type);
-                  setFilters({ type: newTypes });
-                }}
-                className="mr-2"
-              />
-              {type}
-            </label>
-          ))}
+                    <div className="relative flex-1 px-4 py-6 sm:px-6 overflow-y-auto">
+                      <div className="space-y-6">
+                        {/* Status Filter */}
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-300 mb-4">Vessel Status</h3>
+                          <div className="space-y-3">
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                              />
+                              <span className="ml-3 text-sm text-gray-300">Active</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                              />
+                              <span className="ml-3 text-sm text-gray-300">Dark</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                              />
+                              <span className="ml-3 text-sm text-gray-300">Alert</span>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Type Filter */}
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-300 mb-4">Vessel Type</h3>
+                          <div className="space-y-3">
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                              />
+                              <span className="ml-3 text-sm text-gray-300">Cargo</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                              />
+                              <span className="ml-3 text-sm text-gray-300">Tanker</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input
+                                type="checkbox"
+                                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                              />
+                              <span className="ml-3 text-sm text-gray-300">Fishing</span>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Speed Range */}
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-300 mb-4">Speed Range (knots)</h3>
+                          <div className="space-y-4">
+                            <input
+                              type="range"
+                              min="0"
+                              max="30"
+                              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <div className="flex justify-between text-sm text-gray-400">
+                              <span>0</span>
+                              <span>30</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Distance Range */}
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-300 mb-4">Distance from Coast (nm)</h3>
+                          <div className="space-y-4">
+                            <input
+                              type="range"
+                              min="0"
+                              max="200"
+                              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <div className="flex justify-between text-sm text-gray-400">
+                              <span>0</span>
+                              <span>200</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-shrink-0 justify-end px-4 py-4 border-t border-[#2d3748]">
+                      <button
+                        type="button"
+                        className="rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-600"
+                        onClick={onClose}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="ml-4 rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-600"
+                        onClick={onClose}
+                      >
+                        Apply Filters
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </Dialog>
+    </Transition.Root>
   );
-};
-
-export default FilterDrawer; 
+} 

@@ -7,25 +7,26 @@ export interface Vessel {
   id: string;
   name: string;
   type: string;
-  status: 'active' | 'dark';
-  lat: number;
-  lon: number;
-  timestamp: string;
-  confidence: number;
-  mmsi?: string;
-  imo?: string;
-  flag?: string;
-  position?: Location;
+  status: 'active' | 'dark' | 'alert';
+  location: {
+    lat: number;
+    lng: number;
+  };
+  speed: number;
+  course: number;
 }
 
 export interface Alert {
   id: string;
   type: string;
-  severity: 'high' | 'medium' | 'low';
-  location: Location;
+  vessel: string;
   timestamp: string;
   description: string;
-  vesselId?: string;
+  severity: 'high' | 'medium' | 'low';
+  location: {
+    lat: number;
+    lng: number;
+  };
 }
 
 export interface AlertPanelProps {

@@ -7,8 +7,8 @@ import { ContactButton } from './components/ContactButton';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'IODarkWatch',
-  description: 'Maritime Domain Awareness Platform',
+  title: 'Maritime Domain Awareness',
+  description: 'Real-time vessel tracking in the Indian Ocean',
 };
 
 export default function RootLayout({
@@ -18,6 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+      </head>
       <body className={inter.className}>
         {children}
         <ContactButton />
