@@ -12,6 +12,10 @@ export interface Vessel {
   lon: number;
   timestamp: string;
   confidence: number;
+  mmsi?: string;
+  imo?: string;
+  flag?: string;
+  position?: Location;
 }
 
 export interface Alert {
