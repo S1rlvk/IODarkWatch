@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Marker, Popup } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { Icon, LatLngTuple } from 'leaflet';
 import { Vessel } from '../types';
 
 interface VesselMarkerProps {
@@ -25,22 +25,26 @@ export const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick, isS
 
   if (!icon) return null;
 
+  // Use lat/lon directly from vessel object
+  const position: LatLngTuple = [vessel.lat, vessel.lon];
+
   return (
     <Marker
-      position={[vessel.position.lat, vessel.position.lng]}
+      position={position}
       icon={icon}
       eventHandlers={{
         click: onClick
       }}
     >
       <Popup>
-        <div>
-          <h3>{vessel.name}</h3>
-          <p>Type: {vessel.type}</p>
-          <p>Speed: {vessel.speed} knots</p>
-          <p>Course: {vessel.course}°</p>
-          <p>Risk Level: {vessel.riskLevel}</p>
-          <p>Region: {vessel.region}</p>
+        <div className="p-2">
+          <h3 className="text-lg font-bold mb-2">{vessel.name}</h3>
+          <p className="text-sm text-gray-300">Type: {vessel.type}</p>
+          <p className="text-sm text-gray-300">Status: {vessel.status}</p>
+          <p className="text-sm text-gray-300">Last Update: {new Date(vessel.timestamp).toLocaleString()}</p>
+          {vessel.mmsi && <p className="text-sm text-gray-300">MMSI: {vessel.mmsi}</p>}
+          {vessel.imo && <p className="text-sm text-gray-300">IMO: {vessel.imo}</p>}
+          {vessel.flag && <p className="text-sm text-gray-300">Flag: {vessel.flag}</p>}
         </div>
       </Popup>
     </Marker>
