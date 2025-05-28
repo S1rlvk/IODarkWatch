@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, CircleMarker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useVesselStore } from '../store/useVesselStore';
+import AlertMarker from './AlertMarker';
 
 interface VesselMapProps {
   className?: string;
@@ -27,6 +28,8 @@ function MapController() {
 export default function VesselMap({ className = '' }: VesselMapProps) {
   const mapRef = useRef<L.Map>(null);
   const vessels = useVesselStore(state => state.getFilteredVessels());
+  const alerts = useVesselStore(state => state.alerts);
+  const selectedAlert = useVesselStore(state => state.selectedAlert);
   const setSelectedAlert = useVesselStore(state => state.setSelectedAlert);
 
   return (
@@ -61,6 +64,14 @@ export default function VesselMap({ className = '' }: VesselMapProps) {
               </p>
             </div>
           </CircleMarker>
+        ))}
+        {alerts.map(alert => (
+          <AlertMarker
+            key={alert.id}
+            alert={alert}
+            onClick={() => setSelectedAlert(alert)}
+            isSelected={selectedAlert?.id === alert.id}
+          />
         ))}
         <MapController />
       </MapContainer>

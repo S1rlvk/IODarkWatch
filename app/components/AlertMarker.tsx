@@ -12,10 +12,16 @@ interface AlertMarkerProps {
 
 const AlertMarker: React.FC<AlertMarkerProps> = ({ alert, onClick, isSelected }) => {
   return (
-    <Marker 
+    <Marker
       position={[alert.location.lat, alert.location.lng]}
       eventHandlers={{
         click: onClick
+      }}
+      pathOptions={{
+        color: isSelected ? '#3b82f6' : '#ef4444',
+        fillColor: isSelected ? '#3b82f6' : '#ef4444',
+        fillOpacity: isSelected ? 0.8 : 0.6,
+        weight: isSelected ? 2 : 1
       }}
     >
       <Popup>

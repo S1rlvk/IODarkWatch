@@ -1,24 +1,33 @@
 export interface Vessel {
   id: string;
-  mmsi: string;
-  name: string;
+  lat: number;
+  lon: number;
+  timestamp: string;
+  aisMatch: boolean;
+  confidence: number;
   type: string;
-  position: [number, number];
-  speed: number;
-  course: number;
-  lastUpdate: string;
-  isDark: boolean;
+  name?: string;
+  status: 'active' | 'dark';
 }
 
 export interface Alert {
   id: string;
-  vessel: Vessel;
-  type: 'dark_mode' | 'suspicious_activity' | 'zone_violation';
-  severity: 'low' | 'medium' | 'high';
+  type: string;
+  severity: 'high' | 'medium' | 'low';
   timestamp: string;
   location: {
     lat: number;
     lng: number;
   };
   description: string;
+}
+
+export interface Filters {
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  regions: string[];
+  onlyDarkShips: boolean;
+  confidenceScore: number;
 } 
