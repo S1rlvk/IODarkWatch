@@ -2,27 +2,6 @@ import { create } from 'zustand';
 import { Vessel, Alert, VesselState } from '../types';
 import mockData from '../data/mockVessels.json';
 
-interface VesselState {
-  vessels: Vessel[];
-  alerts: Alert[];
-  selectedAlert: Alert | null;
-  filters: {
-    status: string[];
-    type: string[];
-    dateRange: [Date | null, Date | null];
-  };
-  setSelectedAlert: (alert: Alert | null) => void;
-  addVessel: (vessel: Vessel) => void;
-  updateVessel: (id: string, vessel: Partial<Vessel>) => void;
-  removeVessel: (id: string) => void;
-  addAlert: (alert: Alert) => void;
-  removeAlert: (id: string) => void;
-  getFilteredVessels: () => Vessel[];
-  setVessels: (vessels: Vessel[]) => void;
-  setAlerts: (alerts: Alert[]) => void;
-  setFilters: (filters: Partial<VesselState['filters']>) => void;
-}
-
 // Mock data for development
 const mockVessels: Vessel[] = [
   {
@@ -80,7 +59,7 @@ export const useVesselStore = create<VesselState>((set, get) => ({
     id: v.id,
     name: v.name,
     type: v.type,
-    status: v.status,
+    status: v.status as 'active' | 'dark' | 'alert',
     location: {
       lat: v.lat,
       lng: v.lon
