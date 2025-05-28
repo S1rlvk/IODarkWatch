@@ -1,42 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, CircleMarker, useMap, Popup } from 'react-leaflet';
+'use client';
+
+import React, { useRef, useEffect } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useVesselStore } from '../store/useVesselStore';
+import { Vessel, Alert } from '../types';
 import AlertMarker from './AlertMarker';
-
-// Fix Leaflet default icon issue
-import L from 'leaflet';
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-  iconUrl: icon.src,
-  shadowUrl: iconShadow.src,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
 
 interface VesselMapProps {
   className?: string;
-}
-
-function MapController() {
-  const map = useMap();
-  const selectedAlert = useVesselStore(state => state.selectedAlert);
-
-  useEffect(() => {
-    if (selectedAlert) {
-      map.flyTo(
-        [selectedAlert.location.lat, selectedAlert.location.lng],
-        12,
-        { duration: 1.5 }
-      );
-    }
-  }, [selectedAlert, map]);
-
-  return null;
 }
 
 export default function VesselMap({ className = '' }: VesselMapProps) {
@@ -46,73 +19,66 @@ export default function VesselMap({ className = '' }: VesselMapProps) {
   const selectedAlert = useVesselStore(state => state.selectedAlert);
   const setSelectedAlert = useVesselStore(state => state.setSelectedAlert);
 
+  // Fix Leaflet marker icon issue
+  useEffect(() => {
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    });
+  }, []);
+
+  // Center map on selected alert
+  useEffect(() => {
+    if (selectedAlert && mapRef.current) {
+      mapRef.current.setView(
+        [selectedAlert.location.lat, selectedAlert.location.lng],
+        8
+      );
+    }
+  }, [selectedAlert]);
+
   return (
-    <div className={`h-[600px] w-full bg-[#0a0a0a] rounded-lg overflow-hidden ${className}`}>
+    <div className={`h-full w-full relative ${className}`}>
       <MapContainer
-        center={[0, 0]}
-        zoom={2}
+        center={[15, 75]} // Center on Indian Ocean
+        zoom={5}
         className="h-full w-full"
+        style={{ background: '#111' }}
         ref={mapRef}
-        zoomControl={false}
-        style={{ background: '#0a0a0a' }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
+        
+        {/* Display vessels */}
         {vessels.map(vessel => (
           <CircleMarker
             key={vessel.id}
-            center={[vessel.lat, vessel.lon]}
-            radius={Math.max(4, vessel.confidence * 10)}
+            center={[vessel.location.lat, vessel.location.lng]}
+            radius={6}
             pathOptions={{
               color: vessel.status === 'dark' ? '#ef4444' : '#3b82f6',
               fillColor: vessel.status === 'dark' ? '#ef4444' : '#3b82f6',
-              fillOpacity: 0.7,
+              fillOpacity: 0.6,
               weight: 1
             }}
           >
             <Popup>
-              <div className="p-2 min-w-[200px]">
-                <h3 className="text-lg font-bold mb-2 text-white">{vessel.name || 'Unknown Vessel'}</h3>
-                <div className="space-y-1">
-                  <p className="text-sm text-gray-300">
-                    <span className="font-medium">Status:</span>{' '}
-                    <span className={vessel.status === 'dark' ? 'text-red-500' : 'text-blue-500'}>
-                      {vessel.status}
-                    </span>
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    <span className="font-medium">Type:</span> {vessel.type}
-                  </p>
-                  {vessel.mmsi && (
-                    <p className="text-sm text-gray-300">
-                      <span className="font-medium">MMSI:</span> {vessel.mmsi}
-                    </p>
-                  )}
-                  {vessel.imo && (
-                    <p className="text-sm text-gray-300">
-                      <span className="font-medium">IMO:</span> {vessel.imo}
-                    </p>
-                  )}
-                  {vessel.flag && (
-                    <p className="text-sm text-gray-300">
-                      <span className="font-medium">Flag:</span> {vessel.flag}
-                    </p>
-                  )}
-                  <p className="text-sm text-gray-300">
-                    <span className="font-medium">Last Update:</span>{' '}
-                    {new Date(vessel.timestamp).toLocaleString()}
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    <span className="font-medium">Confidence:</span>{' '}
-                    {(vessel.confidence * 100).toFixed(1)}%
-                  </p>
-                </div>
+              <div className="p-2">
+                <h3 className="text-lg font-bold mb-2">{vessel.name}</h3>
+                <p className="text-sm text-gray-300">Type: {vessel.type}</p>
+                <p className="text-sm text-gray-300">Status: {vessel.status}</p>
+                <p className="text-sm text-gray-300">Speed: {vessel.speed} knots</p>
+                <p className="text-sm text-gray-300">Course: {vessel.course}°</p>
               </div>
             </Popup>
           </CircleMarker>
         ))}
+
+        {/* Display alerts */}
         {alerts.map(alert => (
           <AlertMarker
             key={alert.id}
@@ -121,7 +87,6 @@ export default function VesselMap({ className = '' }: VesselMapProps) {
             isSelected={selectedAlert?.id === alert.id}
           />
         ))}
-        <MapController />
       </MapContainer>
     </div>
   );
