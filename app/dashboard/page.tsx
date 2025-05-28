@@ -14,7 +14,7 @@ const MapComponent = dynamic(() => import('../components/MapComponent').then(mod
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: '#000',
+      background: '#111',
       color: 'white'
     }}>
       Loading map...
@@ -29,13 +29,11 @@ export default function Dashboard() {
       maxWidth: '1200px',
       margin: '0 auto',
       color: 'white',
-      background: '#000',
+      background: '#111',
       minHeight: '100vh'
     }}>
       <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>Maritime Domain Awareness</h1>
       <p style={{ marginBottom: '20px' }}>Real-time vessel tracking in the Indian Ocean</p>
-
-      <p style={{ marginBottom: '20px' }}>Loading dashboard...</p>
 
       <div style={{ marginBottom: '20px' }}>
         <h3 style={{ marginBottom: '5px' }}>Active Vessels</h3>
@@ -54,7 +52,7 @@ export default function Dashboard() {
         <button>Export Data</button>
       </div>
 
-      <div style={{ height: '600px', width: '100%', background: '#000' }}>
+      <div style={{ height: '600px', width: '100%', background: '#111' }}>
         <MapComponent
           alerts={[]}
           onAlertClick={() => {}}
