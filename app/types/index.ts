@@ -33,6 +33,13 @@ export interface AlertPanelProps {
   selectedVessel: Vessel | null;
 }
 
+export interface TimelineViewProps {
+  timeRange: [Date | null, Date | null];
+  onTimeRangeChange: (range: [Date | null, Date | null]) => void;
+  vessels: Vessel[];
+  alerts: Alert[];
+}
+
 export interface VesselState {
   vessels: Vessel[];
   alerts: Alert[];
