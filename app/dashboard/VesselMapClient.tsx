@@ -8,6 +8,7 @@ import {
   ViewfinderCircleIcon, 
   ChartBarIcon 
 } from '@heroicons/react/24/outline';
+import 'leaflet/dist/leaflet.css';
 
 // Dynamically import Leaflet components with no SSR
 const MapContainer = dynamic(
@@ -39,18 +40,22 @@ export default function VesselMapClient() {
     // Import Leaflet only on client side
     import('leaflet').then((leaflet) => {
       setL(leaflet.default);
-      // Import CSS dynamically
-      require('leaflet/dist/leaflet.css');
 
-      // Fix for default marker icons in Leaflet with Next.js
-      const DefaultIcon = leaflet.default.icon({
-        iconUrl: '/images/marker-icon.png',
-        iconRetinaUrl: '/images/marker-icon-2x.png',
-        shadowUrl: '/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+      // Create a custom default icon
+      const DefaultIcon = leaflet.default.divIcon({
+        className: 'custom-div-icon',
+        html: `
+          <div style="
+            background-color: #00FFFF;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+          "></div>
+        `,
+        iconSize: [12, 12],
+        iconAnchor: [6, 6]
       });
 
       leaflet.default.Marker.prototype.options.icon = DefaultIcon;
@@ -131,11 +136,11 @@ export default function VesselMapClient() {
   }
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative" style={{ minHeight: '500px' }}>
       <MapContainer
         center={[13, 74.7]} // Center on the Indian Ocean region
         zoom={6}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', minHeight: '500px' }}
         ref={mapRef}
         className="rounded-xl"
       >

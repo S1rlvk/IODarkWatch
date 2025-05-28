@@ -1,8 +1,8 @@
 {
   "/_not-found": "app/_not-found.js",
-  "/api/vessels/route": "app/api/vessels/route.js",
-  "/dashboard/page": "app/dashboard/page.js",
+  "/api/alerts/route": "app/api/alerts/route.js",
   "/dark-vessels/page": "app/dark-vessels/page.js",
-  "/page": "app/page.js",
-  "/api/alerts/route": "app/api/alerts/route.js"
+  "/dashboard/page": "app/dashboard/page.js",
+  "/api/vessels/route": "app/api/vessels/route.js",
+  "/page": "app/page.js"
 }
