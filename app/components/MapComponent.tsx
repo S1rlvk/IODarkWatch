@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { sampleVessels, sampleAlerts } from '../data/sampleVessels';
+import { Vessel, Alert } from '../types';
 
 // Fix Leaflet marker icon issue
 const fixLeafletIcon = () => {
@@ -17,12 +17,13 @@ const fixLeafletIcon = () => {
 };
 
 interface MapComponentProps {
-  alerts: any[];
-  onAlertClick: (alert: any) => void;
-  selectedAlert: any;
+  vessels: Vessel[];
+  alerts: Alert[];
+  onAlertClick: (alert: Alert) => void;
+  selectedAlert: Alert | null;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selectedAlert }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ vessels, alerts, onAlertClick, selectedAlert }) => {
   useEffect(() => {
     fixLeafletIcon();
   }, []);
@@ -61,10 +62,10 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
         />
         
         {/* Display vessels */}
-        {sampleVessels.map(vessel => (
+        {vessels.map(vessel => (
           <Marker
             key={vessel.id}
-            position={[vessel.lat, vessel.lon]}
+            position={[vessel.location.lat, vessel.location.lng]}
             icon={vessel.status === 'dark' ? darkVesselIcon : activeVesselIcon}
           >
             <Popup>
@@ -72,7 +73,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
                 <h3 className="text-lg font-bold mb-2">{vessel.name}</h3>
                 <p className="text-sm text-gray-600">Type: {vessel.type}</p>
                 <p className="text-sm text-gray-600">Status: {vessel.status}</p>
-                <p className="text-sm text-gray-600">Last Seen: {new Date(vessel.timestamp).toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Speed: {vessel.speed} knots</p>
+                <p className="text-sm text-gray-600">Course: {vessel.course}°</p>
               </div>
             </Popup>
           </Marker>
@@ -90,6 +92,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ alerts, onAlertClick, selec
             <Popup>
               <div className="p-2">
                 <h3 className="text-lg font-bold mb-2 text-accent-blue">Alert: {alert.type}</h3>
+                <p className="text-sm text-gray-600">Vessel: {alert.vessel}</p>
                 <p className="text-sm text-gray-600">Severity: {alert.severity}</p>
                 <p className="text-sm text-gray-600">Time: {new Date(alert.timestamp).toLocaleString()}</p>
                 <p className="text-sm text-gray-600 mt-2">{alert.description}</p>
