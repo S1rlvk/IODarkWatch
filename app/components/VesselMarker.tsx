@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Marker, Popup } from 'react-leaflet';
-import { Icon, LatLngTuple } from 'leaflet';
+import React from 'react';
+import { CircleMarker, Popup } from 'react-leaflet';
 import { Vessel } from '../types';
 
 interface VesselMarkerProps {
@@ -11,29 +10,19 @@ interface VesselMarkerProps {
   isSelected: boolean;
 }
 
-export const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick, isSelected }) => {
-  const [icon, setIcon] = useState<Icon | null>(null);
-
-  useEffect(() => {
-    // Create icon only on client side
-    setIcon(new Icon({
-      iconUrl: '/vessel-icon.png',
-      iconSize: [25, 25],
-      iconAnchor: [12, 12],
-    }));
-  }, []);
-
-  if (!icon) return null;
-
-  // Use lat/lon directly from vessel object
-  const position: LatLngTuple = [vessel.lat, vessel.lon];
-
+const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick, isSelected }) => {
   return (
-    <Marker
-      position={position}
-      icon={icon}
+    <CircleMarker
+      center={[vessel.location.lat, vessel.location.lng]}
+      radius={isSelected ? 8 : 6}
       eventHandlers={{
         click: onClick
+      }}
+      pathOptions={{
+        color: vessel.status === 'dark' ? '#ef4444' : '#3b82f6',
+        fillColor: vessel.status === 'dark' ? '#ef4444' : '#3b82f6',
+        fillOpacity: isSelected ? 0.8 : 0.6,
+        weight: isSelected ? 2 : 1
       }}
     >
       <Popup>
@@ -41,12 +30,12 @@ export const VesselMarker: React.FC<VesselMarkerProps> = ({ vessel, onClick, isS
           <h3 className="text-lg font-bold mb-2">{vessel.name}</h3>
           <p className="text-sm text-gray-300">Type: {vessel.type}</p>
           <p className="text-sm text-gray-300">Status: {vessel.status}</p>
-          <p className="text-sm text-gray-300">Last Update: {new Date(vessel.timestamp).toLocaleString()}</p>
-          {vessel.mmsi && <p className="text-sm text-gray-300">MMSI: {vessel.mmsi}</p>}
-          {vessel.imo && <p className="text-sm text-gray-300">IMO: {vessel.imo}</p>}
-          {vessel.flag && <p className="text-sm text-gray-300">Flag: {vessel.flag}</p>}
+          <p className="text-sm text-gray-300">Speed: {vessel.speed} knots</p>
+          <p className="text-sm text-gray-300">Course: {vessel.course}°</p>
         </div>
       </Popup>
-    </Marker>
+    </CircleMarker>
   );
-}; 
+};
+
+export default VesselMarker; 
