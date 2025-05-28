@@ -32,6 +32,7 @@ export default function VesselMapClient() {
   const [L, setL] = useState<any>(null);
   const [showSatellite, setShowSatellite] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
   const mapRef = useRef<any>(null);
   const vessels = useVesselStore(state => state.vessels);
   const selectedAlert = useVesselStore(state => state.selectedAlert);
@@ -59,6 +60,9 @@ export default function VesselMapClient() {
       });
 
       leaflet.default.Marker.prototype.options.icon = DefaultIcon;
+    }).catch((error) => {
+      console.error('Failed to load Leaflet:', error);
+      setMapError('Failed to load map. Please refresh the page.');
     });
   }, []);
 
@@ -123,6 +127,16 @@ export default function VesselMapClient() {
       iconAnchor: [size/2, size/2]
     });
   };
+
+  if (mapError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-[#1A1A1A]">
+        <div className="text-center">
+          <p className="text-[#FF5F5F] text-lg">{mapError}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!L) {
     return (
