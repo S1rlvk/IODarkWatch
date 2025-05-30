@@ -1,0 +1,44 @@
+{
+  "pages": {
+    "/_not-found": [
+      "static/chunks/webpack-8af14f0e619971f2.js",
+      "static/chunks/fd9d1056-1a9252621447880f.js",
+      "static/chunks/69-86261fb28d15bf24.js",
+      "static/chunks/main-app-048745c7ff0f6a23.js",
+      "static/chunks/app/_not-found-a57f9bb000a12014.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-8af14f0e619971f2.js",
+      "static/chunks/fd9d1056-1a9252621447880f.js",
+      "static/chunks/69-86261fb28d15bf24.js",
+      "static/chunks/main-app-048745c7ff0f6a23.js",
+      "static/css/1db88b1f9fe1990e.css",
+      "static/chunks/app/layout-b3e943a6f50260f2.js"
+    ],
+    "/dark-vessels/page": [
+      "static/chunks/webpack-8af14f0e619971f2.js",
+      "static/chunks/fd9d1056-1a9252621447880f.js",
+      "static/chunks/69-86261fb28d15bf24.js",
+      "static/chunks/main-app-048745c7ff0f6a23.js",
+      "static/css/7ff559ce574df119.css",
+      "static/chunks/app/dark-vessels/page-b6496e20aa185be9.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack-8af14f0e619971f2.js",
+      "static/chunks/fd9d1056-1a9252621447880f.js",
+      "static/chunks/69-86261fb28d15bf24.js",
+      "static/chunks/main-app-048745c7ff0f6a23.js",
+      "static/chunks/4-5c9010cc226e6822.js",
+      "static/css/d3e383b9ef67ddcb.css",
+      "static/chunks/app/dashboard/page-6daf948f8f748623.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-8af14f0e619971f2.js",
+      "static/chunks/fd9d1056-1a9252621447880f.js",
+      "static/chunks/69-86261fb28d15bf24.js",
+      "static/chunks/main-app-048745c7ff0f6a23.js",
+      "static/css/d5a7eafc05c5b116.css",
+      "static/chunks/app/page-4e1b098f7ee83252.js"
+    ]
+  }
+}

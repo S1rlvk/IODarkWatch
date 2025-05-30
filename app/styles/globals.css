@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #111217;
+  --surface: #1A1C22;
+  --border: #2A2D35;
+  --accent-blue: #009DFF;
+  --accent-teal: #3CA3A8;
+}
+
+body {
+  @apply bg-bg-primary text-white font-body;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-heading;
+}
+
+/* Map Styles */
+.leaflet-container {
+  @apply h-full w-full bg-bg-primary;
+}
+
+.leaflet-control-zoom {
+  @apply border border-border rounded-sm shadow-industrial;
+}
+
+.leaflet-control-zoom a {
+  @apply bg-surface text-white border-border hover:bg-accent-blue transition-colors;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply bg-surface border border-border rounded-sm shadow-industrial;
+}
+
+.leaflet-popup-content {
+  @apply font-body text-white;
+}
+
+.leaflet-popup-tip {
+  @apply bg-surface;
+}
+
+.leaflet-control-layers {
+  @apply bg-surface border border-border rounded-sm shadow-industrial;
+}
+
+.leaflet-control-layers-base label,
+.leaflet-control-layers-overlays label {
+  @apply text-white;
+}
+
+.leaflet-control-layers-expanded {
+  @apply bg-surface border border-border rounded-sm p-2;
+}
+
+@layer components {
+  .industrial-map {
+    @apply h-full w-full;
+  }
+
+  .industrial-map .leaflet-container {
+    @apply h-full w-full bg-[#1A1A1A];
+  }
+
+  .industrial-map .leaflet-control-zoom {
+    @apply border border-[#333] bg-[#1A1A1A] shadow-lg;
+  }
+
+  .industrial-map .leaflet-control-zoom a {
+    @apply text-[#E0E0E0] hover:bg-[#00FFFF] hover:text-[#121212];
+  }
+
+  .industrial-map .leaflet-popup-content-wrapper {
+    @apply bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg;
+  }
+
+  .industrial-map .leaflet-popup-content {
+    @apply text-[#E0E0E0];
+  }
+
+  .industrial-map .leaflet-popup-tip {
+    @apply bg-[#1A1A1A];
+  }
+
+  .industrial-map .leaflet-control-layers {
+    @apply bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg;
+  }
+
+  .industrial-map .leaflet-control-layers-base label,
+  .industrial-map .leaflet-control-layers-overlays label {
+    @apply text-[#E0E0E0];
+  }
+
+  .industrial-map .leaflet-control-layers-expanded {
+    @apply bg-[#1A1A1A] border border-[#333] rounded-lg p-2;
+  }
+
+  .neon-marker {
+    @apply relative;
+  }
+
+  .neon-marker::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-[#00FFFF] opacity-50;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.2;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+  }
+
+  .vessel-popup {
+    @apply bg-[#1A1A1A] text-[#E0E0E0];
+  }
+
+  .vessel-popup h4 {
+    @apply text-lg font-semibold mb-2;
+  }
+
+  .vessel-popup p {
+    @apply text-sm;
+  }
+
+  .vessel-popup .text-gray-400 {
+    @apply text-[#A0A0A0];
+  }
+
+  .vessel-popup .text-gray-200 {
+    @apply text-[#E0E0E0];
+  }
+} 

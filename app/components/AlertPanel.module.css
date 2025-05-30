@@ -1,0 +1,94 @@
+.alertPanel {
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.alertPanel h2 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.loading {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.noAlerts {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem 0;
+  font-style: italic;
+}
+
+.alertList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.alertItem {
+  background: var(--item-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.alertItem:hover {
+  transform: translateY(-2px);
+}
+
+.alertHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.vesselName {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.timestamp {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.alertDetails {
+  color: var(--text-secondary);
+}
+
+.alertType {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.low {
+  border-left: 4px solid var(--severity-low);
+}
+
+.medium {
+  border-left: 4px solid var(--severity-medium);
+}
+
+.high {
+  border-left: 4px solid var(--severity-high);
+} 
