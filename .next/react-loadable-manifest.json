@@ -1,1 +1,14 @@
-{}
+{
+  "app/components/LeafletMapWrapper.tsx -> leaflet": {
+    "id": "app/components/LeafletMapWrapper.tsx -> leaflet",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_leaflet_dist_leaflet-src_js.js"
+    ]
+  },
+  "app/dashboard/DashboardClient.tsx -> ../components/LeafletMapWrapper": {
+    "id": "app/dashboard/DashboardClient.tsx -> ../components/LeafletMapWrapper",
+    "files": [
+      "static/chunks/_app-pages-browser_app_components_LeafletMapWrapper_tsx.js"
+    ]
+  }
+}

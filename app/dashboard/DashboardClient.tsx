@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { 
   MapIcon,
   BellIcon,
@@ -13,12 +14,10 @@ import {
   Shield,
   TrendingUp
 } from 'lucide-react';
-import VesselMapClient from './VesselMapClient';
 import FilterDrawer from '../components/FilterDrawer';
 import AlertsModal from '../components/AlertsModal';
 import ExportModal from '../components/ExportModal';
 import MapErrorBoundary from '../components/MapErrorBoundary';
-import LeafletMapWrapper from '../components/LeafletMapWrapper';
 import { useVesselStore } from '../store/useVesselStore';
 import { StatCard } from '../components/StatCard';
 import { useLastUpdated } from '../hooks/useLastUpdated';
@@ -27,6 +26,18 @@ import { RefreshIndicator } from '../components/RefreshIndicator';
 import VesselTable from '../components/VesselTable';
 import { Vessel } from '../types';
 import styles from './Dashboard.module.css';
+
+const LeafletMapWrapper = dynamic(
+  () => import('../components/LeafletMapWrapper'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex items-center justify-center bg-gray-900">
+        <p className="text-white">Loading map...</p>
+      </div>
+    )
+  }
+);
 
 export default function DashboardClient() {
   const [filterOpen, setFilterOpen] = useState(false);
@@ -131,52 +142,52 @@ export default function DashboardClient() {
       {/* Main Content */}
       <main className="relative z-10">
         {/* Stats Bar */}
-        <div className="border-b border-white/10 px-6 py-6 bg-black/50 backdrop-blur-xl">
+        <div className="border-b border-white/10 px-4 md:px-6 py-4 md:py-6 bg-black/50 backdrop-blur-xl">
           <div className="max-w-[2000px] mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-2xl p-6 backdrop-blur-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-2xl p-4 md:p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-green-500/20 rounded-lg">
-                    <Activity className="w-5 h-5 text-green-400" />
+                    <Activity className="w-4 h-4 md:w-5 md:h-5 text-green-400" />
                   </div>
-                  <p className="text-sm text-gray-400">Active Vessels</p>
+                  <p className="text-xs md:text-sm text-gray-400">Active Vessels</p>
                 </div>
-                <p className="text-4xl font-bold text-green-400">{activeVessels}</p>
+                <p className="text-2xl md:text-4xl font-bold text-green-400">{activeVessels}</p>
               </div>
               
-              <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 rounded-2xl p-6 backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 rounded-2xl p-4 md:p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-red-500/20 rounded-lg">
-                    <Shield className="w-5 h-5 text-red-400" />
+                    <Shield className="w-4 h-4 md:w-5 md:h-5 text-red-400" />
                   </div>
-                  <p className="text-sm text-gray-400">Dark Vessels</p>
+                  <p className="text-xs md:text-sm text-gray-400">Dark Vessels</p>
                 </div>
-                <p className="text-4xl font-bold text-red-400">{darkVessels}</p>
+                <p className="text-2xl md:text-4xl font-bold text-red-400">{darkVessels}</p>
               </div>
               
-              <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20 rounded-2xl p-6 backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20 rounded-2xl p-4 md:p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-yellow-500/20 rounded-lg">
-                    <BellIcon className="w-5 h-5 text-yellow-400" />
+                    <BellIcon className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
                   </div>
-                  <p className="text-sm text-gray-400">Active Alerts</p>
+                  <p className="text-xs md:text-sm text-gray-400">Active Alerts</p>
                 </div>
-                <p className="text-4xl font-bold text-yellow-400">{alerts.length}</p>
+                <p className="text-2xl md:text-4xl font-bold text-yellow-400">{alerts.length}</p>
               </div>
               
-              <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-6 backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-4 md:p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-cyan-500/20 rounded-lg">
-                    <TrendingUp className="w-5 h-5 text-cyan-400" />
+                    <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-cyan-400" />
                   </div>
-                  <p className="text-sm text-gray-400">Last Update</p>
+                  <p className="text-xs md:text-sm text-gray-400">Last Update</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <p className="text-4xl font-bold text-cyan-400">
+                  <p className="text-2xl md:text-4xl font-bold text-cyan-400">
                     {lastUpdated ? new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                   </p>
                   {isLoading && (
-                    <div className="w-6 h-6 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 md:w-6 md:h-6 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin"></div>
                   )}
                 </div>
               </div>
@@ -185,59 +196,51 @@ export default function DashboardClient() {
         </div>
 
         {/* Map and Table Layout */}
-        <div className="p-6">
-          <div className="max-w-[2000px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Map Container */}
-            <div className="relative h-[600px] bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10">
-              {isLoading && !isManualRefreshing && vessels.length === 0 && (
-                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-40">
-                  <div className="relative">
-                    <div className="w-20 h-20 border-4 border-cyan-500/20 rounded-full"></div>
-                    <div className="absolute inset-0 w-20 h-20 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                  <p className="text-xl font-medium text-white mt-6">Loading map data...</p>
-                  <p className="text-gray-400 mt-2">Fetching latest vessel information</p>
-                </div>
-              )}
-              
-              {isManualRefreshing && (
-                <div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center gap-2 border border-cyan-500/30">
-                  <div className="w-4 h-4 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
-                  <span className="text-sm text-white">Refreshing...</span>
-                </div>
-              )}
-              
-              <MapErrorBoundary>
-                <LeafletMapWrapper className="h-full" />
-              </MapErrorBoundary>
-            </div>
-
-            {/* Vessel Table */}
-            <div className="bg-black/50 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                    Vessel Information
-                  </h2>
-                  <p className="text-sm text-gray-400 mt-1">
-                    {vessels.length} vessels tracked
-                    {timeSinceLastUpdate && (
-                      <span className="ml-2 text-xs">
-                        · Updated {timeSinceLastUpdate}s ago
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="p-2 bg-cyan-500/20 rounded-lg">
-                  <Satellite className="w-5 h-5 text-cyan-400" />
+        <div className="p-4 md:p-6">
+          <div className="max-w-[2000px] mx-auto space-y-6">
+            {/* Map Section */}
+            <div className="w-full">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                  Maritime Surveillance Map
+                </h2>
+                <div className="text-sm text-gray-400">
+                  Live tracking · {vessels.length} vessels monitored
                 </div>
               </div>
-              <VesselTable 
-                vessels={vessels} 
-                onVesselSelect={(vessel) => {
-                  setSelectedVessel(vessel);
-                }}
-              />
+              <div className="relative h-[500px] md:h-[600px] bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10">
+                <LeafletMapWrapper />
+              </div>
+            </div>
+
+            {/* Vessel Table Section */}
+            <div className="w-full">
+              <div className="bg-black/50 backdrop-blur-sm rounded-2xl border border-white/10 p-4 md:p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                      Vessel Information
+                    </h2>
+                    <p className="text-sm text-gray-400 mt-1">
+                      {vessels.length} vessels tracked
+                      {timeSinceLastUpdate && (
+                        <span className="ml-2 text-xs">
+                          · Updated {timeSinceLastUpdate}s ago
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <div className="p-2 bg-cyan-500/20 rounded-lg">
+                    <Satellite className="w-5 h-5 text-cyan-400" />
+                  </div>
+                </div>
+                <VesselTable 
+                  vessels={vessels} 
+                  onVesselSelect={(vessel) => {
+                    setSelectedVessel(vessel);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

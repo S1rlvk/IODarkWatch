@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Ship Detection Map</title>
+    <title>Dark Ship Detection Map - IODarkWatch</title>
+    <meta name="description" content="Real-time dark ship detection visualization map">
+    <meta name="keywords" content="dark ship detection, maritime security, ship tracking">
+    <meta name="author" content="IODarkWatch">
+    <meta name="theme-color" content="#1a1a1a">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -11,43 +15,504 @@
           crossorigin=""/>
     
     <style>
+        :root {
+            --high-risk: #ff4444;
+            --medium-risk: #ffa500;
+            --low-risk: #ffd700;
+            --pulse-duration: 2s;
+            --control-bg: rgba(15, 20, 25, 0.95);
+            --control-border: rgba(45, 55, 65, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #8b949e;
+            --accent-blue: #61dafb;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background: #1a1a1a;
+            background: #0a0e13;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
         }
         
         #map {
             height: 100%;
             width: 100%;
+            position: relative;
+            background: #0a0e13;
         }
 
-        .leaflet-control-layers {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-radius: 4px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-primary);
+            background: var(--control-bg);
+            padding: 20px 30px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid var(--control-border);
+            text-align: center;
         }
 
-        .leaflet-popup-content {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .custom-marker {
-            background: #ff4444;
-            border: 2px solid #fff;
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--control-border);
+            border-top: 2px solid var(--accent-blue);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #error {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-primary);
+            background: rgba(255, 0, 0, 0.9);
+            padding: 12px 20px;
+            border-radius: 6px;
+            z-index: 1000;
+            max-width: 80%;
+            text-align: center;
+            display: none;
+            border: 1px solid #ff6666;
+        }
+
+        .controls {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            background: var(--control-bg);
+            padding: 20px;
+            border-radius: 10px;
+            color: var(--text-primary);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid var(--control-border);
+            max-width: 320px;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            color: var(--accent-blue);
+            text-align: center;
+            border-bottom: 1px solid var(--control-border);
+            padding-bottom: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-group h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(45, 55, 65, 0.3);
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .filter-option:hover {
+            background: rgba(45, 55, 65, 0.5);
+        }
+
+        .filter-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .risk-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: auto;
+        }
+
+        .time-selector {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--control-border);
+            background: rgba(45, 55, 65, 0.3);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .time-selector:focus {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        .status-bar {
+            background: rgba(15, 20, 25, 0.8);
+            padding: 8px 15px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            border-top: 1px solid var(--control-border);
+            margin: 15px -20px -20px -20px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .auto-refresh-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .vessel-count {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            background: var(--control-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--control-border);
+            backdrop-filter: blur(10px);
+            min-width: 180px;
+        }
+
+        .count-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .count-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .count-badge {
+            background: rgba(97, 218, 251, 0.2);
+            color: var(--accent-blue);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        /* Enhanced marker styles */
+        .vessel-marker {
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .vessel-marker.recent {
+            animation: pulse-ring 2s infinite;
+        }
+
+        .vessel-marker.high-confidence {
+            border-width: 3px;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.6);
+        }
+
+        .vessel-marker.medium-confidence {
+            border-width: 2px;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
+        }
+
+        .vessel-marker.low-confidence {
+            border-width: 1px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        /* Enhanced popup styles */
+        .vessel-popup .leaflet-popup-content-wrapper {
+            background: var(--control-bg);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid var(--control-border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .vessel-popup .leaflet-popup-content {
+            margin: 0;
+            padding: 0;
+            width: 320px;
+        }
+
+        .vessel-popup .leaflet-popup-tip {
+            background: var(--control-bg);
+            border: 1px solid var(--control-border);
+        }
+
+        .vessel-header {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(25, 35, 45, 0.9));
+            padding: 20px;
+            border-bottom: 1px solid var(--control-border);
+        }
+
+        .vessel-header h3 {
+            margin: 0 0 8px 0;
+            color: var(--accent-blue);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vessel-header .vessel-type {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .vessel-header .mmsi {
+            font-family: 'Courier New', monospace;
+            background: rgba(97, 218, 251, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--accent-blue);
+        }
+
+        .risk-assessment {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .risk-high { background: rgba(255, 68, 68, 0.15); color: #ff4444; }
+        .risk-medium { background: rgba(255, 165, 0, 0.15); color: #ffa500; }
+        .risk-low { background: rgba(255, 215, 0, 0.15); color: #ffd700; }
+
+        .vessel-details {
+            padding: 20px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .coordinates {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .speed-heading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .heading-indicator {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            position: relative;
+            display: inline-block;
+        }
+
+        .heading-arrow {
+            position: absolute;
+            top: 1px;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: var(--accent-blue);
+            transform-origin: bottom center;
+        }
+
+        .detection-time {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--control-border);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .popup-footer {
+            background: rgba(15, 20, 25, 0.9);
+            padding: 12px 20px;
+            border-top: 1px solid var(--control-border);
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                max-width: 280px;
+                padding: 15px;
+            }
+            
+            .vessel-count {
+                min-width: 150px;
+                padding: 10px 15px;
+            }
+            
+            .vessel-popup .leaflet-popup-content {
+                width: 280px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
+    <div id="map">
+        <div id="loading">
+            <div class="loading-spinner"></div>
+            Initializing Maritime Surveillance System...
+        </div>
+        <div id="error"></div>
+        
+        <div class="controls">
+            <h2>IODarkWatch Control</h2>
+            
+            <div class="control-group">
+                <h3>Detection Confidence</h3>
+                <div class="filter-options">
+                    <label class="filter-option">
+                        <input type="checkbox" id="high-risk-filter" checked>
+                        <span>High Confidence</span>
+                        <div class="risk-indicator" style="background: var(--high-risk);"></div>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="medium-risk-filter" checked>
+                        <span>Medium Confidence</span>
+                        <div class="risk-indicator" style="background: var(--medium-risk);"></div>
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="low-risk-filter" checked>
+                        <span>Low Confidence</span>
+                        <div class="risk-indicator" style="background: var(--low-risk);"></div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h3>Time Range</h3>
+                <select id="time-range" class="time-selector">
+                    <option value="1">Last 1 hour</option>
+                    <option value="6" selected>Last 6 hours</option>
+                    <option value="24">Last 24 hours</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <h3>Auto Refresh</h3>
+                <div class="auto-refresh-container">
+                    <input type="checkbox" id="auto-refresh" checked>
+                    <label for="auto-refresh">Update every 30s</label>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div>Last updated: <span id="last-updated">Just now</span></div>
+                <div>System Status: <span style="color: #4ade80;">OPERATIONAL</span></div>
+            </div>
+        </div>
+        
+        <div class="vessel-count">
+            <div class="count-item">
+                <span>High Risk:</span>
+                <span class="count-badge" id="high-count">0</span>
+            </div>
+            <div class="count-item">
+                <span>Medium Risk:</span>
+                <span class="count-badge" id="medium-count">0</span>
+            </div>
+            <div class="count-item">
+                <span>Low Risk:</span>
+                <span class="count-badge" id="low-count">0</span>
+            </div>
+            <div class="count-item">
+                <span>Total Active:</span>
+                <span class="count-badge" id="total-count">0</span>
+            </div>
+        </div>
+    </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -55,77 +520,407 @@
             crossorigin=""></script>
 
     <script>
-        // Initialize the map with a darker theme
+        // Configuration
+        const CONFIG = {
+            updateInterval: 30000, // 30 seconds
+            timeRanges: {
+                '1': 60 * 60 * 1000,    // 1 hour
+                '6': 6 * 60 * 60 * 1000, // 6 hours
+                '24': 24 * 60 * 60 * 1000 // 24 hours
+            },
+            riskLevels: {
+                high: { color: '#ff4444', threshold: 0.7 },
+                medium: { color: '#ffa500', threshold: 0.4 },
+                low: { color: '#ffd700', threshold: 0 }
+            }
+        };
+
+        // Enhanced vessel data with realistic maritime patterns
+        const generateVesselData = () => {
+            const now = Date.now();
+            const vesselTypes = ['Cargo', 'Fishing', 'Tanker', 'Container', 'Bulk Carrier', 'Passenger', 'Unknown', 'Pleasure Craft'];
+            
+            return [
+                // High confidence detections (suspicious vessels)
+                {
+                    id: 'DS001', name: 'MV Ghost Runner', type: 'Cargo', mmsi: '123456789',
+                    lat: 15.2347, lng: -61.7892, speed: 0.0, heading: 0, length: 180,
+                    confidence: 0.94, lastSeen: now - 1000 * 60 * 12, risk: 'high',
+                    riskLevel: 'CRITICAL', riskReason: 'AIS transponder disabled, suspicious movement pattern'
+                },
+                {
+                    id: 'DS002', name: 'Unknown Vessel', type: 'Unknown', mmsi: 'TRANSPONDER_OFF',
+                    lat: 25.6721, lng: 120.3456, speed: 8.2, heading: 270, length: 0,
+                    confidence: 0.91, lastSeen: now - 1000 * 60 * 28, risk: 'high',
+                    riskLevel: 'HIGH', riskReason: 'No AIS signal, detected via satellite imagery'
+                },
+                {
+                    id: 'DS003', name: 'F/V Shadow Hunter', type: 'Fishing', mmsi: '234567891',
+                    lat: -8.4532, lng: 115.2639, speed: 3.1, heading: 45, length: 65,
+                    confidence: 0.88, lastSeen: now - 1000 * 60 * 45, risk: 'high',
+                    riskLevel: 'HIGH', riskReason: 'Operating in protected marine area'
+                },
+                {
+                    id: 'DS004', name: 'MV Dark Horizon', type: 'Tanker', mmsi: '345678912',
+                    lat: 42.3581, lng: -71.0636, speed: 11.7, heading: 95, length: 250,
+                    confidence: 0.86, lastSeen: now - 1000 * 60 * 18, risk: 'high',
+                    riskLevel: 'CRITICAL', riskReason: 'Irregular route, potential sanctions violation'
+                },
+                
+                // Medium confidence detections
+                {
+                    id: 'DS005', name: 'MV Blue Wanderer', type: 'Container', mmsi: '456789123',
+                    lat: 35.6762, lng: 139.6503, speed: 14.3, heading: 180, length: 220,
+                    confidence: 0.67, lastSeen: now - 1000 * 60 * 90, risk: 'medium',
+                    riskLevel: 'MEDIUM', riskReason: 'Intermittent AIS signal'
+                },
+                {
+                    id: 'DS006', name: 'F/V Ocean Tracker', type: 'Fishing', mmsi: '567891234',
+                    lat: -5.7891, lng: 106.7639, speed: 4.8, heading: 220, length: 45,
+                    confidence: 0.58, lastSeen: now - 1000 * 60 * 120, risk: 'medium',
+                    riskLevel: 'MEDIUM', riskReason: 'Operating near territorial waters'
+                },
+                {
+                    id: 'DS007', name: 'MV Star Navigator', type: 'Bulk Carrier', mmsi: '678912345',
+                    lat: 51.5074, lng: -0.1278, speed: 9.2, heading: 315, length: 190,
+                    confidence: 0.52, lastSeen: now - 1000 * 60 * 150, risk: 'medium',
+                    riskLevel: 'MEDIUM', riskReason: 'Delayed port reporting'
+                },
+                {
+                    id: 'DS008', name: 'MV Pacific Dreams', type: 'Passenger', mmsi: '789123456',
+                    lat: 37.7749, lng: -122.4194, speed: 16.5, heading: 90, length: 280,
+                    confidence: 0.49, lastSeen: now - 1000 * 60 * 75, risk: 'medium',
+                    riskLevel: 'MEDIUM', riskReason: 'Route deviation from filed plan'
+                },
+                
+                // Lower confidence detections
+                {
+                    id: 'DS009', name: 'S/V Wind Spirit', type: 'Pleasure Craft', mmsi: '891234567',
+                    lat: 25.7617, lng: -80.1918, speed: 6.8, heading: 135, length: 18,
+                    confidence: 0.38, lastSeen: now - 1000 * 60 * 240, risk: 'low',
+                    riskLevel: 'LOW', riskReason: 'Unusual nighttime activity'
+                },
+                {
+                    id: 'DS010', name: 'F/V Golden Wave', type: 'Fishing', mmsi: '912345678',
+                    lat: -33.8688, lng: 151.2093, speed: 5.4, heading: 280, length: 38,
+                    confidence: 0.31, lastSeen: now - 1000 * 60 * 300, risk: 'low',
+                    riskLevel: 'LOW', riskReason: 'Minor AIS discrepancy'
+                },
+                {
+                    id: 'DS011', name: 'MV Coastal Trader', type: 'Cargo', mmsi: '123789456',
+                    lat: 59.9139, lng: 10.7522, speed: 8.9, heading: 25, length: 120,
+                    confidence: 0.27, lastSeen: now - 1000 * 60 * 420, risk: 'low',
+                    riskLevel: 'LOW', riskReason: 'Routine monitoring'
+                },
+                {
+                    id: 'DS012', name: 'MV Northern Light', type: 'Tanker', mmsi: '456123789',
+                    lat: 64.1466, lng: -21.9426, speed: 12.1, heading: 200, length: 175,
+                    confidence: 0.22, lastSeen: now - 1000 * 60 * 480, risk: 'low',
+                    riskLevel: 'LOW', riskReason: 'Standard patrol detection'
+                }
+            ];
+        };
+
+        // State management
+        let vessels = [];
+        let markers = [];
+        let updateInterval;
+
+        // Initialize the map
         const map = L.map('map', {
-            center: [0, 80],
-            zoom: 4,
+            center: [20, 0],
+            zoom: 3,
             zoomControl: true,
-            attributionControl: true
+            attributionControl: true,
+            maxBounds: [[-90, -180], [90, 180]],
+            preferCanvas: true
         });
 
-        // Add OpenStreetMap base layer with dark theme
-        const osmLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        });
+        // Show loading state
+        document.getElementById('loading').style.display = 'block';
 
-        // Add OpenSeaMap layers
+        // Add enhanced base layers
+        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            maxZoom: 18,
+            minZoom: 2
+        }).addTo(map);
+
         const seaMapLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors',
-            opacity: 0.8
-        });
-
-        const shipwreckLayer = L.tileLayer('https://tiles.openseamap.org/shipwreck/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://openseamap.org">OpenSeaMap</a> contributors',
-            opacity: 0.8
-        });
-
-        // Add base layer to map
-        osmLayer.addTo(map);
-        seaMapLayer.addTo(map);
-        shipwreckLayer.addTo(map);
-
-        // Add layer control
-        const baseMaps = {
-            "Dark Map": osmLayer
-        };
-
-        const overlayMaps = {
-            "Nautical Charts": seaMapLayer,
-            "Shipwrecks": shipwreckLayer
-        };
-
-        L.control.layers(baseMaps, overlayMaps, {
-            position: 'topright',
-            collapsed: false
+            attribution: '&copy; <a href="https://openseamap.org">OpenSeaMap</a>',
+            opacity: 0.6
         }).addTo(map);
 
-        // Add custom dark ship detection marker
-        const darkShipIcon = L.divIcon({
-            className: 'custom-marker',
-            html: '<div style="width: 12px; height: 12px;"></div>',
-            iconSize: [12, 12]
+        // Enhanced error handling
+        darkLayer.on('tileerror', (e) => {
+            console.error('Tile loading error:', e);
+            showError('Failed to load map tiles. Please check your internet connection.');
         });
 
-        const darkShipMarker = L.marker([-5, 75], {icon: darkShipIcon}).addTo(map);
-        darkShipMarker.bindPopup(`
-            <div style="font-family: Arial, sans-serif;">
-                <h3 style="color: #ff4444; margin: 0 0 10px 0;">🚨 Dark Ship Detection</h3>
-                <p style="margin: 5px 0;"><strong>Status:</strong> Unidentified vessel</p>
-                <p style="margin: 5px 0;"><strong>Date:</strong> May 2025</p>
-                <p style="margin: 5px 0;"><strong>Location:</strong> 5°S, 75°E</p>
-            </div>
-        `);
-
-        // Add scale control
-        L.control.scale({
-            imperial: false,
-            position: 'bottomleft'
-        }).addTo(map);
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            map.invalidateSize();
+        darkLayer.on('tileload', () => {
+            document.getElementById('loading').style.display = 'none';
         });
+
+        const showError = (message) => {
+            const errorEl = document.getElementById('error');
+            errorEl.style.display = 'block';
+            errorEl.textContent = message;
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        };
+
+        // Utility functions
+        const formatTimeAgo = (timestamp) => {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            let interval = Math.floor(seconds / 31536000);
+            
+            if (interval >= 1) return `${interval} year${interval === 1 ? '' : 's'} ago`;
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) return `${interval} month${interval === 1 ? '' : 's'} ago`;
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) return `${interval} day${interval === 1 ? '' : 's'} ago`;
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return `${interval} hour${interval === 1 ? '' : 's'} ago`;
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return `${interval} minute${interval === 1 ? '' : 's'} ago`;
+            return 'just now';
+        };
+
+        const getRiskAssessment = (vessel) => {
+            if (vessel.confidence >= 0.8) return 'CRITICAL';
+            if (vessel.confidence >= 0.6) return 'HIGH';
+            if (vessel.confidence >= 0.4) return 'MEDIUM';
+            return 'LOW';
+        };
+
+        // Enhanced marker creation
+        const createVesselIcon = (vessel) => {
+            const isRecent = (Date.now() - vessel.lastSeen) < 3600000; // Less than 1 hour
+            const color = CONFIG.riskLevels[vessel.risk]?.color || '#999';
+            const size = vessel.risk === 'high' ? 14 : vessel.risk === 'medium' ? 12 : 10;
+            const confidenceClass = vessel.risk === 'high' ? 'high-confidence' : 
+                                   vessel.risk === 'medium' ? 'medium-confidence' : 'low-confidence';
+            const recentClass = isRecent ? 'recent' : '';
+            
+            return L.divIcon({
+                className: `vessel-marker ${confidenceClass} ${recentClass}`,
+                html: `
+                    <div style="
+                        width: ${size}px; 
+                        height: ${size}px; 
+                        background-color: ${color};
+                        border-radius: 50%;
+                        position: relative;
+                        z-index: 1;
+                    "></div>
+                `,
+                iconSize: [size + 4, size + 4],
+                iconAnchor: [(size + 4) / 2, (size + 4) / 2],
+                popupAnchor: [0, -(size + 4) / 2]
+            });
+        };
+
+        // Enhanced popup content
+        const createVesselPopup = (vessel) => {
+            const timeAgo = formatTimeAgo(vessel.lastSeen);
+            const riskAssessment = getRiskAssessment(vessel);
+            const riskColor = CONFIG.riskLevels[vessel.risk]?.color;
+            
+            return `
+                <div class="vessel-popup">
+                    <div class="vessel-header">
+                        <h3>
+                            <span class="risk-indicator" style="background: ${riskColor}"></span>
+                            ${vessel.name}
+                        </h3>
+                        <div class="vessel-type">${vessel.type}</div>
+                        <div class="mmsi">MMSI: ${vessel.mmsi}</div>
+                        <div class="risk-assessment risk-${vessel.risk}">
+                            <span>Risk Level: ${vessel.riskLevel}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="vessel-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Confidence</span>
+                                <span class="detail-value">${Math.round(vessel.confidence * 100)}%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Vessel Length</span>
+                                <span class="detail-value">${vessel.length > 0 ? vessel.length + ' m' : 'Unknown'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Last Position</span>
+                                <span class="detail-value coordinates">${vessel.lat.toFixed(4)}°, ${vessel.lng.toFixed(4)}°</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Speed & Heading</span>
+                                <div class="detail-value speed-heading">
+                                    <span>${vessel.speed} kn</span>
+                                    <div class="heading-indicator">
+                                        <div class="heading-arrow" style="transform: rotate(${vessel.heading}deg);"></div>
+                                    </div>
+                                    <span>${vessel.heading}°</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Risk Assessment</span>
+                            <span class="detail-value">${vessel.riskReason}</span>
+                        </div>
+                        
+                        <div class="detection-time">
+                            Last ping: ${timeAgo}
+                        </div>
+                    </div>
+                    
+                    <div class="popup-footer">
+                        IODarkWatch Maritime Surveillance • ID: ${vessel.id}
+                    </div>
+                </div>
+            `;
+        };
+
+        // Update vessel counts
+        const updateVesselCounts = (filteredVessels) => {
+            const counts = {
+                high: filteredVessels.filter(v => v.risk === 'high').length,
+                medium: filteredVessels.filter(v => v.risk === 'medium').length,
+                low: filteredVessels.filter(v => v.risk === 'low').length,
+                total: filteredVessels.length
+            };
+            
+            document.getElementById('high-count').textContent = counts.high;
+            document.getElementById('medium-count').textContent = counts.medium;
+            document.getElementById('low-count').textContent = counts.low;
+            document.getElementById('total-count').textContent = counts.total;
+        };
+
+        // Main map update function
+        const updateMap = () => {
+            // Clear existing markers
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+            
+            // Get filter values
+            const showHigh = document.getElementById('high-risk-filter').checked;
+            const showMedium = document.getElementById('medium-risk-filter').checked;
+            const showLow = document.getElementById('low-risk-filter').checked;
+            const timeRange = parseInt(document.getElementById('time-range').value);
+            const timeThreshold = Date.now() - (timeRange * 60 * 60 * 1000);
+            
+            // Filter vessels
+            const filteredVessels = vessels.filter(vessel => {
+                if (vessel.risk === 'high' && !showHigh) return false;
+                if (vessel.risk === 'medium' && !showMedium) return false;
+                if (vessel.risk === 'low' && !showLow) return false;
+                return vessel.lastSeen >= timeThreshold;
+            });
+            
+            // Add markers for filtered vessels
+            filteredVessels.forEach(vessel => {
+                const marker = L.marker(
+                    [vessel.lat, vessel.lng],
+                    { 
+                        icon: createVesselIcon(vessel),
+                        zIndexOffset: vessel.risk === 'high' ? 1000 : vessel.risk === 'medium' ? 500 : 0
+                    }
+                );
+                
+                marker.bindPopup(createVesselPopup(vessel), {
+                    maxWidth: 350,
+                    className: 'vessel-popup'
+                });
+                
+                marker.addTo(map);
+                markers.push(marker);
+            });
+            
+            // Update vessel counts
+            updateVesselCounts(filteredVessels);
+            
+            // Update last updated time
+            document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+        };
+
+        // Auto-refresh functionality
+        const startAutoRefresh = () => {
+            stopAutoRefresh();
+            updateInterval = setInterval(() => {
+                // Simulate realistic vessel movement and updates
+                vessels.forEach(vessel => {
+                    // Simulate movement based on speed and heading
+                    const distance = (vessel.speed * 0.000539957) / 60; // Convert knots to degrees per minute
+                    const radians = (vessel.heading * Math.PI) / 180;
+                    
+                    vessel.lat += distance * Math.cos(radians) + (Math.random() - 0.5) * 0.001;
+                    vessel.lng += distance * Math.sin(radians) + (Math.random() - 0.5) * 0.001;
+                    
+                    // Keep within realistic bounds
+                    vessel.lat = Math.max(-85, Math.min(85, vessel.lat));
+                    vessel.lng = ((vessel.lng + 180) % 360) - 180;
+                    
+                    // Occasionally update vessel data
+                    if (Math.random() < 0.1) {
+                        vessel.speed += (Math.random() - 0.5) * 2;
+                        vessel.speed = Math.max(0, Math.min(25, vessel.speed));
+                        vessel.heading = (vessel.heading + (Math.random() - 0.5) * 10 + 360) % 360;
+                        vessel.lastSeen = Date.now() - Math.random() * 60000; // Up to 1 minute ago
+                    }
+                });
+                
+                updateMap();
+            }, CONFIG.updateInterval);
+        };
+
+        const stopAutoRefresh = () => {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+        };
+
+        // Initialize the application
+        const init = () => {
+            // Load vessel data
+            vessels = generateVesselData();
+            
+            // Set up event listeners
+            document.getElementById('high-risk-filter').addEventListener('change', updateMap);
+            document.getElementById('medium-risk-filter').addEventListener('change', updateMap);
+            document.getElementById('low-risk-filter').addEventListener('change', updateMap);
+            document.getElementById('time-range').addEventListener('change', updateMap);
+            
+            // Auto-refresh toggle
+            const autoRefreshCheckbox = document.getElementById('auto-refresh');
+            autoRefreshCheckbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    startAutoRefresh();
+                } else {
+                    stopAutoRefresh();
+                }
+            });
+            
+            // Initial map update
+            updateMap();
+            
+            // Start auto-refresh if enabled
+            if (autoRefreshCheckbox.checked) {
+                startAutoRefresh();
+            }
+            
+            console.log('IODarkWatch Maritime Surveillance System initialized');
+        };
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 </body>
-</html> 
+</html>
