@@ -5,9 +5,14 @@ import {
   MapIcon,
   BellIcon,
   FunnelIcon,
-  ArrowDownTrayIcon,
-  XMarkIcon
+  ArrowDownTrayIcon
 } from '@heroicons/react/24/outline';
+import {
+  Satellite,
+  Activity,
+  Shield,
+  TrendingUp
+} from 'lucide-react';
 import VesselMapClient from './VesselMapClient';
 import FilterDrawer from '../components/FilterDrawer';
 import AlertsModal from '../components/AlertsModal';
@@ -21,6 +26,7 @@ import { useRealTimeVessels } from '../hooks/useRealTimeVessels';
 import { RefreshIndicator } from '../components/RefreshIndicator';
 import VesselTable from '../components/VesselTable';
 import { Vessel } from '../types';
+import styles from './Dashboard.module.css';
 
 export default function DashboardClient() {
   const [filterOpen, setFilterOpen] = useState(false);
@@ -49,17 +55,27 @@ export default function DashboardClient() {
   const totalVessels = vessels.length;
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white">
-      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-[2000px] mx-auto px-6 py-4">
+    <div className="min-h-screen bg-black text-white">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
+        <div className="absolute inset-0 opacity-20" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}></div>
+      </div>
+
+      {/* Header */}
+      <header className="relative z-10 border-b border-white/10 backdrop-blur-xl bg-black/50">
+        <div className="max-w-[2000px] mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold">IODarkWatch</h1>
-              <p className="text-sm text-gray-400">Maritime Surveillance System</p>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                IODarkWatch
+              </h1>
+              <p className="text-sm text-gray-400 hidden sm:block">Maritime Surveillance System</p>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Real-time Refresh Indicator */}
               <RefreshIndicator
                 isRefreshing={isLoading}
                 lastUpdated={lastUpdated}
@@ -70,9 +86,9 @@ export default function DashboardClient() {
               
               <button
                 onClick={() => setShowDetections(!showDetections)}
-                className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 text-sm font-medium"
+                className="px-4 py-2.5 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 hover:from-cyan-500/20 hover:to-blue-500/20 border border-cyan-500/20 rounded-xl transition-all flex items-center gap-2 text-sm font-medium"
               >
-                <MapIcon className="w-5 h-5" />
+                <MapIcon className="w-5 h-5 text-cyan-400" />
                 <span className="hidden sm:inline">Recent Detections</span>
                 <span className="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full text-xs font-semibold">
                   {vessels.length}
@@ -81,7 +97,7 @@ export default function DashboardClient() {
               
               <button
                 onClick={() => setFilterOpen(true)}
-                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/10"
                 title="Filter"
               >
                 <FunnelIcon className="w-5 h-5" />
@@ -89,7 +105,7 @@ export default function DashboardClient() {
               
               <button
                 onClick={() => setAlertsOpen(true)}
-                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all relative"
+                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all relative border border-white/10"
                 title="Alerts"
               >
                 <BellIcon className="w-5 h-5" />
@@ -102,7 +118,7 @@ export default function DashboardClient() {
               
               <button
                 onClick={() => setExportOpen(true)}
-                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/10"
                 title="Export"
               >
                 <ArrowDownTrayIcon className="w-5 h-5" />
@@ -113,83 +129,116 @@ export default function DashboardClient() {
       </header>
 
       {/* Main Content */}
-      <main className="relative">
+      <main className="relative z-10">
         {/* Stats Bar */}
-        <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 px-6 py-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <p className="text-3xl font-bold text-cyan-400">{activeVessels}</p>
-              <p className="text-sm text-gray-400 mt-1">Active Vessels</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-red-400">{darkVessels}</p>
-              <p className="text-sm text-gray-400 mt-1">Dark Vessels</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold text-yellow-400">{alerts.length}</p>
-              <p className="text-sm text-gray-400 mt-1">Active Alerts</p>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2">
-                <p className="text-3xl font-bold text-green-400">
-                  {lastUpdated ? new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-                </p>
-                {isLoading && (
-                  <div className="w-6 h-6 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
-                )}
+        <div className="border-b border-white/10 px-6 py-6 bg-black/50 backdrop-blur-xl">
+          <div className="max-w-[2000px] mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-2xl p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-green-500/20 rounded-lg">
+                    <Activity className="w-5 h-5 text-green-400" />
+                  </div>
+                  <p className="text-sm text-gray-400">Active Vessels</p>
+                </div>
+                <p className="text-4xl font-bold text-green-400">{activeVessels}</p>
               </div>
-              <p className="text-sm text-gray-400 mt-1">Last Update</p>
+              
+              <div className="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 rounded-2xl p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-red-500/20 rounded-lg">
+                    <Shield className="w-5 h-5 text-red-400" />
+                  </div>
+                  <p className="text-sm text-gray-400">Dark Vessels</p>
+                </div>
+                <p className="text-4xl font-bold text-red-400">{darkVessels}</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20 rounded-2xl p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-yellow-500/20 rounded-lg">
+                    <BellIcon className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <p className="text-sm text-gray-400">Active Alerts</p>
+                </div>
+                <p className="text-4xl font-bold text-yellow-400">{alerts.length}</p>
+              </div>
+              
+              <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-cyan-500/20 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <p className="text-sm text-gray-400">Last Update</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-4xl font-bold text-cyan-400">
+                    {lastUpdated ? new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                  </p>
+                  {isLoading && (
+                    <div className="w-6 h-6 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin"></div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Map and Table Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
-          {/* Map Container */}
-          <div className="relative h-[calc(100vh-280px)] rounded-xl overflow-hidden border border-white/10">
-            {isLoading && !isManualRefreshing && (
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-40">
-                <div className="w-16 h-16 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
-                <p className="text-xl font-medium text-white">Loading map data...</p>
-                <p className="text-gray-400 mt-2">Fetching latest vessel information</p>
-              </div>
-            )}
-            
-            {/* Refreshing overlay for manual refresh */}
-            {isManualRefreshing && (
-              <div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
-                <span className="text-sm text-white">Refreshing...</span>
-              </div>
-            )}
-            
-            <MapErrorBoundary>
-              <LeafletMapWrapper />
-            </MapErrorBoundary>
-          </div>
-
-          {/* Vessel Table */}
-          <div className="bg-black/30 backdrop-blur-sm rounded-xl border border-white/10 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold">Vessel Information</h2>
-                <p className="text-sm text-gray-400 mt-1">
-                  {vessels.length} vessels tracked
-                  {timeSinceLastUpdate && (
-                    <span className="ml-2 text-xs">
-                      · Updated {timeSinceLastUpdate}s ago
-                    </span>
-                  )}
-                </p>
-              </div>
+        <div className="p-6">
+          <div className="max-w-[2000px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Map Container */}
+            <div className="relative h-[600px] bg-black/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10">
+              {isLoading && !isManualRefreshing && vessels.length === 0 && (
+                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-40">
+                  <div className="relative">
+                    <div className="w-20 h-20 border-4 border-cyan-500/20 rounded-full"></div>
+                    <div className="absolute inset-0 w-20 h-20 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                  <p className="text-xl font-medium text-white mt-6">Loading map data...</p>
+                  <p className="text-gray-400 mt-2">Fetching latest vessel information</p>
+                </div>
+              )}
+              
+              {isManualRefreshing && (
+                <div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center gap-2 border border-cyan-500/30">
+                  <div className="w-4 h-4 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+                  <span className="text-sm text-white">Refreshing...</span>
+                </div>
+              )}
+              
+              <MapErrorBoundary>
+                <LeafletMapWrapper className="h-full" />
+              </MapErrorBoundary>
             </div>
-            <VesselTable 
-              vessels={vessels} 
-              onVesselSelect={(vessel) => {
-                setSelectedVessel(vessel);
-                // You can add additional logic here to highlight the vessel on the map
-              }}
-            />
+
+            {/* Vessel Table */}
+            <div className="bg-black/50 backdrop-blur-sm rounded-2xl border border-white/10 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                    Vessel Information
+                  </h2>
+                  <p className="text-sm text-gray-400 mt-1">
+                    {vessels.length} vessels tracked
+                    {timeSinceLastUpdate && (
+                      <span className="ml-2 text-xs">
+                        · Updated {timeSinceLastUpdate}s ago
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <div className="p-2 bg-cyan-500/20 rounded-lg">
+                  <Satellite className="w-5 h-5 text-cyan-400" />
+                </div>
+              </div>
+              <VesselTable 
+                vessels={vessels} 
+                onVesselSelect={(vessel) => {
+                  setSelectedVessel(vessel);
+                }}
+              />
+            </div>
           </div>
         </div>
       </main>

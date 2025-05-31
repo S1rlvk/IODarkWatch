@@ -8,8 +8,24 @@ const nextConfig = {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
+      canvas: false,
     };
+    
+    // Handle Leaflet's SSR issues
+    config.module.rules.push({
+      test: /leaflet.*\.js$/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+        },
+      },
+    });
+
     return config;
+  },
+  experimental: {
+    esmExternals: 'loose',
   },
 }
 
