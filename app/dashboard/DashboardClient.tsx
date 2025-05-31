@@ -12,9 +12,13 @@ import VesselMapClient from './VesselMapClient';
 import FilterDrawer from '../components/FilterDrawer';
 import AlertsModal from '../components/AlertsModal';
 import ExportModal from '../components/ExportModal';
+import MapErrorBoundary from '../components/MapErrorBoundary';
+import LeafletMapWrapper from '../components/LeafletMapWrapper';
 import { useVesselStore } from '../store/useVesselStore';
 import { StatCard } from '../components/StatCard';
 import { useLastUpdated } from '../hooks/useLastUpdated';
+import { useRealTimeVessels } from '../hooks/useRealTimeVessels';
+import { RefreshIndicator } from '../components/RefreshIndicator';
 import VesselTable from '../components/VesselTable';
 import { Vessel } from '../types';
 
@@ -25,9 +29,20 @@ export default function DashboardClient() {
   const [showDetections, setShowDetections] = useState(false);
   const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
 
-  const vessels = useVesselStore(state => state.vessels);
+  // Use real-time vessel data
+  const {
+    vessels,
+    lastUpdated,
+    isLoading,
+    isManualRefreshing,
+    isDataStale,
+    timeSinceLastUpdate,
+    nextRefreshIn,
+    refreshData
+  } = useRealTimeVessels();
+  
   const alerts = useVesselStore(state => state.alerts);
-  const { lastUpdated, isLoading: isLastUpdatedLoading } = useLastUpdated();
+  const { lastUpdated: summaryLastUpdated, isLoading: isLastUpdatedLoading } = useLastUpdated();
 
   const activeVessels = vessels.filter(v => v.status === 'active').length;
   const darkVessels = vessels.filter(v => v.status === 'dark').length;
@@ -44,6 +59,15 @@ export default function DashboardClient() {
             </div>
 
             <div className="flex items-center gap-3">
+              {/* Real-time Refresh Indicator */}
+              <RefreshIndicator
+                isRefreshing={isLoading}
+                lastUpdated={lastUpdated}
+                nextRefreshIn={nextRefreshIn}
+                onManualRefresh={refreshData}
+                isDataStale={isDataStale}
+              />
+              
               <button
                 onClick={() => setShowDetections(!showDetections)}
                 className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 text-sm font-medium"
@@ -106,9 +130,14 @@ export default function DashboardClient() {
               <p className="text-sm text-gray-400 mt-1">Active Alerts</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-green-400">
-                {lastUpdated ? new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-              </p>
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-3xl font-bold text-green-400">
+                  {lastUpdated ? new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                </p>
+                {isLoading && (
+                  <div className="w-6 h-6 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
+                )}
+              </div>
               <p className="text-sm text-gray-400 mt-1">Last Update</p>
             </div>
           </div>
@@ -118,14 +147,25 @@ export default function DashboardClient() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
           {/* Map Container */}
           <div className="relative h-[calc(100vh-280px)] rounded-xl overflow-hidden border border-white/10">
-            {isLastUpdatedLoading && (
+            {isLoading && !isManualRefreshing && (
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-40">
                 <div className="w-16 h-16 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
                 <p className="text-xl font-medium text-white">Loading map data...</p>
                 <p className="text-gray-400 mt-2">Fetching latest vessel information</p>
               </div>
             )}
-            <VesselMapClient />
+            
+            {/* Refreshing overlay for manual refresh */}
+            {isManualRefreshing && (
+              <div className="absolute top-4 right-4 z-40 bg-black/80 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+                <span className="text-sm text-white">Refreshing...</span>
+              </div>
+            )}
+            
+            <MapErrorBoundary>
+              <LeafletMapWrapper />
+            </MapErrorBoundary>
           </div>
 
           {/* Vessel Table */}
@@ -133,7 +173,14 @@ export default function DashboardClient() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold">Vessel Information</h2>
-                <p className="text-sm text-gray-400 mt-1">{vessels.length} vessels tracked</p>
+                <p className="text-sm text-gray-400 mt-1">
+                  {vessels.length} vessels tracked
+                  {timeSinceLastUpdate && (
+                    <span className="ml-2 text-xs">
+                      · Updated {timeSinceLastUpdate}s ago
+                    </span>
+                  )}
+                </p>
               </div>
             </div>
             <VesselTable 

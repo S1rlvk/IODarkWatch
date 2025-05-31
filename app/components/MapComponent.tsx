@@ -1,20 +1,28 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import dynamic from 'next/dynamic';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Vessel, Alert } from '../types';
 
-// Fix Leaflet marker icon issue
-const fixLeafletIcon = () => {
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  });
-};
+// Dynamically import react-leaflet components
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+);
 
 interface MapComponentProps {
   vessels: Vessel[];
@@ -24,28 +32,29 @@ interface MapComponentProps {
 }
 
 const MapComponent: React.FC<MapComponentProps> = ({ vessels, alerts, onAlertClick, selectedAlert }) => {
+  // Fix Leaflet icon issue
   useEffect(() => {
-    fixLeafletIcon();
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    });
   }, []);
 
-  // Custom icon for dark vessels
-  const darkVesselIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+  // Create custom icons
+  const darkVesselIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: '<div style="background-color: #ef4444; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
   });
 
-  // Custom icon for active vessels
-  const activeVesselIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+  const activeVesselIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: '<div style="background-color: #3b82f6; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
   });
 
   return (
@@ -91,8 +100,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ vessels, alerts, onAlertCli
           >
             <Popup>
               <div className="p-2">
-                <h3 className="text-lg font-bold mb-2 text-accent-blue">Alert: {alert.type}</h3>
-                <p className="text-sm text-gray-600">Vessel: {alert.vessel}</p>
+                <h3 className="text-lg font-bold mb-2">Alert: {alert.type}</h3>
                 <p className="text-sm text-gray-600">Severity: {alert.severity}</p>
                 <p className="text-sm text-gray-600">Time: {new Date(alert.timestamp).toLocaleString()}</p>
                 <p className="text-sm text-gray-600 mt-2">{alert.description}</p>

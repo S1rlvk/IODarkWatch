@@ -1,12 +1,30 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import dynamic from 'next/dynamic';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useVesselStore } from '../store/useVesselStore';
 import { Vessel, Alert } from '../types';
 import AlertMarker from './AlertMarker';
+
+// Dynamically import react-leaflet components
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const CircleMarker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.CircleMarker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+);
 
 interface VesselMapProps {
   className?: string;
@@ -14,12 +32,12 @@ interface VesselMapProps {
 
 export default function VesselMap({ className = '' }: VesselMapProps) {
   const mapRef = useRef<L.Map>(null);
-  const vessels = useVesselStore(state => state.getFilteredVessels());
+  const vessels = useVesselStore(state => state.vessels);
   const alerts = useVesselStore(state => state.alerts);
   const selectedAlert = useVesselStore(state => state.selectedAlert);
   const setSelectedAlert = useVesselStore(state => state.setSelectedAlert);
 
-  // Fix Leaflet marker icon issue
+  // Fix Leaflet icon issue
   useEffect(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({

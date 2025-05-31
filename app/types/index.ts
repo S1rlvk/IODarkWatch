@@ -17,6 +17,14 @@ export interface Vessel {
   confidence?: number;
   aisMatch?: boolean;
   timestamp?: string;
+  lastAisTransmission?: string;
+  previousPositions?: Array<{
+    lat: number;
+    lng: number;
+    timestamp: string;
+    speed: number;
+  }>;
+  suspicious?: boolean;
 }
 
 export interface Alert {

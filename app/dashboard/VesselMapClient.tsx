@@ -6,9 +6,12 @@ import dynamic from 'next/dynamic';
 import { 
   MapIcon, 
   ViewfinderCircleIcon, 
-  ChartBarIcon 
+  ChartBarIcon,
+  ExclamationTriangleIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import 'leaflet/dist/leaflet.css';
+import { analyzeDarkVessel } from '../utils/darkVesselDetection';
 
 // Dynamically import Leaflet components with no SSR
 const MapContainer = dynamic(
@@ -33,125 +36,297 @@ export default function VesselMapClient() {
   const [showSatellite, setShowSatellite] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [isLoadingTimeout, setIsLoadingTimeout] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
   const mapRef = useRef<any>(null);
   const vessels = useVesselStore(state => state.vessels);
   const selectedAlert = useVesselStore(state => state.selectedAlert);
 
+  // Add debug logging
+  const addDebugInfo = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    setDebugInfo(prev => [...prev.slice(-4), `[${timestamp}] ${message}`]);
+    console.log(`[MapDebug] ${message}`);
+  };
+
+  // Loading timeout effect
   useEffect(() => {
-    // Import Leaflet only on client side
+    const timeout = setTimeout(() => {
+      if (!L) {
+        setIsLoadingTimeout(true);
+        addDebugInfo('Loading timeout reached (10s)');
+      }
+    }, 10000);
+
+    return () => clearTimeout(timeout);
+  }, [L]);
+
+  // Progress simulation for loading
+  useEffect(() => {
+    if (!L) {
+      const interval = setInterval(() => {
+        setLoadingProgress(prev => {
+          if (prev >= 90) return prev;
+          return prev + Math.random() * 10;
+        });
+      }, 200);
+
+      return () => clearInterval(interval);
+    } else {
+      setLoadingProgress(100);
+    }
+  }, [L]);
+
+  useEffect(() => {
+    addDebugInfo('Starting Leaflet import...');
+    
+    // Import Leaflet only on client side with enhanced error handling
     import('leaflet').then((leaflet) => {
-      setL(leaflet.default);
+      addDebugInfo('Leaflet imported successfully');
+      
+      try {
+        setL(leaflet.default);
 
-      // Fix Leaflet marker icon issue
-      delete (leaflet.default.Icon.Default.prototype as any)._getIconUrl;
-      leaflet.default.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-      });
+        // Fix Leaflet marker icon issue
+        delete (leaflet.default.Icon.Default.prototype as any)._getIconUrl;
+        leaflet.default.Icon.Default.mergeOptions({
+          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        });
 
-      // Create a custom default icon
-      const DefaultIcon = leaflet.default.divIcon({
-        className: 'custom-div-icon',
-        html: `
-          <div style="
-            background-color: #00FFFF;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-          "></div>
-        `,
-        iconSize: [12, 12],
-        iconAnchor: [6, 6]
-      });
+        addDebugInfo('Leaflet icon fix applied');
 
-      leaflet.default.Marker.prototype.options.icon = DefaultIcon;
+        // Create a custom default icon with error handling
+        try {
+          const DefaultIcon = leaflet.default.divIcon({
+            className: 'custom-div-icon',
+            html: `
+              <div style="
+                background-color: #00FFFF;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                border: 2px solid white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+              "></div>
+            `,
+            iconSize: [12, 12],
+            iconAnchor: [6, 6]
+          });
+
+          leaflet.default.Marker.prototype.options.icon = DefaultIcon;
+          addDebugInfo('Custom icon created successfully');
+        } catch (iconError: unknown) {
+          const errorMessage = iconError instanceof Error ? iconError.message : 'Unknown icon error';
+          console.error('Icon creation error:', iconError);
+          addDebugInfo(`Icon creation failed: ${errorMessage}`);
+        }
+
+        setLoadingProgress(100);
+        addDebugInfo('Leaflet initialization complete');
+      } catch (setupError: unknown) {
+        const errorMessage = setupError instanceof Error ? setupError.message : 'Unknown setup error';
+        console.error('Leaflet setup error:', setupError);
+        setMapError(`Leaflet setup failed: ${errorMessage}`);
+        addDebugInfo(`Setup error: ${errorMessage}`);
+      }
     }).catch((error) => {
       console.error('Failed to load Leaflet:', error);
-      setMapError('Failed to load map. Please refresh the page.');
+      const errorMessage = `Failed to load map library: ${error.message}`;
+      setMapError(errorMessage);
+      addDebugInfo(`Import failed: ${error.message}`);
     });
+
+    // Check for required CSS
+    const leafletCSS = document.querySelector('link[href*="leaflet"]');
+    if (!leafletCSS) {
+      addDebugInfo('WARNING: Leaflet CSS not found');
+    } else {
+      addDebugInfo('Leaflet CSS detected');
+    }
+
+    // Check for network connectivity
+    if (!navigator.onLine) {
+      addDebugInfo('WARNING: Device is offline');
+      setMapError('Device is offline. Check your internet connection.');
+    }
   }, []);
 
   useEffect(() => {
     if (selectedAlert && mapRef.current && L) {
-      mapRef.current.setView(
-        [selectedAlert.location.lat, selectedAlert.location.lng],
-        12
-      );
+      try {
+        mapRef.current.setView(
+          [selectedAlert.location.lat, selectedAlert.location.lng],
+          12
+        );
+        addDebugInfo(`Map centered on alert: ${selectedAlert.id}`);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown centering error';
+        addDebugInfo(`Failed to center on alert: ${errorMessage}`);
+      }
     }
   }, [selectedAlert, L]);
 
   const getVesselIcon = (status: string, confidence: number) => {
     if (!L) return null;
     
-    const color = status === 'active' ? '#39FF14' : status === 'dark' ? '#FF5F5F' : '#00FFFF';
-    const size = status === 'dark' ? 16 : 12; // Make dark vessels more prominent
-    
-    return L.divIcon({
-      className: 'custom-div-icon',
-      html: `
-        <div class="relative">
-          <div style="
-            background-color: ${color};
-            width: ${size}px;
-            height: ${size}px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
-          "></div>
-          ${status === 'dark' ? `
+    try {
+      // Enhanced color coding
+      const color = status === 'dark' ? '#ef4444' : // Red for dark vessels
+                   status === 'alert' ? '#f59e0b' : // Orange for alerts/suspicious
+                   '#39FF14'; // Green for active
+      const size = status === 'dark' ? 18 : status === 'alert' ? 16 : 12;
+      
+      return L.divIcon({
+        className: 'custom-div-icon',
+        html: `
+          <div class="relative">
             <div style="
-              position: absolute;
-              top: -4px;
-              left: -4px;
-              right: -4px;
-              bottom: -4px;
+              background-color: ${color};
+              width: ${size}px;
+              height: ${size}px;
               border-radius: 50%;
-              border: 2px solid ${color};
-              opacity: 0.5;
-              animation: pulse 2s infinite;
+              border: 2px solid white;
+              box-shadow: 0 0 10px rgba(0,0,0,0.3);
+              position: relative;
+              z-index: 1;
             "></div>
-          ` : ''}
-          ${confidence > 0.8 ? `
-            <div style="
-              position: absolute;
-              top: -8px;
-              left: -8px;
-              right: -8px;
-              bottom: -8px;
-              border-radius: 50%;
-              border: 2px solid #39FF14;
-              opacity: 0.3;
-              animation: pulse 1.5s infinite;
-            "></div>
-          ` : ''}
-        </div>
-      `,
-      iconSize: [size, size],
-      iconAnchor: [size/2, size/2]
-    });
+            ${status === 'dark' ? `
+              <div style="
+                position: absolute;
+                top: -4px;
+                left: -4px;
+                right: -4px;
+                bottom: -4px;
+                border-radius: 50%;
+                border: 2px solid ${color};
+                opacity: 0.5;
+                animation: pulse 2s infinite;
+              "></div>
+              <div style="
+                position: absolute;
+                top: -8px;
+                left: -8px;
+                right: -8px;
+                bottom: -8px;
+                border-radius: 50%;
+                border: 2px solid ${color};
+                opacity: 0.3;
+                animation: pulse 2s infinite 0.5s;
+              "></div>
+            ` : ''}
+            ${status === 'alert' ? `
+              <div style="
+                position: absolute;
+                top: -4px;
+                left: -4px;
+                right: -4px;
+                bottom: -4px;
+                border-radius: 50%;
+                border: 2px solid ${color};
+                opacity: 0.5;
+                animation: pulse 1.5s infinite;
+              "></div>
+            ` : ''}
+            ${confidence > 0.8 ? `
+              <div style="
+                position: absolute;
+                top: -12px;
+                left: -12px;
+                right: -12px;
+                bottom: -12px;
+                border-radius: 50%;
+                border: 2px solid #39FF14;
+                opacity: 0.3;
+                animation: pulse 1.5s infinite;
+              "></div>
+            ` : ''}
+          </div>
+        `,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2]
+      });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown icon creation error';
+      addDebugInfo(`Icon creation error: ${errorMessage}`);
+      return null;
+    }
   };
 
-  if (mapError) {
+  const handleRetry = () => {
+    setMapError(null);
+    setIsLoadingTimeout(false);
+    setLoadingProgress(0);
+    setDebugInfo([]);
+    setL(null);
+    
+    // Force reload the page after a short delay
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
+
+  // Error state with retry option
+  if (mapError || isLoadingTimeout) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-[#1A1A1A]">
-        <div className="text-center">
-          <p className="text-[#FF5F5F] text-lg">{mapError}</p>
+        <div className="text-center max-w-md p-6">
+          <ExclamationTriangleIcon className="w-16 h-16 text-[#FF5F5F] mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-white mb-2">
+            {mapError ? 'Map Loading Error' : 'Loading Timeout'}
+          </h3>
+          <p className="text-[#A0A0A0] mb-6">
+            {mapError || 'Map is taking longer than expected to load'}
+          </p>
+          
+          <div className="space-y-4">
+            <button
+              onClick={handleRetry}
+              className="flex items-center gap-2 px-4 py-2 bg-[#00FFFF] hover:bg-[#00CCCC] text-[#121212] rounded-lg mx-auto transition-colors font-medium"
+            >
+              <ArrowPathIcon className="w-4 h-4" />
+              Retry Loading
+            </button>
+            
+            <details className="text-left">
+              <summary className="text-sm text-[#A0A0A0] cursor-pointer hover:text-white">
+                Debug Information
+              </summary>
+              <div className="mt-2 p-4 bg-[#0A0A0A] rounded text-xs text-[#888] font-mono max-h-32 overflow-auto">
+                {debugInfo.map((info, index) => (
+                  <div key={index}>{info}</div>
+                ))}
+              </div>
+            </details>
+          </div>
         </div>
       </div>
     );
   }
 
+  // Loading state with progress
   if (!L) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-[#1A1A1A]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00FFFF] mx-auto mb-4"></div>
-          <p className="text-[#A0A0A0] text-lg">Loading map...</p>
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00FFFF]"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xs text-[#00FFFF] font-bold">
+                {Math.round(loadingProgress)}%
+              </span>
+            </div>
+          </div>
+          <p className="text-[#A0A0A0] text-lg mb-2">Loading map...</p>
+          <p className="text-[#666] text-sm">Initializing Leaflet components</p>
+          
+          {debugInfo.length > 0 && (
+            <div className="mt-4 text-xs text-[#666] max-w-xs">
+              {debugInfo[debugInfo.length - 1]}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -175,51 +350,108 @@ export default function VesselMapClient() {
             ? '&copy; <a href="https://www.esri.com/">Esri</a>'
             : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           }
+          eventHandlers={{
+            load: () => addDebugInfo('Tiles loaded successfully'),
+            tileerror: () => addDebugInfo('Tile loading error occurred')
+          }}
         />
-        {vessels.map((vessel) => (
-          <Marker
-            key={vessel.id}
-            position={[vessel.location.lat, vessel.location.lng]}
-            icon={getVesselIcon(vessel.status, vessel.confidence || 0)}
-          >
-            <Popup>
-              <div className="vessel-popup p-2">
-                <h4 className="text-lg font-semibold mb-2 text-[#E0E0E0]">{vessel.name}</h4>
-                <div className="space-y-1 text-sm">
-                  <p className="flex items-center gap-2">
-                    <span className="text-[#A0A0A0]">Type:</span>
-                    <span className="font-medium capitalize text-[#E0E0E0]">{vessel.type}</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="text-[#A0A0A0]">Status:</span>
-                    <span className={`font-medium capitalize ${
-                      vessel.status === 'active' ? 'text-[#39FF14]' : 
-                      vessel.status === 'dark' ? 'text-[#FF5F5F]' : 'text-[#00FFFF]'
+        
+        {vessels.map((vessel) => {
+          const icon = getVesselIcon(vessel.status, vessel.confidence || 0);
+          if (!icon) return null;
+          
+          return (
+            <Marker
+              key={vessel.id}
+              position={[vessel.location.lat, vessel.location.lng]}
+              icon={icon}
+            >
+              <Popup>
+                <div className="vessel-popup p-3 min-w-[300px]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="text-lg font-semibold text-[#E0E0E0]">{vessel.name}</h4>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      vessel.status === 'dark' ? 'bg-red-500/20 text-red-400' :
+                      vessel.status === 'alert' ? 'bg-orange-500/20 text-orange-400' :
+                      'bg-green-500/20 text-green-400'
                     }`}>
-                      {vessel.status}
+                      {vessel.status.toUpperCase()}
                     </span>
-                  </p>
-                  {vessel.speed > 0 && (
+                  </div>
+                  
+                  <div className="space-y-1 text-sm">
+                    <p className="flex items-center gap-2">
+                      <span className="text-[#A0A0A0]">Type:</span>
+                      <span className="font-medium capitalize text-[#E0E0E0]">{vessel.type}</span>
+                    </p>
                     <p className="flex items-center gap-2">
                       <span className="text-[#A0A0A0]">Speed:</span>
                       <span className="font-medium text-[#E0E0E0]">{vessel.speed} knots</span>
                     </p>
-                  )}
-                  {vessel.course > 0 && (
                     <p className="flex items-center gap-2">
                       <span className="text-[#A0A0A0]">Course:</span>
                       <span className="font-medium text-[#E0E0E0]">{vessel.course}°</span>
                     </p>
-                  )}
-                  <p className="flex items-center gap-2">
-                    <span className="text-[#A0A0A0]">Confidence:</span>
-                    <span className="font-medium text-[#E0E0E0]">{((vessel.confidence || 0) * 100).toFixed(1)}%</span>
-                  </p>
+                    <p className="flex items-center gap-2">
+                      <span className="text-[#A0A0A0]">Position:</span>
+                      <span className="font-medium text-[#E0E0E0] font-mono text-xs">
+                        {vessel.location.lat.toFixed(4)}°, {vessel.location.lng.toFixed(4)}°
+                      </span>
+                    </p>
+                    
+                    {vessel.lastAisTransmission && (() => {
+                      const analysis = analyzeDarkVessel(vessel);
+                      const hours = analysis.lastTransmissionHours;
+                      const formatTime = () => {
+                        if (!hours) return 'Unknown';
+                        if (hours < 1) return `${Math.round(hours * 60)} min ago`;
+                        if (hours < 24) return `${Math.round(hours)} hrs ago`;
+                        return `${Math.round(hours / 24)} days ago`;
+                      };
+                      
+                      return (
+                        <p className="flex items-center gap-2">
+                          <span className="text-[#A0A0A0]">Last AIS:</span>
+                          <span className={`font-medium ${hours && hours > 12 ? 'text-red-400' : 'text-[#E0E0E0]'}`}>
+                            {formatTime()}
+                          </span>
+                        </p>
+                      );
+                    })()}
+                    
+                    <p className="flex items-center gap-2">
+                      <span className="text-[#A0A0A0]">Confidence:</span>
+                      <span className="font-medium text-[#E0E0E0]">{((vessel.confidence || 0) * 100).toFixed(1)}%</span>
+                    </p>
+                    
+                    {vessel.aisMatch !== undefined && (
+                      <p className="flex items-center gap-2">
+                        <span className="text-[#A0A0A0]">AIS Match:</span>
+                        <span className={vessel.aisMatch ? 'text-green-400 font-medium' : 'text-red-400 font-medium'}>
+                          {vessel.aisMatch ? 'Yes' : 'No'}
+                        </span>
+                      </p>
+                    )}
+                    
+                    {(() => {
+                      const analysis = analyzeDarkVessel(vessel);
+                      if (analysis.reason.length === 0) return null;
+                      
+                      return (
+                        <div className="mt-3 p-2 bg-red-900/20 border border-red-500/30 rounded">
+                          <p className="text-red-300 font-medium text-xs mb-1">🚨 ALERTS:</p>
+                          {analysis.reason.map((reason, index) => (
+                            <p key={index} className="text-red-200 text-xs leading-relaxed">• {reason}</p>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
 
       {/* Map Controls */}
@@ -243,6 +475,16 @@ export default function VesselMapClient() {
           <ChartBarIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
         </button>
       </div>
+
+      {/* Debug info overlay (only in development) */}
+      {process.env.NODE_ENV === 'development' && debugInfo.length > 0 && (
+        <div className="absolute bottom-4 left-4 z-[1000] bg-black/80 p-2 rounded text-xs text-gray-400 max-w-xs">
+          <div className="font-bold mb-1">Map Debug:</div>
+          {debugInfo.slice(-3).map((info, index) => (
+            <div key={index}>{info}</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 } 
