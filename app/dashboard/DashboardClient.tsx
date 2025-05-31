@@ -2,16 +2,11 @@
 
 import { useState } from 'react';
 import { 
-  ChevronLeftIcon, 
-  ChevronRightIcon,
   MapIcon,
-  TableCellsIcon,
-  ChartBarIcon,
-  Cog6ToothIcon,
   BellIcon,
-  ClockIcon,
   FunnelIcon,
-  ArrowDownTrayIcon
+  ArrowDownTrayIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import VesselMapClient from './VesselMapClient';
 import FilterDrawer from '../components/FilterDrawer';
@@ -22,10 +17,10 @@ import { StatCard } from '../components/StatCard';
 import { useLastUpdated } from '../hooks/useLastUpdated';
 
 export default function DashboardClient() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [filterOpen, setFilterOpen] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [showDetections, setShowDetections] = useState(false);
 
   const vessels = useVesselStore(state => state.vessels);
   const alerts = useVesselStore(state => state.alerts);
@@ -35,189 +30,171 @@ export default function DashboardClient() {
   const darkVessels = vessels.filter(v => v.status === 'dark').length;
   const totalVessels = vessels.length;
 
-  // Calculate percentages
-  const activePercentage = totalVessels > 0 ? (activeVessels / totalVessels * 100).toFixed(1) : '0.0';
-  const darkPercentage = totalVessels > 0 ? (darkVessels / totalVessels * 100).toFixed(1) : '0.0';
-  const alertPercentage = totalVessels > 0 ? (alerts.length / totalVessels * 100).toFixed(1) : '0.0';
-
   return (
-    <div className="min-h-screen bg-[#101723] text-[15px] text-white font-inter">
-      {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-screen bg-[#111111] border-r border-[#222] transition-all duration-200 z-50 ${
-        sidebarOpen ? 'w-[280px] md:w-[220px]' : 'w-[60px]'
-      }`}>
-        <div className="p-4 flex flex-col h-full">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 text-white w-10 h-10 flex items-center justify-center"
-          >
-            {sidebarOpen ? (
-              <ChevronLeftIcon className="w-6 h-6" />
-            ) : (
-              <ChevronRightIcon className="w-6 h-6" />
-            )}
-          </button>
-          <nav className="mt-8 space-y-2">
-            <button className="w-full p-2 hover:bg-[#1A1A1A] rounded-lg transition-colors duration-200 text-white flex items-center gap-3 h-11">
-              <MapIcon className="w-6 h-6" />
-              {sidebarOpen && <span className="text-sm">Dashboard</span>}
-            </button>
-            <button className="w-full p-2 hover:bg-[#1A1A1A] rounded-lg transition-colors duration-200 text-white flex items-center gap-3 h-11">
-              <BellIcon className="w-6 h-6" />
-              {sidebarOpen && <span className="text-sm">Alerts</span>}
-            </button>
-            <button className="w-full p-2 hover:bg-[#1A1A1A] rounded-lg transition-colors duration-200 text-white flex items-center gap-3 h-11">
-              <ChartBarIcon className="w-6 h-6" />
-              {sidebarOpen && <span className="text-sm">Analytics</span>}
-            </button>
-            <button className="w-full p-2 hover:bg-[#1A1A1A] rounded-lg transition-colors duration-200 text-white flex items-center gap-3 h-11">
-              <Cog6ToothIcon className="w-6 h-6" />
-              {sidebarOpen && <span className="text-sm">Settings</span>}
-            </button>
-          </nav>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className={`transition-all duration-200 ${sidebarOpen ? 'ml-[280px] md:ml-[220px]' : 'ml-[60px]'}`}>
-        {/* Header */}
-        <header className="bg-[#111111] border-b border-[#222] p-4 sticky top-0 z-40">
+    <div className="min-h-screen bg-black text-white">
+      {/* Streamlined Header */}
+      <header className="bg-black/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00FFFF] to-[#39FF14] flex items-center justify-center">
-                <span className="text-black font-bold text-lg">IO</span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                  <span className="text-white font-black text-xl">IO</span>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold tracking-tight">IODarkWatch</h1>
+                  <p className="text-sm text-gray-400">Maritime Surveillance System</p>
+                </div>
               </div>
-              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#00FFFF] to-[#39FF14] bg-clip-text text-transparent tracking-tight">
-                IODarkWatch
-              </h1>
-              <span className="hidden md:inline text-xs text-white/40 px-2 py-1 rounded-full border border-white/10">v1.0</span>
             </div>
-            <div className="flex items-center gap-2 md:gap-3">
+            
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowDetections(!showDetections)}
+                className="px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 text-sm font-medium"
+              >
+                <MapIcon className="w-5 h-5" />
+                <span className="hidden sm:inline">Recent Detections</span>
+                <span className="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full text-xs font-semibold">
+                  {vessels.length}
+                </span>
+              </button>
+              
               <button
                 onClick={() => setFilterOpen(true)}
-                className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white w-9 h-9 md:w-11 md:h-11 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00FFFF]"
+                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
                 title="Filter"
               >
-                <FunnelIcon className="w-4 h-4 md:w-5 md:h-5 group-hover:text-[#00FFFF]" />
+                <FunnelIcon className="w-5 h-5" />
               </button>
+              
               <button
                 onClick={() => setAlertsOpen(true)}
-                className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group relative text-white w-9 h-9 md:w-11 md:h-11 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00FFFF]"
+                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all relative"
                 title="Alerts"
               >
-                <BellIcon className="w-4 h-4 md:w-5 md:h-5 group-hover:text-[#00FFFF]" />
+                <BellIcon className="w-5 h-5" />
                 {alerts.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#FF5F5F] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
                     {alerts.length}
                   </span>
                 )}
               </button>
+              
               <button
                 onClick={() => setExportOpen(true)}
-                className="p-2 hover:bg-[#1A1A1A] rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#00FFFF]/10 group text-white w-9 h-9 md:w-11 md:h-11 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00FFFF]"
-                title="Export Data"
+                className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+                title="Export"
               >
-                <ArrowDownTrayIcon className="w-4 h-4 md:w-5 md:h-5 group-hover:text-[#00FFFF]" />
+                <ArrowDownTrayIcon className="w-5 h-5" />
               </button>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <div className="p-4">
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <StatCard
-              title="Active Vessels"
-              value={activeVessels}
-              percentage={activePercentage}
-              type="active"
-              isLoading={isLastUpdatedLoading}
-            />
-            <StatCard
-              title="Dark Vessels"
-              value={darkVessels}
-              percentage={darkPercentage}
-              type="dark"
-              isLoading={isLastUpdatedLoading}
-            />
-            <StatCard
-              title="Open Alerts"
-              value={alerts.length}
-              percentage={alertPercentage}
-              type="alert"
-              isLoading={isLastUpdatedLoading}
-            />
-            <StatCard
-              title="Last Sync"
-              value={lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : '--:--:--'}
-              type="sync"
-              isLoading={isLastUpdatedLoading}
-            />
-          </div>
-
-          {/* Map and Table Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" style={{ height: 'calc(100vh - 14rem)' }}>
-            {/* Map Area */}
-            <div className="lg:col-span-2 bg-[#111111] rounded-lg border border-[#222] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200 relative">
-              {isLastUpdatedLoading ? (
-                <div className="absolute inset-0 bg-[#111111]/80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
-                  <div className="w-12 h-12 border-4 border-[#00FFFF]/20 border-t-[#00FFFF] rounded-full animate-spin mb-4"></div>
-                  <p className="text-white/80 font-medium">Loading map data...</p>
-                  <p className="text-white/40 text-sm mt-1">Please wait while we fetch the latest vessel information</p>
-                </div>
-              ) : null}
-              <VesselMapClient />
+      {/* Main Content */}
+      <main className="relative">
+        {/* Stats Bar */}
+        <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 px-6 py-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-cyan-400">{activeVessels}</p>
+              <p className="text-sm text-gray-400 mt-1">Active Vessels</p>
             </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-red-400">{darkVessels}</p>
+              <p className="text-sm text-gray-400 mt-1">Dark Vessels</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-yellow-400">{alerts.length}</p>
+              <p className="text-sm text-gray-400 mt-1">Active Alerts</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-green-400">
+                {lastUpdated ? new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">Last Update</p>
+            </div>
+          </div>
+        </div>
 
-            {/* Detection List */}
-            <div className="bg-[#111111] rounded-lg border border-[#222] overflow-hidden hover:border-[#00FFFF]/30 transition-colors duration-200">
-              <div className="p-4 border-b border-[#222] flex items-center justify-between">
-                <h3 className="font-semibold text-white text-lg">Recent Detections</h3>
-                <span className="text-sm text-white/60">{vessels.length} vessels</span>
+        {/* Map Container */}
+        <div className="relative h-[calc(100vh-180px)]">
+          {isLastUpdatedLoading && (
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center z-40">
+              <div className="w-16 h-16 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
+              <p className="text-xl font-medium text-white">Loading map data...</p>
+              <p className="text-gray-400 mt-2">Fetching latest vessel information</p>
+            </div>
+          )}
+          <VesselMapClient />
+        </div>
+
+        {/* Slide-out Detection Panel */}
+        <div className={`fixed right-0 top-0 h-full bg-black/95 backdrop-blur-xl border-l border-white/10 transition-transform duration-300 z-40 ${
+          showDetections ? 'translate-x-0' : 'translate-x-full'
+        }`} style={{ width: '400px' }}>
+          <div className="h-full flex flex-col">
+            <div className="p-6 border-b border-white/10 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold">Recent Detections</h2>
+                <p className="text-sm text-gray-400 mt-1">{vessels.length} vessels tracked</p>
               </div>
-              <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-[#222] scrollbar-track-[#111111] p-4 space-y-4" style={{ height: 'calc(100% - 3.5rem)' }}>
-                {vessels.map(vessel => (
-                  <div key={vessel.id} className="bg-[#1A1A1A] rounded-lg p-4 hover:bg-[#222] transition-all duration-200 border border-[#222] hover:border-[#00FFFF]/20">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h4 className="font-medium text-white text-lg mb-1">{vessel.name}</h4>
-                        <p className="text-sm text-white/60">
-                          {vessel.timestamp ? new Date(vessel.timestamp).toLocaleString() : 'No timestamp'}
-                        </p>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        vessel.status === 'dark' ? 'bg-red-500/20 text-red-400' :
-                        vessel.status === 'active' ? 'bg-emerald-500/20 text-emerald-300' :
-                        'bg-cyan-500/20 text-cyan-300'
-                      }`}>
-                        {vessel.status}
-                      </span>
+              <button
+                onClick={() => setShowDetections(false)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-all"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {vessels.map(vessel => (
+                <div key={vessel.id} className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all cursor-pointer">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-semibold text-lg">{vessel.name}</h3>
+                      <p className="text-sm text-gray-400">
+                        {vessel.timestamp ? new Date(vessel.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Unknown'}
+                      </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="bg-[#222] rounded-lg p-2">
-                        <p className="text-white/40 text-xs mb-1">Latitude</p>
-                        <p className="text-white font-medium">{vessel.location.lat.toFixed(4)}°</p>
-                      </div>
-                      <div className="bg-[#222] rounded-lg p-2">
-                        <p className="text-white/40 text-xs mb-1">Longitude</p>
-                        <p className="text-white font-medium">{vessel.location.lng.toFixed(4)}°</p>
-                      </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                      vessel.status === 'dark' ? 'bg-red-500/20 text-red-400' :
+                      vessel.status === 'active' ? 'bg-green-500/20 text-green-400' :
+                      'bg-cyan-500/20 text-cyan-400'
+                    }`}>
+                      {vessel.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Position</p>
+                      <p className="text-sm font-medium">
+                        {vessel.location.lat.toFixed(3)}°, {vessel.location.lng.toFixed(3)}°
+                      </p>
                     </div>
-                    <div className="mt-3">
-                      <div className="flex items-center justify-between">
-                        <p className="text-white/40 text-xs">Confidence</p>
-                        <p className="text-white font-medium">{((vessel.confidence || 0) * 100).toFixed(1)}%</p>
-                      </div>
-                      <div className="w-full h-1.5 bg-[#222] rounded-full mt-1">
-                        <div 
-                          className="h-full rounded-full bg-gradient-to-r from-[#00FFFF] to-[#39FF14]"
-                          style={{ width: `${(vessel.confidence || 0) * 100}%` }}
-                        />
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Confidence</p>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full transition-all ${
+                              (vessel.confidence || 0) > 0.7 ? 'bg-red-500' :
+                              (vessel.confidence || 0) > 0.4 ? 'bg-yellow-500' :
+                              'bg-green-500'
+                            }`}
+                            style={{ width: `${(vessel.confidence || 0) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-medium">{((vessel.confidence || 0) * 100).toFixed(0)}%</span>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
