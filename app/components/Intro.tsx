@@ -25,7 +25,7 @@ export default function Intro() {
       setCurrentStat((prev) => (prev + 1) % stats.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [stats.length]);
 
   const handleEnterPlatform = () => {
     setIsLoading(true);
@@ -166,7 +166,7 @@ export default function Intro() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>The Future of Maritime Intelligence</h2>
             <p className={styles.sectionSubtitle}>
-              Traditional maritime surveillance can't deliver real-time insights. With 30-minute 
+              Traditional maritime surveillance can&apos;t deliver real-time insights. With 30-minute 
               detection cycles, IODarkWatch unlocks opportunities like never before.
             </p>
           </div>
