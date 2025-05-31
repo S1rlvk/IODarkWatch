@@ -47,7 +47,7 @@ const DarkVesselsPage: React.FC = () => {
           <p>
             The presence of dark vessels in the Indian Ocean raises serious national security concerns. 
             These vessels can evade traditional maritime surveillance systems, potentially enabling 
-            unauthorized activities near sensitive coastal areas. The region's strategic importance 
+            unauthorized activities near sensitive coastal areas. The region&apos;s strategic importance 
             for global trade and energy transport makes it crucial to maintain maritime domain 
             awareness and prevent potential security breaches.
           </p>

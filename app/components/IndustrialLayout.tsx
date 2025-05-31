@@ -71,7 +71,7 @@ export const IndustrialLayout: React.FC<IndustrialLayoutProps> = ({ children }) 
         {showConsole && (
           <div className="h-64 bg-surface border-t border-border font-mono text-sm p-4 overflow-auto">
             <div className="text-accent-teal">[INFO] Loading vessel data...</div>
-            <div className="text-accent-blue">[DEBUG] Processing AIS updates...</div>
+            <div className="text-accent-blue">[INFO] Processing AIS updates...</div>
             <div className="text-yellow-500">[WARN] Connection latency: 120ms</div>
           </div>
         )}
