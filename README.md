@@ -57,3 +57,79 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 For any queries or collaboration opportunities, please reach out to [ssattiger65@gmail.com](mailto:ssattiger65@gmail.com)
+
+*Latest Update: Dark vessel detection system with comprehensive AIS gap analysis and suspicious movement patterns - deployed with enhanced visual indicators and real-time monitoring capabilities.*
+
+## 🚢 Overview
+
+IODarkWatch leverages advanced algorithms to identify suspicious maritime activities by analyzing:
+- AIS transmission gaps (vessels going dark for 12+ hours)
+- Suspicious movement patterns (speed vs. position discrepancies)
+- Historical vessel behavior analysis
+- Real-time monitoring and alerting
+
+## 🔍 Dark Vessel Detection Features
+
+### AIS Gap Detection
+- Monitors vessels that haven't transmitted AIS signals for 12+ hours
+- Tracks last known transmission timestamps
+- Identifies previously active vessels that have gone silent
+
+### Suspicious Movement Analysis
+- Detects vessels reporting speed = 0 but showing position changes
+- Analyzes historical position data for movement patterns
+- Flags erratic behavior and course deviations
+
+### Visual Indicators
+- **Red markers**: Dark vessels (AIS gap > 12 hours)
+- **Orange markers**: Suspicious behavior detected
+- **Green markers**: Normal active vessels
+- Enhanced popup information with analysis details
+
+## 🛠 Technology Stack
+
+- **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS
+- **Mapping**: Leaflet with custom vessel markers
+- **Real-time Updates**: Custom hooks for live data streaming
+- **Analysis Engine**: Custom dark vessel detection algorithms
+- **Deployment**: Netlify with continuous integration
+
+## 🚀 Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+Visit `http://localhost:3000` to access the dashboard.
+
+## 📊 Key Features
+
+- **Interactive Maritime Map**: Real-time vessel tracking with custom markers
+- **Dark Vessel Dashboard**: Comprehensive analytics and detection metrics
+- **Alert System**: Automated notifications for suspicious activities
+- **Historical Analysis**: Vessel behavior patterns and trend analysis
+- **Export Capabilities**: Data export for further analysis
+
+## 🔄 Deployment Status
+
+> **Current Deployment**: Dark vessel detection system with enhanced AIS monitoring - Force deployment trigger at 2025-01-21
+
+## 📈 Monitoring Capabilities
+
+- Real-time vessel position tracking
+- AIS transmission gap analysis
+- Suspicious movement pattern detection
+- Historical behavior comparison
+- Automated alert generation
+- Comprehensive reporting dashboard
+
+---
+
+**IODarkWatch** - Securing maritime borders through intelligent vessel monitoring.
