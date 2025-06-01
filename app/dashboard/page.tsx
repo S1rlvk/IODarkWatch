@@ -3,7 +3,7 @@
 // FORCE CACHE REFRESH - Updated: 2025-06-01 at 9:55 AM
 // Updated beautiful dashboard - force Netlify redeploy
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Ship, Satellite, Activity, Eye, MapPin, Clock, TrendingUp, Radar, Waves } from 'lucide-react';
+import { AlertTriangle, Ship, Satellite, Activity, Eye, MapPin, Clock } from 'lucide-react';
 
 const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -13,12 +13,10 @@ const Dashboard = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-      // Simulate live data updates
       if (Math.random() > 0.95) {
         setActiveAlerts(prev => prev + (Math.random() > 0.5 ? 1 : -1));
       }
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -53,231 +51,478 @@ const Dashboard = () => {
   ];
 
   const stats = [
-    { label: "Active Alerts", value: activeAlerts, icon: AlertTriangle, color: "from-red-500 to-red-600", iconColor: "text-red-400" },
-    { label: "Vessels Tracked", value: "2,847", icon: Ship, color: "from-blue-500 to-blue-600", iconColor: "text-blue-400" },
-    { label: "SAR Scans Today", value: "156", icon: Satellite, color: "from-green-500 to-green-600", iconColor: "text-green-400" },
-    { label: "Coverage Area", value: "1.2M km²", icon: MapPin, color: "from-purple-500 to-purple-600", iconColor: "text-purple-400" }
+    { label: "Active Alerts", value: activeAlerts, icon: AlertTriangle, color: "#ef4444" },
+    { label: "Vessels Tracked", value: "2,847", icon: Ship, color: "#3b82f6" },
+    { label: "SAR Scans Today", value: "156", icon: Satellite, color: "#10b981" },
+    { label: "Coverage Area", value: "1.2M km²", icon: MapPin, color: "#8b5cf6" }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      {/* Background Pattern */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
-      </div>
-
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0f172a 0%, #000000 50%, #0f172a 100%)',
+      color: 'white',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
       {/* Header */}
-      <header className="relative z-10 bg-black/20 backdrop-blur-lg border-b border-cyan-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <Eye className="h-10 w-10 text-cyan-400" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-                </div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                  IODarkWatch
-                </h1>
+      <header style={{
+        background: 'rgba(0, 0, 0, 0.3)',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(6, 182, 212, 0.2)',
+        padding: '0 2rem'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: '64px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ position: 'relative' }}>
+                <Eye size={40} color="#06b6d4" />
+                <div style={{
+                  position: 'absolute',
+                  top: '-2px',
+                  right: '-2px',
+                  width: '12px',
+                  height: '12px',
+                  background: '#06b6d4',
+                  borderRadius: '50%',
+                  animation: 'pulse 2s infinite'
+                }}></div>
               </div>
-              <div className="flex items-center space-x-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/30">
-                <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></div>
-                <span className="text-sm font-medium text-green-400">{isLive ? 'LIVE' : 'OFFLINE'}</span>
-              </div>
+              <h1 style={{
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                background: 'linear-gradient(to right, #06b6d4, #3b82f6)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                margin: 0
+              }}>
+                IODarkWatch
+              </h1>
             </div>
-            
-            <div className="flex items-center space-x-6">
-              <div className="text-right bg-white/5 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
-                <div className="text-sm font-medium text-white">
-                  {currentTime.toLocaleTimeString()}
-                </div>
-                <div className="text-xs text-gray-400">
-                  {currentTime.toLocaleDateString()}
-                </div>
-              </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'rgba(16, 185, 129, 0.1)',
+              padding: '0.25rem 0.75rem',
+              borderRadius: '9999px',
+              border: '1px solid rgba(16, 185, 129, 0.3)'
+            }}>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                background: isLive ? '#10b981' : '#ef4444',
+                borderRadius: '50%',
+                animation: isLive ? 'pulse 2s infinite' : 'none'
+              }}></div>
+              <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#10b981' }}>
+                {isLive ? 'LIVE' : 'OFFLINE'}
+              </span>
+            </div>
+          </div>
+          
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            padding: '0.5rem 1rem',
+            borderRadius: '0.5rem',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            textAlign: 'right'
+          }}>
+            <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>
+              {currentTime.toLocaleTimeString()}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+              {currentTime.toLocaleDateString()}
             </div>
           </div>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '2rem'
+      }}>
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '1.5rem',
+          marginBottom: '2rem'
+        }}>
           {stats.map((stat, index) => (
-            <div key={index} className="group relative bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 hover:border-cyan-500/30 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between">
+            <div key={index} style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.02)';
+              e.currentTarget.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <p className="text-sm font-medium text-gray-400 mb-1">{stat.label}</p>
-                  <p className="text-3xl font-bold text-white">{stat.value}</p>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: '0 0 0.5rem 0' }}>
+                    {stat.label}
+                  </p>
+                  <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0 }}>
+                    {stat.value}
+                  </p>
                 </div>
-                <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} bg-opacity-20`}>
-                  <stat.icon className={`h-8 w-8 ${stat.iconColor}`} />
+                <div style={{
+                  padding: '0.75rem',
+                  borderRadius: '0.75rem',
+                  background: `linear-gradient(135deg, ${stat.color}20, ${stat.color}10)`
+                }}>
+                  <stat.icon size={32} color={stat.color} />
                 </div>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
           {/* Map Area */}
-          <div className="lg:col-span-2">
-            <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
-              <div className="p-6 border-b border-white/10">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white flex items-center space-x-2">
-                    <Waves className="h-5 w-5 text-cyan-400" />
-                    <span>Indian Ocean Coverage</span>
-                  </h2>
-                  <div className="flex items-center space-x-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/30">
-                    <Activity className="h-4 w-4 text-green-400 animate-pulse" />
-                    <span className="text-sm text-green-400 font-medium">Real-time</span>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '1rem',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              padding: '1.5rem',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  margin: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Activity size={20} color="#06b6d4" />
+                  Indian Ocean Coverage
+                </h2>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '9999px',
+                  border: '1px solid rgba(16, 185, 129, 0.3)'
+                }}>
+                  <Activity size={16} color="#10b981" style={{ animation: 'pulse 2s infinite' }} />
+                  <span style={{ fontSize: '0.875rem', color: '#10b981', fontWeight: '500' }}>
+                    Real-time
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Map */}
+            <div style={{
+              height: '400px',
+              background: 'linear-gradient(135deg, #1e3a8a40 0%, #06b6d440 50%, #1e40af40 100%)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Ocean effect */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1))',
+                animation: 'pulse 4s infinite'
+              }}></div>
+              
+              {/* Vessel markers */}
+              <div style={{
+                position: 'absolute',
+                top: '25%',
+                left: '33%',
+                width: '16px',
+                height: '16px',
+                background: '#ef4444',
+                borderRadius: '50%',
+                boxShadow: '0 0 20px rgba(239, 68, 68, 0.5)',
+                animation: 'pulse 2s infinite'
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                right: '25%',
+                width: '16px',
+                height: '16px',
+                background: '#10b981',
+                borderRadius: '50%',
+                boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)'
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                bottom: '33%',
+                left: '50%',
+                width: '16px',
+                height: '16px',
+                background: '#f59e0b',
+                borderRadius: '50%',
+                boxShadow: '0 0 20px rgba(245, 158, 11, 0.5)',
+                animation: 'pulse 2s infinite'
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                top: '33%',
+                right: '33%',
+                width: '16px',
+                height: '16px',
+                background: '#3b82f6',
+                borderRadius: '50%',
+                boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
+              }}></div>
+
+              {/* Legend */}
+              <div style={{
+                position: 'absolute',
+                bottom: '1rem',
+                left: '1rem',
+                background: 'rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '0.75rem',
+                padding: '1rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}>
+                <div style={{
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  color: '#06b6d4',
+                  marginBottom: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <MapPin size={12} />
+                  Legend
+                </div>
+                <div style={{ fontSize: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#ef4444',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 10px rgba(239, 68, 68, 0.5)'
+                    }}></div>
+                    <span style={{ color: '#d1d5db' }}>Dark Vessel</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#f59e0b',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 10px rgba(245, 158, 11, 0.5)'
+                    }}></div>
+                    <span style={{ color: '#d1d5db' }}>AIS Gap</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#10b981',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)'
+                    }}></div>
+                    <span style={{ color: '#d1d5db' }}>Normal</span>
                   </div>
                 </div>
               </div>
-              
-              {/* Enhanced Map */}
-              <div className="h-96 bg-gradient-to-br from-blue-900/50 via-cyan-900/30 to-blue-800/50 relative overflow-hidden">
-                {/* Ocean water effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/10 animate-pulse"></div>
-                
-                {/* Enhanced vessel markers with glow */}
-                <div className="absolute top-1/4 left-1/3 group">
-                  <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></div>
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500/90 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Dark Vessel
-                  </div>
-                </div>
-                <div className="absolute top-1/2 right-1/4 group">
-                  <div className="w-4 h-4 bg-green-500 rounded-full shadow-lg shadow-green-500/50"></div>
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500/90 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Normal Track
-                  </div>
-                </div>
-                <div className="absolute bottom-1/3 left-1/2 group">
-                  <div className="w-4 h-4 bg-yellow-500 rounded-full animate-pulse shadow-lg shadow-yellow-500/50"></div>
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-yellow-500/90 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    AIS Gap
-                  </div>
-                </div>
-                <div className="absolute top-1/3 right-1/3 group">
-                  <div className="w-4 h-4 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50"></div>
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-400/90 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    Monitored
-                  </div>
-                </div>
-                
-                {/* Enhanced grid lines */}
-                <div className="absolute inset-0 opacity-30">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className="absolute border-cyan-400/30" 
-                         style={{
-                           left: `${(i + 1) * 12.5}%`,
-                           top: 0,
-                           bottom: 0,
-                           borderLeft: '1px dashed'
-                         }}></div>
-                  ))}
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="absolute border-cyan-400/30" 
-                         style={{
-                           top: `${(i + 1) * 16.67}%`,
-                           left: 0,
-                           right: 0,
-                           borderTop: '1px dashed'
-                         }}></div>
-                  ))}
-                </div>
 
-                {/* Enhanced Legend */}
-                <div className="absolute bottom-4 left-4 bg-black/40 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-medium text-cyan-400 mb-3 flex items-center space-x-2">
-                    <Radar className="h-3 w-3" />
-                    <span>Legend</span>
-                  </div>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-red-500 rounded-full shadow-lg shadow-red-500/50"></div>
-                      <span className="text-gray-300">Dark Vessel</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full shadow-lg shadow-yellow-500/50"></div>
-                      <span className="text-gray-300">AIS Gap</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg shadow-green-500/50"></div>
-                      <span className="text-gray-300">Normal</span>
-                    </div>
-                  </div>
+              {/* SAR Info */}
+              <div style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '0.75rem',
+                padding: '1rem',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}>
+                <div style={{
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  color: '#06b6d4',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Satellite size={12} style={{ animation: 'pulse 2s infinite' }} />
+                  Last SAR Scan
                 </div>
-
-                {/* SAR Scan Info */}
-                <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                  <div className="text-xs font-medium text-cyan-400 flex items-center space-x-2">
-                    <Satellite className="h-3 w-3 animate-pulse" />
-                    <span>Last SAR Scan</span>
-                  </div>
-                  <div className="text-xs text-gray-300 mt-1">
-                    {new Date(Date.now() - 120000).toLocaleTimeString()}
-                  </div>
+                <div style={{ fontSize: '0.75rem', color: '#d1d5db', marginTop: '0.25rem' }}>
+                  {new Date(Date.now() - 120000).toLocaleTimeString()}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Alerts Panel */}
-          <div className="space-y-6">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {/* Active Alerts */}
-            <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
-              <div className="p-6 border-b border-white/10">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white flex items-center space-x-2">
-                    <AlertTriangle className="h-5 w-5 text-red-400" />
-                    <span>Active Alerts</span>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '1rem',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                padding: '1.5rem',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    margin: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <AlertTriangle size={20} color="#ef4444" />
+                    Active Alerts
                   </h2>
-                  <span className="bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-medium px-3 py-1 rounded-full">
+                  <span style={{
+                    background: 'rgba(239, 68, 68, 0.2)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: '#ef4444',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '9999px'
+                  }}>
                     {activeAlerts}
                   </span>
                 </div>
               </div>
               
-              <div className="p-6 space-y-4 max-h-96 overflow-y-auto">
+              <div style={{
+                padding: '1.5rem',
+                maxHeight: '400px',
+                overflowY: 'auto'
+              }}>
                 {mockAlerts.map((alert) => (
-                  <div key={alert.id} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/10 hover:border-cyan-500/30 transition-all duration-300 group">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-3 h-3 rounded-full shadow-lg ${
-                          alert.status === 'active' ? 'bg-red-500 animate-pulse shadow-red-500/50' : 'bg-yellow-500 shadow-yellow-500/50'
-                        }`}></div>
-                        <span className="font-medium text-white text-sm">{alert.vessel}</span>
+                  <div key={alert.id} style={{
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '0.75rem',
+                    padding: '1rem',
+                    marginBottom: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      marginBottom: '0.75rem'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{
+                          width: '12px',
+                          height: '12px',
+                          background: alert.status === 'active' ? '#ef4444' : '#f59e0b',
+                          borderRadius: '50%',
+                          boxShadow: `0 0 10px ${alert.status === 'active' ? 'rgba(239, 68, 68, 0.5)' : 'rgba(245, 158, 11, 0.5)'}`,
+                          animation: alert.status === 'active' ? 'pulse 2s infinite' : 'none'
+                        }}></div>
+                        <span style={{ fontWeight: '500', fontSize: '0.875rem' }}>
+                          {alert.vessel}
+                        </span>
                       </div>
-                      <span className="text-xs text-gray-400 bg-white/10 px-2 py-1 rounded-lg border border-white/20">
+                      <span style={{
+                        fontSize: '0.75rem',
+                        color: '#9ca3af',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '0.5rem',
+                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                      }}>
                         {alert.type}
                       </span>
                     </div>
                     
-                    <div className="space-y-2 text-xs text-gray-400">
-                      <div className="flex items-center space-x-2">
-                        <MapPin className="h-3 w-3 text-cyan-400" />
-                        <span className="text-gray-300">{alert.coordinates}</span>
+                    <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        marginBottom: '0.5rem'
+                      }}>
+                        <MapPin size={12} color="#06b6d4" />
+                        <span style={{ color: '#d1d5db' }}>{alert.coordinates}</span>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <Clock className="h-3 w-3 text-cyan-400" />
-                        <span className="text-gray-300">{alert.lastSeen}</span>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        marginBottom: '0.5rem'
+                      }}>
+                        <Clock size={12} color="#06b6d4" />
+                        <span style={{ color: '#d1d5db' }}>{alert.lastSeen}</span>
                       </div>
-                      <div className="flex items-center justify-between pt-1">
-                        <span className="text-gray-400">Confidence:</span>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-12 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-300"
-                              style={{ width: `${alert.confidence}%` }}
-                            ></div>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingTop: '0.25rem'
+                      }}>
+                        <span>Confidence:</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <div style={{
+                            width: '48px',
+                            height: '6px',
+                            background: '#374151',
+                            borderRadius: '9999px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              height: '100%',
+                              background: 'linear-gradient(to right, #06b6d4, #3b82f6)',
+                              borderRadius: '9999px',
+                              width: `${alert.confidence}%`,
+                              transition: 'all 0.3s ease'
+                            }}></div>
                           </div>
-                          <span className="font-medium text-cyan-400">{alert.confidence}%</span>
+                          <span style={{ fontWeight: '500', color: '#06b6d4' }}>
+                            {alert.confidence}%
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -287,35 +532,78 @@ const Dashboard = () => {
             </div>
 
             {/* System Status */}
-            <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
-              <div className="p-6 border-b border-white/10">
-                <h2 className="text-xl font-semibold text-white flex items-center space-x-2">
-                  <Activity className="h-5 w-5 text-green-400" />
-                  <span>System Status</span>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '1rem',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                padding: '1.5rem',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                <h2 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  margin: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <Activity size={20} color="#10b981" />
+                  System Status
                 </h2>
               </div>
               
-              <div className="p-6 space-y-4">
+              <div style={{ padding: '1.5rem' }}>
                 {[
                   { name: "SAR Processing", status: "Online" },
                   { name: "AIS Correlation", status: "Active" },
                   { name: "Detection Engine", status: "Running" },
                   { name: "API Status", status: "Healthy" }
                 ].map((service, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
-                    <span className="text-sm text-gray-300">{service.name}</span>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50"></div>
-                      <span className="text-sm text-green-400 font-medium">{service.status}</span>
+                  <div key={index} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '0.75rem',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '0.5rem',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    marginBottom: index < 3 ? '1rem' : 0
+                  }}>
+                    <span style={{ fontSize: '0.875rem', color: '#d1d5db' }}>
+                      {service.name}
+                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div style={{
+                        width: '8px',
+                        height: '8px',
+                        background: '#10b981',
+                        borderRadius: '50%',
+                        boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)'
+                      }}></div>
+                      <span style={{
+                        fontSize: '0.875rem',
+                        color: '#10b981',
+                        fontWeight: '500'
+                      }}>
+                        {service.status}
+                      </span>
                     </div>
                   </div>
                 ))}
 
-                <div className="pt-4 border-t border-white/10 space-y-2">
-                  <div className="text-xs text-gray-400">
+                <div style={{
+                  paddingTop: '1rem',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                  marginTop: '1rem'
+                }}>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
                     Last deployment: {new Date(Date.now() - 3600000).toLocaleString()}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
                     Version: 2.1.4 • Uptime: 24h 12m
                   </div>
                 </div>
@@ -324,6 +612,24 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          div[style*="gridTemplateColumns: '2fr 1fr'"] {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
