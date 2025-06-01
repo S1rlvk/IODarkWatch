@@ -1,5 +1,6 @@
 'use client';
 
+// Updated beautiful dashboard - force Netlify redeploy
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Ship, Satellite, Activity, Eye, MapPin, Clock, TrendingUp, Radar, Waves } from 'lucide-react';
 
