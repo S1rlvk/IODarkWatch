@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server';
-import { Alert } from '../../types';
+
+interface Alert {
+  id: string;
+  type: string;
+  severity: string;
+  timestamp: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  description: string;
+  vessel?: string;
+}
 
 export async function GET() {
   // Mock data for alerts
@@ -10,17 +22,17 @@ export async function GET() {
       vessel: 'Ocean Voyager',
       severity: 'high',
       timestamp: new Date().toISOString(),
-      description: 'Vessel detected operating without AIS',
-      location: { lat: 15.5, lng: 73.8 }
+      location: { lat: 1.3521, lng: 103.8198 },
+      description: 'Vessel has gone dark for over 12 hours'
     },
     {
-      id: '2',
-      type: 'Suspicious Activity',
+      id: '2', 
+      type: 'Suspicious Movement',
       vessel: 'Pacific Star',
       severity: 'medium',
-      timestamp: new Date().toISOString(),
-      description: 'Vessel detected in restricted area',
-      location: { lat: 16.2, lng: 74.5 }
+      timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      location: { lat: 1.3521, lng: 104.8198 },
+      description: 'Unusual course deviation detected'
     }
   ];
 

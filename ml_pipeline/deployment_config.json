@@ -1,0 +1,49 @@
+{
+  "model_info": {
+    "model_path": "runs/production_sar_model/weights/best.pt",
+    "model_type": "YOLOv8x",
+    "training_device": "CPU",
+    "data_source": "Sentinel-1 SAR (VH polarization)"
+  },
+  "performance_metrics": {
+    "mAP50": 0.0,
+    "mAP50_95": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "accuracy_grade": "C"
+  },
+  "training_data": {
+    "total_images": 25,
+    "train_images": 20,
+    "val_images": 5,
+    "data_size_gb": 1.6,
+    "polarizations": [
+      "VH"
+    ],
+    "tile_size": 640
+  },
+  "deployment": {
+    "ready": false,
+    "status": "beta_ready",
+    "confidence_threshold": 0.25,
+    "recommended_use": "Maritime surveillance and dark vessel detection"
+  },
+  "integration": {
+    "inference_endpoint": "/api/ml/detect",
+    "model_format": "PyTorch (.pt)",
+    "input_size": [
+      640,
+      640
+    ],
+    "classes": [
+      "dark_vessel",
+      "vessel",
+      "background"
+    ]
+  },
+  "web_deployment": {
+    "fastapi_server": "ml_pipeline/inference_server.py",
+    "nextjs_integration": "app/api/ml/detect/route.ts",
+    "dashboard_component": "app/components/ml/VesselDetection.tsx"
+  }
+}

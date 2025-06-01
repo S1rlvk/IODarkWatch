@@ -1,13 +1,9 @@
-import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ContactButton } from './components/ContactButton';
-
-const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Maritime Domain Awareness',
-  description: 'Real-time vessel tracking in the Indian Ocean',
+  title: 'IODarkWatch',
+  description: 'Advanced Maritime Surveillance System',
 };
 
 export default function RootLayout({
@@ -17,9 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         {children}
-        <ContactButton />
       </body>
     </html>
   );
