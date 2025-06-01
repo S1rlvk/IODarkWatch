@@ -2,13 +2,15 @@
 
 // FORCE CACHE REFRESH - Updated: 2025-06-01 at 9:55 AM
 // Updated beautiful dashboard - force Netlify redeploy
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AlertTriangle, Ship, Satellite, Activity, Eye, MapPin, Clock } from 'lucide-react';
 
 const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [activeAlerts, setActiveAlerts] = useState(12);
   const [isLive, setIsLive] = useState(true);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -20,11 +22,154 @@ const Dashboard = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Initialize real map
+  useEffect(() => {
+    if (typeof window !== 'undefined' && mapRef.current && !mapInstanceRef.current) {
+      import('leaflet').then((L) => {
+        // Create map centered on Indian Ocean
+        const map = L.map(mapRef.current!).setView([-10, 75], 4);
+        
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 18,
+        }).addTo(map);
+
+        // Custom marker styles
+        const createCustomIcon = (color: string, type: string) => {
+          return L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="
+              width: 16px; 
+              height: 16px; 
+              background: ${color}; 
+              border-radius: 50%; 
+              box-shadow: 0 0 20px ${color}50;
+              ${type === 'active' ? 'animation: pulse 2s infinite;' : ''}
+              border: 2px solid white;
+            "></div>`,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+          });
+        };
+
+        // Real vessel positions in Indian Ocean
+        const vessels = [
+          {
+            position: [-8.5, 76.2] as [number, number],
+            type: 'dark',
+            color: '#ef4444',
+            popup: 'Unknown Vessel<br/>Dark Transit<br/>Confidence: 94%'
+          },
+          {
+            position: [-12.1, 68.4] as [number, number],
+            type: 'ais_gap',
+            color: '#f59e0b',
+            popup: 'Fishing Vessel<br/>AIS Gap<br/>Confidence: 87%'
+          },
+          {
+            position: [-15.3, 73.8] as [number, number],
+            type: 'deviation',
+            color: '#ef4444',
+            popup: 'Cargo Ship<br/>Route Deviation<br/>Confidence: 91%'
+          },
+          {
+            position: [-5.2, 82.1] as [number, number],
+            type: 'normal',
+            color: '#10b981',
+            popup: 'Container Ship<br/>Normal Track<br/>Confidence: 99%'
+          },
+          {
+            position: [-18.7, 70.3] as [number, number],
+            type: 'normal',
+            color: '#3b82f6',
+            popup: 'Oil Tanker<br/>Monitored<br/>Confidence: 96%'
+          }
+        ];
+
+        // Add vessel markers
+        vessels.forEach(vessel => {
+          const marker = L.marker(vessel.position, {
+            icon: createCustomIcon(vessel.color, vessel.type === 'dark' || vessel.type === 'ais_gap' ? 'active' : 'normal')
+          }).addTo(map);
+          
+          marker.bindPopup(vessel.popup, {
+            className: 'custom-popup'
+          });
+        });
+
+        // Add coverage area circles
+        L.circle([-10, 75], {
+          color: '#06b6d4',
+          fillColor: '#06b6d4',
+          fillOpacity: 0.1,
+          radius: 500000,
+          weight: 2,
+          opacity: 0.3
+        }).addTo(map).bindPopup('Primary Coverage Area');
+
+        L.circle([-15, 80], {
+          color: '#3b82f6',
+          fillColor: '#3b82f6',
+          fillOpacity: 0.05,
+          radius: 300000,
+          weight: 1,
+          opacity: 0.2
+        }).addTo(map).bindPopup('Secondary Coverage');
+
+        mapInstanceRef.current = map;
+
+        // Add custom CSS for map elements
+        const style = document.createElement('style');
+        style.textContent = `
+          .leaflet-container {
+            background: linear-gradient(135deg, #1e3a8a40 0%, #06b6d440 50%, #1e40af40 100%) !important;
+          }
+          .custom-popup .leaflet-popup-content-wrapper {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+          }
+          .custom-popup .leaflet-popup-tip {
+            background: rgba(0, 0, 0, 0.8);
+          }
+          .leaflet-control-zoom {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 8px !important;
+            backdrop-filter: blur(10px);
+          }
+          .leaflet-control-zoom a {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #06b6d4 !important;
+            border: none !important;
+          }
+          .leaflet-control-zoom a:hover {
+            background: rgba(6, 182, 212, 0.2) !important;
+          }
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `;
+        document.head.appendChild(style);
+      });
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
   const mockAlerts = [
     {
       id: 1,
       vessel: "Unknown Vessel",
-      coordinates: "8.5°N, 76.2°E",
+      coordinates: "8.5°S, 76.2°E",
       lastSeen: "23 minutes ago",
       confidence: 94,
       type: "Dark Transit",
@@ -33,7 +178,7 @@ const Dashboard = () => {
     {
       id: 2,
       vessel: "Fishing Vessel",
-      coordinates: "12.1°N, 68.4°E",
+      coordinates: "12.1°S, 68.4°E",
       lastSeen: "1.2 hours ago",
       confidence: 87,
       type: "AIS Gap",
@@ -42,7 +187,7 @@ const Dashboard = () => {
     {
       id: 3,
       vessel: "Cargo Ship",
-      coordinates: "15.3°N, 73.8°E",
+      coordinates: "15.3°S, 73.8°E",
       lastSeen: "45 minutes ago",
       confidence: 91,
       type: "Route Deviation",
@@ -198,7 +343,7 @@ const Dashboard = () => {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
-          {/* Map Area */}
+          {/* Real Map Area */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.05)',
             backdropFilter: 'blur(10px)',
@@ -239,66 +384,11 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {/* Map */}
-            <div style={{
-              height: '400px',
-              background: 'linear-gradient(135deg, #1e3a8a40 0%, #06b6d440 50%, #1e40af40 100%)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              {/* Ocean effect */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.1))',
-                animation: 'pulse 4s infinite'
-              }}></div>
-              
-              {/* Vessel markers */}
-              <div style={{
-                position: 'absolute',
-                top: '25%',
-                left: '33%',
-                width: '16px',
-                height: '16px',
-                background: '#ef4444',
-                borderRadius: '50%',
-                boxShadow: '0 0 20px rgba(239, 68, 68, 0.5)',
-                animation: 'pulse 2s infinite'
-              }}></div>
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                right: '25%',
-                width: '16px',
-                height: '16px',
-                background: '#10b981',
-                borderRadius: '50%',
-                boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)'
-              }}></div>
-              <div style={{
-                position: 'absolute',
-                bottom: '33%',
-                left: '50%',
-                width: '16px',
-                height: '16px',
-                background: '#f59e0b',
-                borderRadius: '50%',
-                boxShadow: '0 0 20px rgba(245, 158, 11, 0.5)',
-                animation: 'pulse 2s infinite'
-              }}></div>
-              <div style={{
-                position: 'absolute',
-                top: '33%',
-                right: '33%',
-                width: '16px',
-                height: '16px',
-                background: '#3b82f6',
-                borderRadius: '50%',
-                boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
-              }}></div>
+            {/* Real Interactive Map */}
+            <div style={{ height: '400px', position: 'relative' }}>
+              <div ref={mapRef} style={{ height: '100%', width: '100%' }} />
 
-              {/* Legend */}
+              {/* Legend Overlay */}
               <div style={{
                 position: 'absolute',
                 bottom: '1rem',
@@ -307,7 +397,8 @@ const Dashboard = () => {
                 backdropFilter: 'blur(10px)',
                 borderRadius: '0.75rem',
                 padding: '1rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                zIndex: 1000
               }}>
                 <div style={{
                   fontSize: '0.75rem',
@@ -355,7 +446,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* SAR Info */}
+              {/* SAR Info Overlay */}
               <div style={{
                 position: 'absolute',
                 top: '1rem',
@@ -364,7 +455,8 @@ const Dashboard = () => {
                 backdropFilter: 'blur(10px)',
                 borderRadius: '0.75rem',
                 padding: '1rem',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                zIndex: 1000
               }}>
                 <div style={{
                   fontSize: '0.75rem',
@@ -630,6 +722,14 @@ const Dashboard = () => {
           }
         }
       `}</style>
+
+      {/* Leaflet CSS */}
+      <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossOrigin=""
+      />
     </div>
   );
 };
