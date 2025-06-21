@@ -1,5 +1,0 @@
-{
-  "/api/vessels/route": "app/api/vessels/route.js",
-  "/api/summary/route": "app/api/summary/route.js",
-  "/dashboard/page": "app/dashboard/page.js"
-}
