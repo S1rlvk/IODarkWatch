@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'IODarkWatch',
-  description: 'Advanced Maritime Surveillance System',
+  description: 'A demo maritime-surveillance dashboard for the Indian Ocean, built on simulated data.',
 };
 
 export default function RootLayout({

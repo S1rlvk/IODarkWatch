@@ -1,100 +1,66 @@
 # IODarkWatch
 
-Open-Source Maritime Domain Awareness for the Indian Ocean
+A maritime-surveillance concept demo for the Indian Ocean.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## About
+## What this is
 
-IODarkWatch is an open-source project focused on maritime domain awareness in the Indian Ocean region. Real-time detection of "dark" vessels—ships whose satellite signatures have no matching AIS broadcast—in the Arabian Sea, Bay of Bengal, and wider Indian Ocean.
+IODarkWatch is a **demo/portfolio project**, not an operational surveillance system. The dashboard runs entirely
+on simulated data — there's no live AIS feed, no live satellite pipeline, and no deployment with any maritime
+authority. What it shows is a domain model for maritime dark-vessel detection and a dashboard built around it.
 
-The project fuses free AIS feeds, public Sentinel-2 imagery, and tip-and-cue SAR snapshots, then surfaces alerts via a live map, REST API, and weekly brief.
+Read [`docs/CASE-STUDY.md`](docs/CASE-STUDY.md) for the full write-up, or `/about` on the running app for the
+short version.
 
-## ✨ Features
+## The domain model
 
-| Module | What it does |
-|--------|--------------|
-| **AIS Ingest** | Nightly scraper pulls terrestrial AIS packets → Postgres + PostGIS |
-| **Satellite Fetcher** | Downloader for Sentinel-2 tiles (Copernicus OpenHub) + optional SAR snippets (Iceye/Umbra) |
-| **Ship Detector** | YOLOv8 fine-tuned on labelled Sentinel chips (mAP ≥ 0.60 target) |
-| **Correlator** | Flags satellite detections with no AIS match within ≤ 2 NM / ≤ 30 min |
-| **Dashboard** | Streamlit/Next.js map with heat-layer, timeline, and event table |
-| **API** | `GET /dark?date=YYYY-MM-DD` returns JSON/CSV of dark-ship events |
-| **Weekly Brief** | Mailer sends top anomalies + trend chart to subscribers |
+Three distinct signals, deliberately kept separate rather than lumped under one "suspicious" flag — see
+[`CONTEXT.md`](CONTEXT.md) and [`docs/adr/0001-dark-vessel-terminology.md`](docs/adr/0001-dark-vessel-terminology.md)
+for why.
 
-## 🏗️ Architecture Snapshot
+| Term | Meaning | Needs satellite data? |
+|---|---|---|
+| **Dark Vessel** | Satellite detection with no matching AIS broadcast | Yes |
+| **AIS Gap** | A vessel's own transponder has gone silent for 12+ hours | No |
+| **Spoofing Signature** | A vessel's own AIS speed/position readings are inconsistent | No |
+
+## What's simulated vs. what's real
+
+| Piece | Status |
+|---|---|
+| Dashboard, alert list, weekly-brief page | Working, but fed entirely by simulated data ([`app/lib/vessels.ts`](app/lib/vessels.ts)) |
+| `GET /api/vessels`, `/api/alerts`, `/api/summary` | Real endpoints, simulated data |
+| SAR fetch + YOLOv8 vessel detector (`ml_pipeline/`, `sar_fetcher/`) | Real pipeline, real Sentinel-1 data, but trained on only 25 images — `mAP50: 0.0` in its own deployment config. Not wired into the dashboard. |
+| AIS ingest, Postgres/PostGIS, correlator, email mailer | Not built |
+| Map view on the dashboard | Placeholder — no real map library wired in currently |
+
+## If this were built for real
+
+The pipeline below is the design a production version would need, not a roadmap this repo is executing:
 
 ```
-AIS → ETL (Lambda) → PostgreSQL/PostGIS
-↑
-Sentinel-2 ↗ |
-SAR (opt.) ↗ ML (Detector) → Correlator → Alerts
-↘
-Dashboard / API / Email
+AIS feed ──┐
+           ├─▶ Correlator ──▶ Dark Vessel alerts ──▶ Dashboard / API / weekly brief
+Satellite ─┘        ▲
+                     │
+              AIS Gap / Spoofing Signature
+              (computed from AIS alone)
 ```
 
-## 🚀 Roadmap
+- **AIS ingest**: terrestrial AIS feed → persistent store (e.g. Postgres/PostGIS)
+- **Satellite fetcher**: Sentinel-1/2 tiles, optionally tasked SAR
+- **Ship detector**: the YOLOv8 SAR model in `ml_pipeline/`, retrained on far more than 25 images
+- **Correlator**: matches satellite detections against AIS positions within a distance/time window to produce real Dark Vessel alerts
+- **Dashboard / API / weekly brief**: what already exists here, pointed at real data instead of `app/lib/vessels.ts`
 
-- **M1–M2** Cloud infra + AIS map (Arabian Sea)
-- **M3–M4** 200 labelled Sentinel chips · baseline detector
-- **M5–M6** Dark-ship correlator · public beta dashboard
-- **M7–M9** Coverage → Bay of Bengal + IOR corridors · REST API · email brief
-- **M10–M12** 1 TB AIS · 1,500 detections/day · 250 dark alerts/day · pilot with INCOIS/Naval cell
-
-See docs/ROADMAP.md for full timeline and KPIs.
-
-## 🖇️ Contributing
-
-1. Fork & create branch (`git checkout -b feature/foo`)
-2. Run `pre-commit install` (lints & tests must pass)
-3. Submit a PR and describe "Why this change?"
-4. All discussion in Discussions – newcomers welcome!
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📧 Contact
-
-For any queries or collaboration opportunities, please reach out to [ssattiger65@gmail.com](mailto:ssattiger65@gmail.com)
-
-*Latest Update: Dark vessel detection system with comprehensive AIS gap analysis and suspicious movement patterns - deployed with enhanced visual indicators and real-time monitoring capabilities.*
-
-## 🚢 Overview
-
-IODarkWatch leverages advanced algorithms to identify suspicious maritime activities by analyzing:
-- AIS transmission gaps (vessels going dark for 12+ hours)
-- Suspicious movement patterns (speed vs. position discrepancies)
-- Historical vessel behavior analysis
-- Real-time monitoring and alerting
-
-## 🔍 Dark Vessel Detection Features
-
-### AIS Gap Detection
-- Monitors vessels that haven't transmitted AIS signals for 12+ hours
-- Tracks last known transmission timestamps
-- Identifies previously active vessels that have gone silent
-
-### Suspicious Movement Analysis
-- Detects vessels reporting speed = 0 but showing position changes
-- Analyzes historical position data for movement patterns
-- Flags erratic behavior and course deviations
-
-### Visual Indicators
-- **Red markers**: Dark vessels (AIS gap > 12 hours)
-- **Orange markers**: Suspicious behavior detected
-- **Green markers**: Normal active vessels
-- Enhanced popup information with analysis details
-
-## 🛠 Technology Stack
+## Tech stack
 
 - **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS
-- **Mapping**: Leaflet with custom vessel markers
-- **Real-time Updates**: Custom hooks for live data streaming
-- **Analysis Engine**: Custom dark vessel detection algorithms
-- **Deployment**: Netlify with continuous integration
+- **ML pipeline**: Python, YOLOv8x (Ultralytics), Sentinel Hub API
+- **Deployment**: Netlify
 
-## 🚀 Getting Started
+## Getting started
 
 ```bash
 # Install dependencies
@@ -107,29 +73,18 @@ npm run dev
 npm run build
 ```
 
-Visit `http://localhost:3000` to access the dashboard.
+Visit `http://localhost:3000` — `/` for the landing page, `/dashboard` for the demo, `/about` for how it works,
+`/brief` for the mock weekly brief.
 
-## 📊 Key Features
+## Contributing
 
-- **Interactive Maritime Map**: Real-time vessel tracking with custom markers
-- **Dark Vessel Dashboard**: Comprehensive analytics and detection metrics
-- **Alert System**: Automated notifications for suspicious activities
-- **Historical Analysis**: Vessel behavior patterns and trend analysis
-- **Export Capabilities**: Data export for further analysis
+1. Fork & create a branch (`git checkout -b feature/foo`)
+2. Submit a PR describing "why this change?"
 
-## 🔄 Deployment Status
+## License
 
-> **Current Deployment**: Dark vessel detection system with enhanced AIS monitoring - Force deployment trigger at 2025-01-21
+MIT — see [LICENSE](LICENSE).
 
-## 📈 Monitoring Capabilities
+## Contact
 
-- Real-time vessel position tracking
-- AIS transmission gap analysis
-- Suspicious movement pattern detection
-- Historical behavior comparison
-- Automated alert generation
-- Comprehensive reporting dashboard
-
----
-
-**IODarkWatch** - Securing maritime borders through intelligent vessel monitoring.
+[ssattigeri65@gmail.com](mailto:ssattigeri65@gmail.com)

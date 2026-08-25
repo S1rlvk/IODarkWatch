@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
+import { generateVesselData } from '@/app/lib/vessels';
 
 export async function GET() {
-  // Return summary information including last updated timestamp
+  const vessels = generateVesselData();
+
   const summary = {
     lastUpdated: new Date().toISOString(),
-    totalVessels: 12, // This would come from your actual data source
-    activeVessels: 8,
-    darkVessels: 4,
-    alerts: 2
+    totalVessels: vessels.length,
+    darkVessels: vessels.filter((v) => v.alertType === 'dark_vessel').length,
+    aisGaps: vessels.filter((v) => v.alertType === 'ais_gap').length,
+    spoofingSignatures: vessels.filter((v) => v.alertType === 'spoofing_signature').length,
+    routine: vessels.filter((v) => v.alertType === null).length,
   };
 
   return NextResponse.json(summary);
-} 
+}
