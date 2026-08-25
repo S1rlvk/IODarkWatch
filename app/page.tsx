@@ -18,44 +18,44 @@ export default function HomePage() {
             IODarkWatch
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
-            Advanced Maritime Surveillance System for detecting and tracking dark vessels in real-time
+          <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-2xl mx-auto">
+            A maritime-surveillance concept demo for the Indian Ocean: dark-vessel detection, visualized.
+          </p>
+          <p className="text-sm text-gray-500 mb-12 max-w-xl mx-auto">
+            Everything in the dashboard runs on simulated data &mdash; no live AIS feed or satellite pipeline yet.
+            See <a href="/about" className="text-cyan-400 hover:underline">how this works</a>.
           </p>
 
-          <div className="space-y-6">
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-              <h2 className="text-2xl font-semibold text-cyan-400 mb-4">System Status</h2>
-              <p className="text-gray-400">Ready to build dashboard</p>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/dashboard"
+              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 rounded-xl text-white font-semibold transition-all transform hover:scale-105 shadow-lg"
+            >
+              Launch Dashboard
+            </a>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/dashboard" 
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 rounded-xl text-white font-semibold transition-all transform hover:scale-105 shadow-lg"
-              >
-                Launch Dashboard
-              </a>
-              
-              <div className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/20 rounded-xl text-white font-semibold transition-all cursor-not-allowed opacity-50">
-                API Documentation
-              </div>
-            </div>
+            <a
+              href="/about"
+              className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/20 rounded-xl text-white font-semibold transition-all"
+            >
+              How This Works
+            </a>
           </div>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-cyan-400 text-3xl font-bold mb-2">Real-time</div>
-              <div className="text-gray-400">Vessel Tracking</div>
+              <div className="text-red-400 text-2xl font-bold mb-2">Dark Vessel</div>
+              <div className="text-gray-400 text-sm">Satellite detection, no AIS match</div>
             </div>
-            
+
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-blue-400 text-3xl font-bold mb-2">AI-powered</div>
-              <div className="text-gray-400">Dark Vessel Detection</div>
+              <div className="text-orange-400 text-2xl font-bold mb-2">AIS Gap</div>
+              <div className="text-gray-400 text-sm">Transponder silent 12+ hours</div>
             </div>
-            
+
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-              <div className="text-purple-400 text-3xl font-bold mb-2">Advanced</div>
-              <div className="text-gray-400">Maritime Analytics</div>
+              <div className="text-yellow-400 text-2xl font-bold mb-2">Spoofing Signature</div>
+              <div className="text-gray-400 text-sm">Speed and position don&apos;t match</div>
             </div>
           </div>
         </div>

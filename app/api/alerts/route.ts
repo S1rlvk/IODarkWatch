@@ -1,40 +1,20 @@
 import { NextResponse } from 'next/server';
+import { generateVesselData, ALERT_META } from '@/app/lib/vessels';
 
-interface Alert {
-  id: string;
-  type: string;
-  severity: string;
-  timestamp: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  description: string;
-  vessel?: string;
-}
-
+// Derives alerts from the same simulated vessel dataset /api/vessels uses,
+// rather than a separately hand-maintained list, so the two can't drift.
 export async function GET() {
-  // Mock data for alerts
-  const alerts: Alert[] = [
-    {
-      id: '1',
-      type: 'Dark Vessel',
-      vessel: 'Ocean Voyager',
-      severity: 'high',
-      timestamp: new Date().toISOString(),
-      location: { lat: 1.3521, lng: 103.8198 },
-      description: 'Vessel has gone dark for over 12 hours'
-    },
-    {
-      id: '2', 
-      type: 'Suspicious Movement',
-      vessel: 'Pacific Star',
-      severity: 'medium',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-      location: { lat: 1.3521, lng: 104.8198 },
-      description: 'Unusual course deviation detected'
-    }
-  ];
+  const alerts = generateVesselData()
+    .filter((v) => v.alertType !== null)
+    .map((v) => ({
+      id: v.id,
+      type: ALERT_META[v.alertType as Exclude<typeof v.alertType, null>].label,
+      vessel: v.name,
+      severity: v.severity,
+      timestamp: new Date(v.lastSeen).toISOString(),
+      location: { lat: v.lat, lng: v.lng },
+      description: v.reason,
+    }));
 
   return NextResponse.json(alerts);
-} 
+}
